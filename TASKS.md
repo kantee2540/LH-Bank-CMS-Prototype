@@ -10,7 +10,7 @@
 ## วิธีรัน
 
 ```bash
-cd web_prototype/lh-cms
+cd web_prototype
 npm install
 npm run dev        # เปิด http://localhost:5173
 npm run typecheck  # ตรวจ type (tsc -b)
@@ -30,7 +30,7 @@ Tech stack: React 19 + **TypeScript 5.6 (strict)** + Vite 6 · react-router-dom 
 - [x] ดึง Screenshot ของหน้าหลักเพื่อใช้เป็นเป้าหมายด้านภาพ (CS-02…08, VR-01…03, CMS-04, CMS-26, CMS-27/27A/27B, TR-01)
 
 ### 2. ตั้งค่าโปรเจกต์
-- [x] สร้างโปรเจกต์ React (Vite) ที่ `web_prototype/lh-cms`
+- [x] สร้างโปรเจกต์ React (Vite) ที่ `web_prototype/`
 - [x] ดาวน์โหลด Asset จาก Figma 44 ไฟล์ (โลโก้ LH Bank, ไอคอนเมนู Sidebar, Top Bar, ไอคอนสถิติ Dashboard) → `src/assets/figma/`
 - [x] สร้าง Design tokens (`src/index.css`): สี navy `#12386b`, nav active `#1f6fa8`, ข้อความ, เส้นขอบ, radius, ฟอนต์ IBM Plex Sans Thai
 - [x] Mock data ตามข้อมูลในดีไซน์ (`src/data/mock.ts`) และ Store ในหน่วยความจำ (`src/store.tsx`) เพื่อให้ Flow ทำงานต่อเนื่องกันได้
