@@ -1,4 +1,4 @@
-.dash-head { align-items: flex-end; flex-wrap: wrap; margin-top: 46px; }
+.dash-head { align-items: flex-end; flex-wrap: wrap; }
 .dash-summary { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 16px; }
 .visitors { display: flex; flex-direction: column; justify-content: center; gap: 16px; }
 .circle-64 { width: 64px; height: 64px; border-radius: 32px; background: rgba(59,130,196,0.12); display: grid; place-items: center; flex: none; }
