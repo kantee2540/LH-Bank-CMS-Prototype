@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus, RefreshCw, ChevronDown, ChevronRight, LayoutTemplate, Pencil, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
-import { Button, Field, Input, Select, Modal, IconButton, LangSwitch, PageHeader } from '../components/ui';
+import { Button, Field, Input, Select, Modal, IconButton, LangSwitch } from '../components/ui';
 import { useStore } from '../store';
 import './pages.css';
 
@@ -101,8 +101,7 @@ export default function PathStructure() {
 
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Path Structure' }]} title="" />
-      <section className="card" style={{ marginTop: -20 }}>
+      <section className="card">
         <h2 className="t-h3" style={{ fontSize: 18, marginBottom: 12 }}>Path Structure</h2>
         <LangSwitch value={lang} onChange={setLang} options={[{ value: 'th', label: 'TH' }, { value: 'en', label: 'EN' }, { value: 'zh', label: '中文' }]} />
         <div className="row" style={{ marginBottom: 16 }}>

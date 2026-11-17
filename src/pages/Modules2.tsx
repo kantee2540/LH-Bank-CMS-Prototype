@@ -29,7 +29,7 @@ export function FaqList() {
   const move = (r: FaqRow, d: -1 | 1) => { const i = rows.indexOf(r); const j = i + d; if (j < 0 || j >= rows.length) return; const c = [...rows]; [c[i], c[j]] = [c[j], c[i]]; setRows(c); };
   return (
     <ListPage<FaqRow>
-      crumbs={[{ label: 'FAQ' }]} title="FAQ"
+      title="FAQ"
       filters={[textFilter('q', 'คำถาม', (r) => r.q), selectFilter('c', 'หมวด', FAQ_CATS, (r) => r.cat), selectFilter('s', 'Status', ['Published', 'Draft'], (r) => r.status)]}
       rows={rows.filter((r) => cat === 'all' || r.cat === cat)} rowKey={(r) => r.id}
       above={<Tabs value={cat} onChange={setCat} style={{ marginBottom: 16, marginTop: -8 }} tabs={[{ value: 'all', label: 'ทั้งหมด' }, ...FAQ_CATS.map((c) => ({ value: c, label: c }))]} />}
@@ -61,7 +61,6 @@ export function FaqForm() {
   return (
     <ModuleForm
       key={id ?? 'new'}
-      crumbs={[{ label: 'FAQ', to: '/faq' }, { label: r ? 'แก้ไขคำถาม' : 'เพิ่มคำถาม' }]}
       back="/faq" title={r ? 'แก้ไขคำถาม' : 'เพิ่มคำถามใหม่'} status={r?.status} module="FAQ"
       fields={[
         { key: 'q', label: 'คำถาม', type: 'text', required: true },
@@ -107,7 +106,7 @@ export function FileManager() {
   };
   return (
     <ListPage<FileRow>
-      crumbs={[{ label: 'File Manager' }]} title="File Manager"
+      title="File Manager"
       filters={[textFilter('n', 'ชื่อไฟล์', (r) => r.name), selectFilter('c', 'หมวดเอกสาร', FILE_CATS, (r) => r.cat), selectFilter('y', 'ปี', ['2569', '2568'], (r) => r.year)]}
       rows={rows.filter((r) => cat === 'all' || r.cat === cat)} rowKey={(r) => r.id}
       above={<Tabs value={cat} onChange={setCat} style={{ marginBottom: 16, marginTop: -8 }} tabs={[{ value: 'all', label: 'ทั้งหมด' }, ...FILE_CATS.map((c) => ({ value: c, label: c }))]} />}

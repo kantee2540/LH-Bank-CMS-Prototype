@@ -22,9 +22,9 @@ export function ApprovalInbox({ history = false }: { history?: boolean }) {
   return (
     <>
       {history
-        ? <PageHeader crumbs={[{ label: 'ประวัติการอนุมัติ' }, { label: 'รายการ' }]} title="ประวัติการอนุมัติ" sub="คำขอที่คุณอนุมัติหรือส่งกลับแก้ไขแล้ว · แก้ไขหรือลบไม่ได้ เก็บ 2 ปีตาม Audit Log"
+        ? <PageHeader title="ประวัติการอนุมัติ" sub="คำขอที่คุณอนุมัติหรือส่งกลับแก้ไขแล้ว · แก้ไขหรือลบไม่ได้ เก็บ 2 ปีตาม Audit Log"
             actions={<Button icon={Eye} onClick={() => navigate('/approval')}>ไปที่งานรออนุมัติ</Button>} />
-        : <PageHeader crumbs={[{ label: 'งานรออนุมัติ' }, { label: 'รายการ' }]} title="งานรออนุมัติ" sub="Auditor ตรวจสอบเนื้อหาจาก Content Editor ก่อนเผยแพร่ · ทุกการตัดสินใจถูกบันทึกใน Audit Log"
+        : <PageHeader title="งานรออนุมัติ" sub="Auditor ตรวจสอบเนื้อหาจาก Content Editor ก่อนเผยแพร่ · ทุกการตัดสินใจถูกบันทึกใน Audit Log"
             actions={<Button icon={RefreshCw} onClick={() => navigate('/approval/history')}>ประวัติการอนุมัติ</Button>} />}
       <div className="kpis">
         {[['#e8a557', 'รออนุมัติ', pending, 'รายการทั้งหมดที่ส่งถึงคุณ'], ['#e0625a', 'ใกล้ครบ SLA', 2, 'ต้องตัดสินใจภายใน 24 ชม.'], ['#5ab4b8', 'อนุมัติแล้ววันนี้', 5 + requests.filter((r) => r.tab === 'approved' && r.sub.includes('อนุมัติแล้ว')).length, 'เผยแพร่ทันที 3 · ตั้งเวลา 2'], ['#2f86c1', 'ส่งกลับแก้ไข (เดือนนี้)', 3, 'เฉลี่ยแก้ไข 1.2 รอบ/รายการ']].map(([c, l, n, s]) => (
@@ -103,7 +103,7 @@ export function ApprovalReview() {
 
   return (
     <div className="with-bottom-bar">
-      <PageHeader crumbs={[{ label: 'งานรออนุมัติ', to: '/approval' }, { label: r.title }, { label: 'ตรวจสอบ' }]} title={<span className="row"><Link to="/approval"><ArrowLeft size={18} /></Link>ตรวจสอบ · {r.title}</span>}
+      <PageHeader title={<span className="row"><Link to="/approval"><ArrowLeft size={18} /></Link>ตรวจสอบ · {r.title}</span>}
         badges={<><span className="status status-scheduled" style={{ background: '#fbe9df', color: '#8a3e1f' }}>รออนุมัติ</span><span className="sla sla-red">SLA {slaOf(r)[0]}</span></>}
         actions={<Button icon={Maximize2} onClick={() => toast('เปิด Preview แท็บใหม่', r.title)}>เปิด Preview แท็บใหม่</Button>} />
       <div className="split" style={{ gridTemplateColumns: 'minmax(0,1fr) 320px' }}>
@@ -194,8 +194,7 @@ export function ApprovalResult() {
   ];
   return (
     <>
-      <PageHeader crumbs={[{ label: 'งานรออนุมัติ', to: '/approval' }, { label: 'ประวัติการอนุมัติ', to: '/approval/history' }, { label: r.title }]} title="" />
-      {banner && r.tab === 'approved' && <div className="banner-info" style={{ background: '#5ab4b8', marginTop: -20 }}><Check size={18} /><div className="grow"><b>อนุมัติเรียบร้อย</b><div>{scheduled ? `ระบบจะเผยแพร่อัตโนมัติวันที่ ${r.publish}` : 'เผยแพร่แล้ว'} และแจ้ง Content Editor 01 แล้ว</div></div><button className="icon-btn" style={{ color: '#fff' }} onClick={() => setBanner(false)}><X size={18} /></button></div>}
+      {banner && r.tab === 'approved' && <div className="banner-info" style={{ background: '#5ab4b8' }}><Check size={18} /><div className="grow"><b>อนุมัติเรียบร้อย</b><div>{scheduled ? `ระบบจะเผยแพร่อัตโนมัติวันที่ ${r.publish}` : 'เผยแพร่แล้ว'} และแจ้ง Content Editor 01 แล้ว</div></div><button className="icon-btn" style={{ color: '#fff' }} onClick={() => setBanner(false)}><X size={18} /></button></div>}
       <div className="row-between">
         <div className="row"><h1 className="page-title">ประวัติคำขอ · {r.title}</h1><Status status={r.state} /></div>
         <div className="row">{scheduled && <Button icon={X} onClick={() => toast('ยกเลิกการตั้งเวลาแล้ว', 'คำขอกลับเป็นรออนุมัติ')}>ยกเลิกการตั้งเวลา</Button>}<Button variant="primary" icon={FileText} onClick={() => navigate('/approval')}>กลับไปงานรออนุมัติ</Button></div>

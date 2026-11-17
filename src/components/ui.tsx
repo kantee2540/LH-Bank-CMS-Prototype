@@ -249,13 +249,7 @@ export function ToastView({ toasts }: { toasts: Toast[] }) {
   );
 }
 
-export interface Crumb {
-  label: string;
-  to?: string;
-}
-
 interface PageHeaderProps {
-  crumbs?: Crumb[];
   title: ReactNode;
   sub?: ReactNode;
   back?: string;
@@ -263,20 +257,10 @@ interface PageHeaderProps {
   actions?: ReactNode;
 }
 
-/* Breadcrumb + page title row */
-export function PageHeader({ crumbs = [], title, sub, back, badges, actions }: PageHeaderProps) {
+/* Page title row (ไม่มี Breadcrumb — ตัดออกตาม Figma Type 2) */
+export function PageHeader({ title, sub, back, badges, actions }: PageHeaderProps) {
   return (
     <div className="page-header">
-      {crumbs.length > 0 && (
-        <nav className="crumbs">
-          {crumbs.map((c, i) => (
-            <span key={i}>
-              {c.to ? <Link to={c.to}>{c.label}</Link> : c.label}
-              {i < crumbs.length - 1 && <span className="sep">&gt;</span>}
-            </span>
-          ))}
-        </nav>
-      )}
       <div className="row-between" style={{ flexWrap: 'wrap' }}>
         <div className="row" style={{ gap: 14 }}>
           {back && (

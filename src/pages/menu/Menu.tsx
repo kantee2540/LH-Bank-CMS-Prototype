@@ -55,8 +55,7 @@ export function MenuLocation() {
   const [choice, setChoice] = useState('');
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Menu' }, { label: 'Menu Location' }]} title="" />
-      <section className="card" style={{ marginTop: -20 }}>
+      <section className="card">
         <h2 className="t-h3" style={{ fontSize: 18 }}>Menu Location</h2>
         <p className="t-secondary" style={{ marginBottom: 14 }}>กำหนดว่าแต่ละตำแหน่งบนหน้าเว็บ Front-end ใช้ Set Menu ชุดใด</p>
         <LangSwitch value={lang} onChange={setLang} options={LANGS} />
@@ -91,7 +90,6 @@ export function SetMenuList() {
   const [del, setDel] = useState<SetMenu | null>(null);
   return (
     <ListPage<SetMenu>
-      crumbs={[{ label: 'Menu' }, { label: 'Set Menu' }]}
       title="Set Menu"
       filters={[
         textFilter('name', 'Set Menu Name', (r) => r.name),
@@ -216,7 +214,6 @@ export function SetMenuEditor() {
   return (
     <>
       <PageHeader
-        crumbs={[{ label: 'Menu' }, { label: 'Set Menu', to: '/menu/set' }, { label: isNew ? 'สร้าง Set Menu' : 'แก้ไข' }]}
         back="/menu/set"
         title={isNew ? 'สร้าง Set Menu ใหม่' : `แก้ไข Set Menu · ${base?.name}`}
         badges={<Status status={isNew ? 'Draft' : 'Published'} />}

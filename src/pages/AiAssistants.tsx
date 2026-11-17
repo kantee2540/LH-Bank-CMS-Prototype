@@ -32,7 +32,7 @@ export function AiList() {
   const c = (k: Cat) => items.filter((a) => a.cat === k).length;
   return (
     <>
-      <PageHeader crumbs={[{ label: 'AI Assistants' }, { label: 'ภาพรวม' }]} title="AI Assistants" sub="ผู้ช่วย AI สำหรับทีมเนื้อหา · ผลลัพธ์ทุกชิ้นบันทึกเป็น Draft และต้องผ่าน Content Editor → Auditor ก่อนเผยแพร่"
+      <PageHeader title="AI Assistants" sub="ผู้ช่วย AI สำหรับทีมเนื้อหา · ผลลัพธ์ทุกชิ้นบันทึกเป็น Draft และต้องผ่าน Content Editor → Auditor ก่อนเผยแพร่"
         actions={<><Button icon={Shield} onClick={() => navigate('/ai/seo/settings')}>Guardrails & นโยบาย</Button><Button variant="primary" icon={Plus} onClick={() => setCreating(true)}>สร้าง Assistant</Button></>} />
       <div className="kpis">
         {[['#2f86c1', 'คำขอเดือนนี้', '1,284', '+18% จากเดือนก่อน'], ['#5ab4b8', 'เวลาที่ประหยัดได้', '~46 ชม.', 'ประมาณการจากงานร่าง/แปล'], ['#e8a557', 'นำผลลัพธ์ไปใช้', '72%', 'ถูกใส่ลงใน Draft จริง'], ['#e3917f', 'ถูก Guardrail บล็อก', '9', 'เช่น พิมพ์อัตราดอกเบี้ยเอง']].map(([col, l, n, s]) => (
@@ -107,7 +107,7 @@ export function AiWorkspace() {
   );
   return (
     <>
-      <PageHeader crumbs={[{ label: 'AI Assistants', to: '/ai' }, { label: a.name }]} title={<span className="row"><span className="ai-ic" style={{ background: a.color }} />{a.name}</span>} sub="สร้าง SEO Fields และ FAQ ตาม Checklist SEO & AI Search 2027"
+      <PageHeader title={<span className="row"><span className="ai-ic" style={{ background: a.color }} />{a.name}</span>} sub="สร้าง SEO Fields และ FAQ ตาม Checklist SEO & AI Search 2027"
         actions={<><Button icon={RefreshCw} onClick={() => navigate('/ai')}>เปลี่ยน Assistant</Button><Button variant="primary" icon={Plus} onClick={() => { setMsgs([]); setPicked([]); }}>แชทใหม่</Button></>} />
       <div className="ai-ws">
         <Card title="ประวัติการใช้งาน" style={{ padding: 16 }}>
@@ -170,7 +170,7 @@ export function AiSettings() {
   const GUARDS = [['ห้ามสร้างตัวเลขอัตราดอกเบี้ย / ค่าธรรมเนียมเอง — ใช้ตัวแปรจาก Rates', true], ['แนบ Disclaimer อัตโนมัติเมื่อกล่าวถึงผลิตภัณฑ์สินเชื่อและเงินฝาก', false], ['ตรวจคำต้องห้าม / คำโฆษณาเกินจริง (เช่น "ดีที่สุด", "การันตี")', false], ['ห้ามรับหรือแสดงข้อมูลส่วนบุคคล (PII) ในคำสั่งและผลลัพธ์', true], ['ผลลัพธ์บันทึกเป็น Draft เท่านั้น — เผยแพร่ต้องผ่านผู้อนุมัติ', true]] as const;
   return (
     <>
-      <PageHeader crumbs={[{ label: 'AI Assistants', to: '/ai' }, { label: a.name, to: `/ai/${a.id}` }, { label: 'ตั้งค่า' }]} title={<span className="row"><span className="ai-ic" style={{ background: a.color }} />ตั้งค่า · {a.name}</span>}
+      <PageHeader title={<span className="row"><span className="ai-ic" style={{ background: a.color }} />ตั้งค่า · {a.name}</span>}
         badges={<span className={`status ${a.on ? 'status-published' : 'status-draft'}`}>{a.on ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}</span>}
         actions={<><Button icon={Sparkles} onClick={() => toast('ทดสอบ Assistant', 'ผ่าน Guardrails 5/5')}>ทดสอบ Assistant</Button><Button variant="primary" onClick={() => toast('บันทึกการตั้งค่าแล้ว', 'บันทึกใน Audit Log')}>บันทึก</Button></>} />
       <section className="card">

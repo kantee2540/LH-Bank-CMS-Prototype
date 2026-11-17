@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, Upload, Trash2, Image as ImageIcon } from 'lucide-react';
 import { Button, Card, Field, Input, Select, Textarea, Toggle, LangSwitch, PageHeader, Status } from './ui';
-import type { Crumb, SelectOption } from './ui';
+import type { SelectOption } from './ui';
 import MediaPicker from './MediaPicker';
 import MediaThumb from './MediaThumb';
 import { useStore } from '../store';
@@ -27,7 +27,6 @@ export interface FieldDef {
 }
 
 interface ModuleFormProps {
-  crumbs: Crumb[];
   back: string;
   title: string;
   status?: ContentStatus;
@@ -81,7 +80,7 @@ function renderInput(f: FieldDef, value: string, onChange: (v: string) => void) 
 
 /* Generic module create/edit form — pattern from Figma CMS-08 / CMS-12:
    left = content per language, right = การเผยแพร่ + ภาพประกอบ, bottom bar = Cancel / Save Draft / Publish */
-export default function ModuleForm({ crumbs, back, title, status = 'Draft', module, fields, initial = {}, publishFields = [], image, aside, langs = ['th', 'en', 'zh'], submitLabel = 'ส่งอนุมัติ' }: ModuleFormProps) {
+export default function ModuleForm({ back, title, status = 'Draft', module, fields, initial = {}, publishFields = [], image, aside, langs = ['th', 'en', 'zh'], submitLabel = 'ส่งอนุมัติ' }: ModuleFormProps) {
   const navigate = useNavigate();
   const { toast, submitRequest } = useStore();
   const [lang, setLang] = useState<Lang>('th');
@@ -111,7 +110,6 @@ export default function ModuleForm({ crumbs, back, title, status = 'Draft', modu
   return (
     <div className="with-bottom-bar">
       <PageHeader
-        crumbs={crumbs}
         back={back}
         title={title}
         badges={<Status status={status} />}

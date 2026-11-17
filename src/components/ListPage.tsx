@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Search } from 'lucide-react';
 import { Button, Field, Input, Select, Pager, PageHeader } from './ui';
-import type { Crumb } from './ui';
 
 export interface Column<T> {
   key: string;
@@ -23,7 +22,6 @@ export interface FilterDef<T> {
 }
 
 interface ListPageProps<T> {
-  crumbs: Crumb[];
   title: ReactNode;
   sub?: ReactNode;
   headerActions?: ReactNode;
@@ -44,7 +42,7 @@ interface ListPageProps<T> {
 
 /* Shared list template: filter bar → card (toolbar · table · pager). Matches CS-02 / CMS-17 / CMS-20 etc. */
 export default function ListPage<T>({
-  crumbs, title, sub, headerActions, banner, filters = [], rows, rowKey, columns, toolbar, toolbarRight, above, empty = 'ไม่พบรายการ', pageSize = 10, rowClass, footerNote, children,
+  title, sub, headerActions, banner, filters = [], rows, rowKey, columns, toolbar, toolbarRight, above, empty = 'ไม่พบรายการ', pageSize = 10, rowClass, footerNote, children,
 }: ListPageProps<T>) {
   const init = Object.fromEntries(filters.map((f) => [f.key, f.kind === 'select' ? (f.options?.[0] ?? '') : '']));
   const [draft, setDraft] = useState<Record<string, string>>(init);
@@ -69,7 +67,7 @@ export default function ListPage<T>({
 
   return (
     <>
-      <PageHeader crumbs={crumbs} title={title} sub={sub} actions={headerActions} />
+      <PageHeader title={title} sub={sub} actions={headerActions} />
       {banner}
       {filters.length > 0 && (
         <form

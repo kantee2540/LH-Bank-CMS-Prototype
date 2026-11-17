@@ -53,7 +53,6 @@ export function ProductList({ line }: { line: ProductLine }) {
   return (
     <ListPage<ProductRow>
       key={line}
-      crumbs={[{ label: 'Products' }, { label: LINE_LABEL[line] }]}
       title={LINE_LABEL[line]}
       filters={[textFilter('name', 'ชื่อผลิตภัณฑ์', (r) => r.name), selectFilter('group', 'กลุ่มผลิตภัณฑ์', GROUPS[line], (r) => r.group), selectFilter('status', 'Status', ['Published', 'Scheduled', 'Draft'], (r) => r.status)]}
       rows={shown}
@@ -103,7 +102,6 @@ export function ProductEdit({ line }: { line: ProductLine }) {
   return (
     <div className="with-bottom-bar">
       <PageHeader
-        crumbs={[{ label: 'Products' }, { label: LINE_LABEL[line], to: `/products/${line}` }, { label: isNew ? 'สร้างผลิตภัณฑ์' : name }]}
         back={`/products/${line}`}
         title={isNew ? `สร้างผลิตภัณฑ์${LINE_LABEL[line]}` : `แก้ไขผลิตภัณฑ์: ${name}`}
         badges={<Status status={p?.status ?? 'Draft'} />}

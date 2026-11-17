@@ -42,7 +42,7 @@ export function LayoutList() {
   const [fromTpl, setFromTpl] = useState(false);
   return (
     <ListPage<LayoutRow>
-      crumbs={[{ label: 'Layout' }]} title="Layout"
+      title="Layout"
       filters={[textFilter('n', 'ชื่อ Layout', (r) => r.name), selectFilter('t', 'Template', TPLS, (r) => r.tpl), { key: 'l', label: 'ภาษา', kind: 'select', options: ['All', 'TH', 'EN'], match: (r, v) => r.langs.includes(v) }, selectFilter('s', 'Status', ['Published', 'Scheduled', 'Draft'], (r) => r.status)]}
       rows={rows.filter((r) => tpl === 'all' || r.tpl === tpl)} rowKey={(r) => r.id}
       above={<Tabs value={tpl} onChange={setTpl} style={{ marginBottom: 16, marginTop: -8 }} tabs={[{ value: 'all', label: `ทั้งหมด (${rows.length})` }, ...TPLS.map((t) => ({ value: t, label: `${t} (${rows.filter((r) => r.tpl === t).length})` }))]} />}
@@ -182,7 +182,7 @@ export function LayoutEdit() {
 
   return (
     <div className="with-bottom-bar">
-      <PageHeader crumbs={[{ label: 'Layout', to: '/layout' }, { label: base?.name ?? 'สร้าง Layout' }, { label: 'Edit' }]} title={title}
+      <PageHeader title={title}
         badges={<Status status={hIdx > 0 ? 'Draft' : base?.status ?? 'Draft'} />}
         actions={<><Button icon={RefreshCw} onClick={() => { setTab('layout'); setPanel('history'); }}>ประวัติการแก้ไข</Button><Button icon={Eye} onClick={() => { setTab('layout'); setDevice('mobile'); setPanel('history'); }}>Preview</Button></>} />
       <section className="card" style={{ padding: '4px 16px 0' }}>

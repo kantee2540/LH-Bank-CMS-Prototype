@@ -46,7 +46,7 @@ export default function Trash() {
 
   return (
     <>
-      <PageHeader crumbs={[{ label: 'ถังขยะ' }]} title="ถังขยะ (Trash)" />
+      <PageHeader title="ถังขยะ (Trash)" />
       <InfoBanner title="รายการที่ลบจะอยู่ในถังขยะ 30 วัน ก่อนระบบลบถาวรอัตโนมัติ">
         กู้คืนแล้วรายการจะกลับไปที่เมนูเดิมในสถานะ Draft (ไม่เผยแพร่อัตโนมัติ) · การลบถาวรกู้คืนไม่ได้ และบันทึกใน Audit Log
       </InfoBanner>

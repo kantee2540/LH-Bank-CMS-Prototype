@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Pencil, Image as ImageIcon, Plus } from 'lucide-react';
 import { SchemaList } from './Schema';
-import { Button, Card, Field, Input, Select, Textarea, Tabs, Toggle, TagInput, KV, LangSwitch, PageHeader } from '../../components/ui';
+import { Button, Card, Field, Input, Select, Textarea, Tabs, Toggle, TagInput, KV, LangSwitch } from '../../components/ui';
 import { useStore } from '../../store';
 import logo from '../../assets/figma/logo-lh-bank.svg';
 import '../pages.css';
@@ -99,8 +99,7 @@ export default function SeoSite() {
 
   return (
     <>
-      <PageHeader crumbs={[{ label: 'SEO / AEO' }, { label: tab === 'schema' ? 'Schema' : edit ? 'แก้ไข' : 'Detail' }]} title="" />
-      <section className="card" style={{ marginTop: -20 }}>
+      <section className="card">
         {head}
         <Tabs value={tab} onChange={setTab} tabs={[{ value: 'general', label: 'General' }, { value: 'advanced', label: 'Advanced' }, { value: 'aeo', label: 'AEO / AI Search' }, ...(edit ? [] : [{ value: 'schema' as SeoTab, label: 'Schema' }])]} style={{ marginBottom: 18 }} />
         {tab === 'schema' && <SchemaList picking={picking} onClosePicker={() => setPicking(false)} />}

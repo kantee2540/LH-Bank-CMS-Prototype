@@ -65,7 +65,7 @@ export function InterestRates() {
   };
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Rates' }, { label: 'อัตราดอกเบี้ย' }]} title="อัตราดอกเบี้ย" />
+      <PageHeader title="อัตราดอกเบี้ย" />
       <InfoBanner title="Single Source of Truth">ตารางบนเว็บและ Calculator ทุกตัวดึงค่าจากหน้านี้ แสดง “มีผลตั้งแต่ ...” อัตโนมัติ · การแก้ไขต้องผ่านผู้อนุมัติก่อนเผยแพร่</InfoBanner>
       <section className="card">
         <Tabs value={tab} onChange={setTab} style={{ marginBottom: 16 }} tabs={[{ value: 'deposit', label: 'เงินฝาก' }, { value: 'loan', label: 'สินเชื่อ' }, { value: 'fee', label: 'ค่าธรรมเนียม' }, { value: 'history', label: 'ประวัติการประกาศ' }]} />
@@ -170,7 +170,7 @@ export function ExchangeRates() {
   const homeCount = rows.filter((r) => r.home).length;
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Rates' }, { label: 'อัตราแลกเปลี่ยน' }]} title="อัตราแลกเปลี่ยน" />
+      <PageHeader title="อัตราแลกเปลี่ยน" />
       <div className="banner-info" style={{ background: '#5ab4b8' }}><RefreshCw strokeWidth={1.6} /><div><b>ซิงก์อัตโนมัติจากระบบ Treasury ทุก 30 นาที</b><div>อัปเดตล่าสุด {synced} น. · แก้ไขด้วยมือได้เมื่อระบบขัดข้อง (บันทึกใน Audit Log)</div></div></div>
       <section className="card">
         <div className="row-between" style={{ marginBottom: 16 }}>

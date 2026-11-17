@@ -50,7 +50,6 @@ export function BannerList({ kind }: { kind: BannerKind }) {
   return (
     <ListPage<BannerRow>
       key={kind}
-      crumbs={[{ label: 'Banner' }, { label }]}
       title={label}
       filters={[
         textFilter('name', 'Banner Name', (r) => r.name),
@@ -93,7 +92,6 @@ export function BannerForm({ kind }: { kind: BannerKind }) {
   return (
     <ModuleForm
       key={`${kind}-${id ?? 'new'}`}
-      crumbs={[{ label: 'Banner' }, { label, to: `/banner/${kind}` }, { label: row ? 'แก้ไข' : 'สร้างแบนเนอร์' }]}
       back={`/banner/${kind}`}
       title={row ? `แก้ไขแบนเนอร์ · ${row.name}` : `สร้าง ${label}`}
       status={row?.status ?? 'Draft'}

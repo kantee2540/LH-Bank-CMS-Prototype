@@ -80,7 +80,7 @@ export default function ContentList() {
 
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Manage Content' }]} title="Manage Content" />
+      <PageHeader title="Manage Content" />
 
       <form
         className="filter-bar"

@@ -13,7 +13,7 @@ export default function CalculatorList() {
   const list = CALCULATORS.filter((c) => seg === 'all' || c.seg === seg);
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Rates', to: '/rates/interest' }, { label: 'เครื่องมือคำนวณ' }]} title="เครื่องมือคำนวณ (Calculator)" />
+      <PageHeader title="เครื่องมือคำนวณ (Calculator)" />
       <InfoBanner title="สูตรคำนวณเชื่อมกับข้อมูลกลาง">
         ทุกเครื่องมือดึงอัตราดอกเบี้ยจากหน้า Rates อัตโนมัติ · การแก้ตัวแปร สูตร หรือเงื่อนไข ต้องทดสอบผ่านและได้รับอนุมัติจาก Auditor ก่อนเผยแพร่
       </InfoBanner>

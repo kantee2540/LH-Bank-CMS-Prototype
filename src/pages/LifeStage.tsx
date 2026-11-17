@@ -57,7 +57,6 @@ export default function LifeStage() {
   return (
     <div className="with-bottom-bar">
       <PageHeader
-        crumbs={[{ label: 'Life Stage' }]}
         title="Life Stage"
         sub="ข้อมูลแสดงที่ Section “ตามช่วงชีวิต” หน้าแรก และหน้า Life Stage"
         actions={<>

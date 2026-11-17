@@ -35,7 +35,7 @@ export function UsersRoles() {
 
   return (
     <ListPage<User>
-      crumbs={[{ label: 'Setting' }, { label: 'User & Role' }]} title="User & Role"
+      title="User & Role"
       filters={tab === 'users' ? [textFilter('n', 'ชื่อ / อีเมล', (r) => `${r.name} ${r.email}`), selectFilter('r', 'Role', ['Content Editor', 'Auditor'], (r) => r.role), { key: 'a', label: 'สถานะ', kind: 'select', options: ['ทั้งหมด', 'Active', 'Inactive'], match: (r, v) => (v === 'Active' ? r.active : !r.active) }] : []}
       rows={tab === 'users' ? rows : []} rowKey={(r) => r.id} above={tabs}
       toolbar={tab === 'users' && <Button variant="primary" icon={Plus} onClick={() => setEdit({ id: `u${Date.now()}`, code: 'N', name: '', email: '', role: 'Content Editor', sites: 'Personal', last: '—', active: true })}>เพิ่มผู้ใช้</Button>}
@@ -102,7 +102,7 @@ export function AuditLog() {
   const [detail, setDetail] = useState<Log | null>(null);
   return (
     <ListPage<Log>
-      crumbs={[{ label: 'Setting' }, { label: 'Audit Log' }]} title="Audit Log"
+      title="Audit Log"
       filters={[selectFilter('u', 'ผู้ใช้', [...new Set(LOGS.map((l) => l.user))], (r) => r.user), selectFilter('m', 'Module', [...new Set(LOGS.map((l) => l.module))], (r) => r.module), selectFilter('a', 'Action', Object.keys(ACTION_CLASS), (r) => r.action), { key: 'd', label: 'ช่วงวันที่', kind: 'select', options: ['24/10/2026 – 30/10/2026', '30 วันล่าสุด'], match: () => true }]}
       rows={LOGS} rowKey={(r) => r.t + r.detail}
       toolbar={<Button icon={Download} onClick={() => toast('Export CSV', 'audit-log-24-30-10-2026.csv')}>Export CSV</Button>}
@@ -146,7 +146,7 @@ export function LanguageSetting() {
   const [adding, setAdding] = useState(false);
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Setting' }, { label: 'ภาษา (Language)' }]} title="ภาษา (Language)" sub="กำหนดภาษาที่เปิดใช้บนเว็บไซต์ และแท็บภาษาที่แสดงในฟอร์มกรอกเนื้อหาทุกโมดูลของ CMS"
+      <PageHeader title="ภาษา (Language)" sub="กำหนดภาษาที่เปิดใช้บนเว็บไซต์ และแท็บภาษาที่แสดงในฟอร์มกรอกเนื้อหาทุกโมดูลของ CMS"
         actions={<><Button icon={RefreshCw} onClick={() => toast('ประวัติการเปลี่ยนแปลง', 'ดูได้ที่ Audit Log')}>ประวัติการเปลี่ยนแปลง</Button><Button variant="primary" onClick={() => toast('บันทึกการตั้งค่าแล้ว', 'ภาษา')}>บันทึกการตั้งค่า</Button></>} />
       <Card title="ภาษาที่เปิดใช้" sub="เมื่อเปิดภาษา ทุกฟอร์มกรอกเนื้อหาจะมีแท็บภาษานั้นเพิ่ม (TH · EN · 中文)" action={<Button icon={Plus} onClick={() => setAdding(true)}>เพิ่มภาษา</Button>}>
         <table className="table">
@@ -239,7 +239,7 @@ export function RevisionSetting() {
   );
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Setting' }, { label: 'การเก็บเวอร์ชัน (Revision)' }]} title="การเก็บเวอร์ชัน (Revision)" sub="กำหนดจำนวนเวอร์ชันย้อนหลังที่ระบบเก็บไว้ ให้ย้อนกลับไปแก้ไขหรือกู้คืนได้ · ปรับได้ 1–10 เวอร์ชันต่อรายการ"
+      <PageHeader title="การเก็บเวอร์ชัน (Revision)" sub="กำหนดจำนวนเวอร์ชันย้อนหลังที่ระบบเก็บไว้ ให้ย้อนกลับไปแก้ไขหรือกู้คืนได้ · ปรับได้ 1–10 เวอร์ชันต่อรายการ"
         actions={<><Button icon={RefreshCw}>ประวัติการเปลี่ยนแปลง</Button><Button variant="primary" onClick={() => (reduced.length ? setConfirm(true) : toast('บันทึกการตั้งค่าแล้ว'))}>บันทึกการตั้งค่า</Button></>} />
       <Card title="ค่าเริ่มต้นของทุกโมดูล" sub="ใช้กับโมดูลที่ไม่ได้ตั้งค่าแยก และโมดูลที่เพิ่มในอนาคต">
         <div className="row-between"><div><b style={{ fontWeight: 500 }}>จำนวนเวอร์ชันที่เก็บย้อนหลัง</b><div className="t-sm t-secondary">ต่ำสุด 1 · สูงสุด 10 เวอร์ชันต่อรายการ</div></div><div className="row"><Stepper v={def} onChange={setDef} />{def === 10 && <span className="tag-version">ตั้งค่าสูงสุดแล้ว</span>}</div></div>

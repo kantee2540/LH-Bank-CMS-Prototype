@@ -41,7 +41,6 @@ export default function Leads() {
   return (
     <ListPage<Lead>
       key={tab}
-      crumbs={[{ label: 'Form' }, { label: { drop: 'Drop-lead Form', npa: 'จองซื้อทรัพย์ NPA', rm: 'ติดต่อ RM (Sustainability)', news: 'สมัครรับข่าวสาร' }[tab] }]}
       title="Form"
       filters={[textFilter('n', 'ชื่อ / เบอร์โทร', (r) => `${r.name} ${r.phone}`), selectFilter('p', 'ผลิตภัณฑ์ที่สนใจ', [...new Set(LEADS.map((l) => l.product))], (r) => r.product), selectFilter('s', 'สถานะการติดต่อ', ['ใหม่', 'กำลังติดต่อ', 'ติดต่อแล้ว', 'ไม่สำเร็จ'], (r) => r.status), { key: 'd', label: 'ช่วงวันที่', kind: 'select', options: ['01/10/2026 – 30/10/2026', '7 วันล่าสุด', 'ทั้งหมด'], match: () => true }]}
       banner={

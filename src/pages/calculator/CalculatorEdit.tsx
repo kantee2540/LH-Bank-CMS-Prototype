@@ -6,7 +6,6 @@ import { CALCULATORS, TEST_CASES } from '../../data/mock';
 import { useStore } from '../../store';
 import { pmt, fmt } from './calc';
 import type { Rounding } from './calc';
-import type { Crumb } from '../../components/ui';
 import type { TestCase } from '../../types';
 
 type VarRow = [code: string, label: string, source: string, range: string];
@@ -221,13 +220,10 @@ export default function CalculatorEdit() {
     toast('ส่งอนุมัติสูตรแล้ว', `${short} v5 · รอ Auditor – ฝ่ายสินเชื่อ`);
     navigate('/requests');
   };
-  const crumbs: Crumb[] = [{ label: 'Rates', to: '/rates/interest' }, { label: 'เครื่องมือคำนวณ', to: '/rates/calculator' }, { label: short, to: tab === 'test' ? `/rates/calculator/${id}` : undefined }];
-  if (tab === 'test') crumbs.push({ label: 'ทดสอบสูตร' });
 
   return (
     <>
       <PageHeader
-        crumbs={crumbs}
         back="/rates/calculator"
         title={`${tab === 'test' ? 'ทดสอบสูตร' : 'แก้ไขสูตร'} · ${short}`}
         badges={<><Status status="Draft" /><span className="tag-version">v5 (ร่าง) · แก้จาก {calc.v}</span></>}

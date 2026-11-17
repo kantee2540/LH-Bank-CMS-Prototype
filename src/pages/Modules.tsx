@@ -45,7 +45,6 @@ export function AdvisoryList() {
   const { setDel, modal } = useDelete(rows, setRows, 'รายงาน');
   return (
     <ListPage<AdvisoryRow>
-      crumbs={[{ label: 'Advisory' }]}
       title="Advisory"
       filters={[textFilter('t', 'ชื่อบทความ / รายงาน', (r) => r.title), selectFilter('type', 'ประเภท', ['Weekly Report', 'Monthly Outlook'], (r) => r.type), selectFilter('s', 'Status', ['Published', 'Scheduled', 'Draft'], (r) => r.status)]}
       rows={rows}
@@ -70,7 +69,6 @@ export function AdvisoryForm() {
   return (
     <ModuleForm
       key={id ?? 'new'}
-      crumbs={[{ label: 'Advisory', to: '/advisory' }, { label: r ? 'แก้ไข' : 'สร้างรายงาน' }]}
       back="/advisory" title={r ? `แก้ไขรายงาน · ${r.title}` : 'สร้างรายงาน Advisory'} status={r?.status} module="Advisory" langs={['th', 'en']}
       fields={[
         { key: 'title', label: 'ชื่อรายงาน', type: 'text', required: true },
@@ -105,7 +103,6 @@ export function NewsList() {
   const pinned = rows.filter((r) => r.pinned).length;
   return (
     <ListPage<NewsRow>
-      crumbs={[{ label: 'News' }]}
       title="News"
       filters={[textFilter('t', 'หัวข้อข่าว', (r) => r.title), selectFilter('c', 'หมวด', NEWS_CATS, (r) => r.cat), selectFilter('s', 'Status', ['Published', 'Scheduled', 'Draft'], (r) => r.status), { key: 'y', label: 'ปี', kind: 'select', options: ['2569', '2568'], match: () => true }]}
       rows={rows.filter((r) => cat === 'all' || r.cat === cat)}
@@ -132,7 +129,6 @@ export function NewsForm() {
   return (
     <ModuleForm
       key={id ?? 'new'}
-      crumbs={[{ label: 'News', to: '/news' }, { label: r ? 'แก้ไขข่าว' : 'สร้างข่าว' }]}
       back="/news" title={r ? `แก้ไขข่าว · ${r.title}` : 'สร้างข่าวใหม่'} status={r?.status} module="News"
       fields={[
         { key: 'title', label: 'หัวข้อข่าว', type: 'text', required: true },
@@ -172,7 +168,7 @@ export function NpaList() {
   if (tab === 'bookings') {
     return (
       <ListPage<(typeof BOOKINGS)[number]>
-        crumbs={[{ label: 'NPA' }]} title="NPA" rows={BOOKINGS} rowKey={(r) => r[0]} above={tabs}
+        title="NPA" rows={BOOKINGS} rowKey={(r) => r[0]} above={tabs}
         toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> ข้อมูลส่วนบุคคล · บันทึกการเข้าดูใน Audit Log</span>}
         toolbar={<Button icon={Upload}>Export Excel</Button>}
         columns={[{ key: 'd', label: 'วันที่จอง', render: (r) => r[0] }, { key: 'n', label: 'ชื่อ - นามสกุล', render: (r) => <b style={{ fontWeight: 500 }}>{r[1]}</b> }, { key: 'p', label: 'เบอร์โทร', render: (r) => r[2] }, { key: 'a', label: 'ทรัพย์', render: (r) => r[3] }, { key: 's', label: 'สถานะ', render: (r) => <span className={`lead-st ${r[4] === 'ใหม่' ? 'new' : r[4] === 'ติดต่อแล้ว' ? 'done' : 'doing'}`}>{r[4]}</span> }]}
@@ -181,7 +177,7 @@ export function NpaList() {
   }
   return (
     <ListPage<NpaRow>
-      crumbs={[{ label: 'NPA' }]} title="NPA"
+      title="NPA"
       filters={[textFilter('t', 'รหัสทรัพย์ / ชื่อโครงการ', (r) => `${r.code} ${r.title}`), selectFilter('type', 'ประเภททรัพย์', [...new Set(NPA.map((n) => n.type))], (r) => r.type), selectFilter('prov', 'จังหวัด', [...new Set(NPA.map((n) => n.prov))], (r) => r.prov), { key: 'sp', label: 'ราคาพิเศษ', kind: 'select', options: ['All', 'มีราคาพิเศษ', 'ราคาปกติ'], match: (r, v) => (v === 'มีราคาพิเศษ' ? !!r.special : !r.special) }]}
       rows={rows} rowKey={(r) => r.id} above={tabs}
       toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/npa/new')}>Create</Button><Button icon={Upload}>Import Excel</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'NPA').length})</Link></>}
@@ -205,7 +201,6 @@ export function NpaForm() {
   return (
     <ModuleForm
       key={id ?? 'new'}
-      crumbs={[{ label: 'NPA', to: '/npa' }, { label: r ? r.code : 'เพิ่มทรัพย์' }]}
       back="/npa" title={r ? `แก้ไขทรัพย์ · ${r.code} ${r.title}` : 'เพิ่มทรัพย์ NPA'} status={r?.status} module="NPA" langs={['th', 'en']}
       fields={[
         { key: 'title', label: 'ชื่อทรัพย์ / โครงการ', type: 'text', required: true },

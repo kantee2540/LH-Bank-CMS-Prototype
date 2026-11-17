@@ -40,7 +40,7 @@ export default function Media() {
 
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Media' }]} title="Media" />
+      <PageHeader title="Media" />
       <form className="filter-bar filter-bar-3" style={{ gridTemplateColumns: '1fr 1fr auto 1fr' }} onSubmit={(e) => { e.preventDefault(); setApplied({ nameQ, typeQ }); }}>
         <Field label="File Name"><Input value={nameQ} onChange={(e) => setNameQ(e.target.value)} /></Field>
         <Field label="File Type"><Select value={typeQ} onChange={(e) => setTypeQ(e.target.value)} options={['All Type', 'Image', 'PDF']} /></Field>

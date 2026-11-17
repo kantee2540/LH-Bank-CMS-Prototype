@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, Pencil, Info, Layers, LayoutTemplate, Network, Folder, CircleHelp, Megaphone, Calendar, Image as ImageIcon, Check, Lock, Trash2, Plus, RefreshCw, Send } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Button, Field, Input, Select, Textarea, Tabs, Toggle, Status, Modal, IconButton, LangSwitch, PageHeader, Pager } from '../../components/ui';
+import { Button, Field, Input, Select, Textarea, Tabs, Toggle, Status, Modal, IconButton, LangSwitch, Pager } from '../../components/ui';
 import { useStore } from '../../store';
 import type { ContentStatus } from '../../types';
 import '../pages.css';
@@ -192,8 +192,7 @@ export function SchemaWizard() {
 
   return (
     <>
-      <PageHeader crumbs={[{ label: 'SEO / AEO', to: '/seo' }, { label: 'Schema', to: '/seo?tab=schema' }, { label: 'สร้าง Schema' }]} title="" />
-      <section className="card" style={{ marginTop: -20 }}>
+      <section className="card">
         <div className="row-between" style={{ flexWrap: 'wrap', marginBottom: 12 }}>
           <div className="row" style={{ gap: 14 }}>
             <button className="back-btn" onClick={() => navigate('/seo?tab=schema')} aria-label="ย้อนกลับ">‹</button>

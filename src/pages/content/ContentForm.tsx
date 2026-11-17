@@ -449,7 +449,6 @@ export default function ContentForm() {
         </div>
       )}
       <PageHeader
-        crumbs={[{ label: 'Manage Content', to: '/content' }, { label: isNew ? 'สร้างเนื้อหา' : 'แก้ไขเนื้อหา' }]}
         back="/content"
         title={title}
         badges={

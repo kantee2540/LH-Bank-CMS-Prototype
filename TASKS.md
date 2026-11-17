@@ -126,6 +126,11 @@ Section ใหม่ **“Type 2 · ออกแบบเพิ่มเติ�
 - [x] หน้าใหม่ `/approval/history` "ประวัติการอนุมัติ" (ApprovalInbox โหมด history — แสดงเฉพาะคำขอที่อนุมัติ/ส่งกลับแล้ว) · ปุ่ม "ประวัติการอนุมัติ" ใน AU-01 และ breadcrumb ของ AU-05 ลิงก์มาหน้านี้
 - [x] Setting ของ Auditor แสดงเฉพาะ Audit Log (ข้อสันนิษฐาน — Figma ไม่ได้กาง sub-menu ไว้)
 
+## G. เอา Breadcrumb ออก
+- [x] Prototype: ตัด Breadcrumb ออกจาก `PageHeader` และลบ prop `crumbs` / type `Crumb` / CSS `.crumbs` ทุกหน้า (46 จุด) · หน้าที่มีแต่ Breadcrumb (SEO, Schema, Menu, Path, AU-05) ลบ header ว่างและ margin ชดเชยออก
+- [x] Figma: ลบ Frame "Breadcrumb" 99 จุดใน Section Type 2 และ "Type 2 · ออกแบบเพิ่มเติม" (เนื้อหาเลื่อนขึ้นตาม Auto layout) · Type 1 คงไว้เป็นประวัติแบบเดิม
+- หมายเหตุ: ตัวเลือก "แสดง Breadcrumb" ใน Layout และ Path Structure เป็นของหน้าเว็บไซต์ฝั่งลูกค้า ไม่ได้ตัดออก
+
 ## ข้อจำกัด
 
 - ข้อมูลทั้งหมดเป็น Mock ในหน่วยความจำ — รีเฟรชแล้วกลับค่าเริ่มต้น
