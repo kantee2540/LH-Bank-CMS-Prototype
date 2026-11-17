@@ -315,3 +315,83 @@ export function Pager({ page, pages, onChange }: PagerProps) {
     </div>
   );
 }
+
+/* Toggle switch with label + description (SEO-03 / SEO-04) */
+interface ToggleProps {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label?: ReactNode;
+  desc?: ReactNode;
+  disabled?: boolean;
+}
+
+export function Toggle({ checked, onChange, label, desc, disabled }: ToggleProps) {
+  const sw = (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      className={`toggle ${checked ? 'on' : ''}`}
+      onClick={() => onChange(!checked)}
+    />
+  );
+  if (!label) return sw;
+  return (
+    <div className="row-between toggle-row">
+      <div>
+        <div>{label}</div>
+        {desc && <div className="t-sm t-secondary">{desc}</div>}
+      </div>
+      {sw}
+    </div>
+  );
+}
+
+/* Keyword / tag input — Enter to add, × to remove */
+export function TagInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
+  return (
+    <div className="tag-input">
+      {value.map((k) => (
+        <span key={k} className="kw">
+          {k}
+          <button type="button" aria-label={`ลบ ${k}`} onClick={() => onChange(value.filter((x) => x !== k))}>×</button>
+        </span>
+      ))}
+      <input
+        placeholder={placeholder}
+        onKeyDown={(e) => {
+          const v = e.currentTarget.value.trim();
+          if (e.key === 'Enter' && v) {
+            e.preventDefault();
+            if (!value.includes(v)) onChange([...value, v]);
+            e.currentTarget.value = '';
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+/* Read-only label : value row */
+export function KV({ k, children, w = 140 }: { k: ReactNode; children: ReactNode; w?: number }) {
+  return (
+    <div className="kv" style={{ gridTemplateColumns: `${w}px 1fr` }}>
+      <span className="t-secondary">{k} :</span>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+/* Segmented language sub-tabs (TH (Main) / EN / 中文) */
+export function LangSwitch<T extends string>({ value, onChange, options }: { value: T; onChange: (v: T) => void; options: { value: T; label: string }[] }) {
+  return (
+    <div className="lang-switch">
+      {options.map((o) => (
+        <button type="button" key={o.value} className={value === o.value ? 'on' : ''} onClick={() => onChange(o.value)}>
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}

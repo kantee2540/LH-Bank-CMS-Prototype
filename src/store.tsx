@@ -19,6 +19,8 @@ interface Store {
   deleteForever: (ids: string[]) => void;
   submitContent: (data: SubmitContentInput) => void;
   restoreVersion: (from: string, parts: string[]) => void;
+  submitRequest: (r: { title: string; module: string; sub: string; auditor?: string; publish?: string }) => void;
+  decideRequest: (id: string, decision: 'approve-now' | 'approve-schedule' | 'reject', note?: string) => void;
 }
 
 const StoreCtx = createContext<Store | null>(null);
@@ -82,9 +84,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     ]);
   }, [role]);
 
+  const submitRequest = useCallback((r: { title: string; module: string; sub: string; auditor?: string; publish?: string }) => {
+    const ts = now();
+    setRequests((list) => [
+      { id: `r${Date.now()}`, title: r.title, sub: r.sub, module: r.module, auditor: r.auditor ?? 'Auditor – Marketing', sent: `${ts.slice(0, 5)} ${ts.slice(11)}`, publish: r.publish ?? 'ทันที', state: 'Queue', tab: 'pending', fresh: true },
+      ...list,
+    ]);
+  }, []);
+
+  const decideRequest = useCallback((id: string, decision: 'approve-now' | 'approve-schedule' | 'reject', note?: string) => {
+    setRequests((list) => list.map((r) => (r.id === id
+      ? decision === 'reject'
+        ? { ...r, state: 'Rejected', tab: 'rejected', sub: `${r.module} · ส่งกลับ: ${note ?? 'ต้องแก้ไข'}`, fresh: false }
+        : { ...r, state: decision === 'approve-now' ? 'Published' : 'Scheduled', tab: 'approved', sub: `${r.module} · อนุมัติแล้ว`, fresh: false }
+      : r)));
+  }, []);
+
   const value = useMemo<Store>(
-    () => ({ contents, trash, requests, versions, toasts, site, setSite, role, setRole, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion }),
-    [contents, trash, requests, versions, toasts, site, role, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion],
+    () => ({ contents, trash, requests, versions, toasts, site, setSite, role, setRole, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest }),
+    [contents, trash, requests, versions, toasts, site, role, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest],
   );
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }

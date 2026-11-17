@@ -1,9 +1,9 @@
-# LH Bank — Backoffice CMS Prototype (React.js)
+# LH Bank — Backoffice CMS Prototype (React + TypeScript)
 
 แหล่งดีไซน์: Figma **LH-Bank-Prototype › Page "BackEnd"** (node `8:1773`)
-ใช้ชุดหน้าจอ **Type 2 · Role 1 Content Editor** (เวอร์ชันล่าสุด ที่แยกตาม Role) เป็นต้นแบบ
+ใช้ชุดหน้าจอ **Type 2** (Role 1 Content Editor + Role 2 Auditor) เป็นต้นแบบ
 
-วันที่ทำ: 13/11/2026
+อัปเดตล่าสุด: 17/11/2026
 
 ---
 
@@ -17,93 +17,125 @@ npm run typecheck  # ตรวจ type (tsc -b)
 npm run build      # ตรวจ type + build ไฟล์ static ไว้ที่ dist/
 ```
 
-Tech stack: React 19 + **TypeScript 5.6 (strict)** + Vite 6 · react-router-dom (HashRouter) · lucide-react (ไอคอนในเนื้อหา) · CSS ธรรมดา + Design tokens (ไม่ใช้ Tailwind)
+Tech stack: React 19 + **TypeScript 5.6 (strict)** + Vite 6 · react-router-dom (HashRouter) · lucide-react · CSS + Design tokens (ไม่ใช้ Tailwind)
+
+**ทดลองสลับบทบาท:** คลิก Role chip มุมขวาบน (Content Editor ↔ Auditor) หรือเข้า `/#/login` · Auditor จะเห็นเมนู “งานรออนุมัติ” แทน “สถานะคำขอของฉัน”
 
 ---
 
-## Task ที่ทำแล้ว
+## สรุปขอบเขต
 
-### 1. วิเคราะห์ดีไซน์จาก Figma
-- [x] อ่านโครงสร้างไฟล์ Figma ทั้งหมด (~90 หน้าจอ แบ่งเป็น Type 1 / Type 2, Role 1 Content Editor / Role 2 Auditor และ Flow ต่าง ๆ)
-- [x] ดึง Design context ของ Shell หลัก: Sidebar, Top Bar, Page Header, Dashboard (Summary, Stats, Top list)
-- [x] ดึง Component กลาง: `CMS/NavItem` (Default / Active / Sub / Sub Active), `CMS/Button` (Primary / Secondary / Danger · 42 / 32), `CMS/Status` (Published / Scheduled / Draft / Expired / Rejected), `CMS/Field`
-- [x] ดึง Screenshot ของหน้าหลักเพื่อใช้เป็นเป้าหมายด้านภาพ (CS-02…08, VR-01…03, CMS-04, CMS-26, CMS-27/27A/27B, TR-01)
+| | จำนวน |
+|---|---|
+| Route ทั้งหมดในแอป | 53 (ทุกหน้าโหลดได้ ไม่มี console error) |
+| หน้าจอจาก Figma ที่ทำเป็น React | ครบทุกหน้าจอใน Type 2 (CMS-00 … CMS-27B, CS-02 … CS-08, AU-01 … AU-05, SEO-01 … SEO-09, SCH-01 … SCH-06, MD-01 … MD-04, VR-01 … VR-04, TR-01 … TR-04) |
+| หน้าจอ / Popup ที่ออกแบบเพิ่ม (ไม่มีใน Figma) | 30+ (ดูหัวข้อ C) |
+| หน้าจอเพิ่มเติมที่ใส่ลง Figma แล้ว | 8 หน้าจอ + 8 Popup (ดูหัวข้อ D) |
 
-### 2. ตั้งค่าโปรเจกต์
-- [x] สร้างโปรเจกต์ React (Vite) ที่ `web_prototype/`
-- [x] ดาวน์โหลด Asset จาก Figma 44 ไฟล์ (โลโก้ LH Bank, ไอคอนเมนู Sidebar, Top Bar, ไอคอนสถิติ Dashboard) → `src/assets/figma/`
-- [x] สร้าง Design tokens (`src/index.css`): สี navy `#12386b`, nav active `#1f6fa8`, ข้อความ, เส้นขอบ, radius, ฟอนต์ IBM Plex Sans Thai
-- [x] Mock data ตามข้อมูลในดีไซน์ (`src/data/mock.ts`) และ Store ในหน่วยความจำ (`src/store.tsx`) เพื่อให้ Flow ทำงานต่อเนื่องกันได้
+---
 
-### 3. Component กลาง (`src/components/`)
-- [x] Button, IconButton, Field / Input / Select / Textarea, Status badge, Card, InfoBanner, Tabs
-- [x] Modal, Drawer, Toast, PageHeader (Breadcrumb + ปุ่มย้อนกลับ + Badge + Actions), Pager
-- [x] MediaPicker (Popup เลือกรูปจาก Library / อัปโหลดใหม่ + Alt text 3 ภาษา), MediaThumb
+## A. เฟส 1 — Shell, Component กลาง และ Flow หลัก (ทำแล้ว)
 
-### 4. Layout หลัก (`src/layout/`)
-- [x] Sidebar 260px ตาม Figma — เมนูครบ 21 รายการ, เมนูย่อยพับ/กางได้ (Menu, Banner, Products, Rates, Setting), ไฮไลต์เมนูที่เปิดอยู่, ช่องค้นหาเมนูกรองได้จริง
-- [x] Top Bar — ปุ่มย่อ/ขยาย Sidebar, ตัวเลือกเว็บไซต์ (Personal / SME / Corporate), Role chip (คลิกสลับ Content Editor ↔ Auditor), Avatar
-- [x] เลื่อนกลับขึ้นบนสุดเมื่อเปลี่ยนหน้า
+- [x] ดึง Design context / Asset 44 ไฟล์จาก Figma (โลโก้ ไอคอน Sidebar / Top Bar / Dashboard)
+- [x] Design tokens + Component กลาง: Button, Field, Status, Card, Tabs, Modal, Drawer, Toast, PageHeader, Pager
+- [x] Layout: Sidebar (เมนูครบ 21 รายการ + เมนูย่อย + ค้นหาเมนู), Top Bar (สลับเว็บไซต์ / Role)
+- [x] Dashboard, Manage Content, ฟอร์มเนื้อหา + SEO/AEO + ส่งอนุมัติ, ประวัติเวอร์ชัน, Media, ถังขยะ, สถานะคำขอ, Calculator
+- [x] ย้ายเป็น TypeScript (strict) + Domain types ที่ `src/types.ts`
 
-### 5. หน้าจอที่ทำเป็น React แล้ว
+## B. เฟส 2 — ทำหน้าจอจาก Figma ให้ครบ (ทำแล้ว)
+
+### Component ใหม่ที่ใช้ร่วมกัน
+- [x] `ListPage` — แม่แบบหน้า List (ตัวกรอง → การ์ด → ตาราง → แบ่งหน้า) ใช้ร่วม 15+ หน้า
+- [x] `ModuleForm` — แม่แบบฟอร์มสร้าง/แก้ไข (เนื้อหาตามภาษา + การเผยแพร่ + ภาพประกอบ + แถบปุ่มล่าง) จาก pattern CMS-08 / CMS-12
+- [x] `Toggle`, `TagInput` (Keywords), `KV`, `LangSwitch`, Stepper
+- [x] Store: `submitRequest` (ทุกโมดูลส่งอนุมัติได้) และ `decideRequest` (Auditor อนุมัติ / ส่งกลับ) — ข้อมูลไหลระหว่าง 2 Role
+
+### หน้าจอที่ทำเพิ่ม
 
 | Figma | หน้าจอ | Route | สิ่งที่ทำงานได้ |
 |---|---|---|---|
-| CMS-00 | Dashboard | `/` | สรุปผู้เข้าชม + mini bar, สถิติเนื้อหา 12 ประเภท, กราฟเส้น (สลับ รายเดือน/สัปดาห์/วัน, ซ่อน/แสดง series, tooltip ตามเมาส์), Top list 12 กล่อง, ตัวกรองปี |
-| CMS-26 / 26A | สถานะคำขอของฉัน | `/requests` | KPI 4 การ์ด, แท็บ รออนุมัติ/ถูกส่งกลับ/อนุมัติแล้ว/ทั้งหมด, ตัวกรอง Module + ค้นหา, Drawer รายละเอียดคำขอพร้อมไทม์ไลน์ |
-| CS-02 | Manage Content — รายการเนื้อหา | `/content` | ค้นหา/กรอง Content Type, Status, Language, แบ่งหน้า + เลือกจำนวนแถว, ลิงก์ไปแก้ไข |
-| CS-03 | เลือกประเภทเนื้อหา | Popup ใน `/content` | เลือก Page / Promotion / Advisory → เปิดฟอร์ม, ลิงก์ทางลัดไปโมดูลเฉพาะ |
-| TR-02 | ยืนยันย้ายไปถังขยะ | Popup ใน `/content` | ลบแล้วรายการย้ายไปถังขยะจริง (ดูได้ที่ `/trash`) |
-| CS-04 / 04A / 04B / 04C | ฟอร์มสร้างเนื้อหา — แท็บเนื้อหา | `/content/new` | แท็บภาษา TH / EN / 中文, Rich text editor (ตัวหนา/เอียง/List/แทรกตัวแปร `{rate:...}`), เลือกรูป Hero จาก Media Library หรืออัปโหลด, กล่อง “ความครบของภาษา” คำนวณจากข้อมูลจริง |
-| CS-05 / SEO-06…09 | แท็บ SEO / AEO | `/content/new` › SEO / AEO | Meta title/description พร้อมนับตัวอักษร, Slug, ตัวอย่างผลการค้นหา (SERP) อัปเดตสด, AEO Readiness x/10 คำนวณจริง, เพิ่ม/แก้/ลบ FAQ Schema (SEO-07) |
-| CS-06 | ยืนยันส่งอนุมัติ | Popup | Checklist ตรวจความพร้อมจริง — กดส่งไม่ได้ถ้าภาษาจีนยังไม่ครบหรือยังไม่เลือกรูป, เลือกผู้อนุมัติ + วันเผยแพร่ |
-| CS-07 | ส่งอนุมัติแล้ว | Toast + ไป `/requests` | รายการใหม่โผล่ในสถานะคำขอ (ไฮไลต์) และใน Manage Content |
-| VR-01 | ประวัติเวอร์ชันของเนื้อหา | `/content/1` | ตารางเวอร์ชัน v1–v5, ป้าย Live |
-| VR-02 | ดูและเปรียบเทียบเวอร์ชัน | Popup | เทียบฟิลด์กับ v5 (Live) ไฮไลต์จุดที่ต่าง |
-| VR-03 / VR-04 | กู้คืนเวอร์ชัน | Popup | เลือกส่วนที่จะกู้คืน + เหตุผล → สร้างฉบับร่าง v6 ใหม่ในตาราง |
-| CMS-04 / MD-01…04 | Media | `/media` | โฟลเดอร์ + ค้นหาโฟลเดอร์, กรองชื่อ/ชนิดไฟล์, My Files, เลือกหลายไฟล์ → ลบ, อัปโหลด 2 ขั้น (เลือกไฟล์ → Alt text 3 ภาษา) |
-| TR-01 / 03 / 04 | ถังขยะ | `/trash` | แท็บตามประเภท, เลือกหลายรายการ, กู้คืน (กลับเป็น Draft), ลบถาวร (ต้องพิมพ์ “ลบถาวร” ยืนยัน), ไฮไลต์ใกล้ลบ ≤ 3 วัน |
-| CMS-27 | Calculator — รายการเครื่องมือคำนวณ | `/rates/calculator` | แท็บ ทั้งหมด / บุคคล / SME |
-| CMS-27A | แก้ไขตัวแปรและสูตร | `/rates/calculator/:id` | ทดลองคำนวณค่างวด PMT ได้จริง (3 ล้าน · 5.69% · 30 ปี = 19,400 บาท ตรงกับดีไซน์), ปรับ rate_buffer / การปัดเศษ, ตรวจช่วงค่า, Popup แก้ไขตัวแปร |
-| CMS-27B | ทดสอบสูตรและส่งอนุมัติ | แท็บ “ทดสอบสูตร” | รันชุดทดสอบ 6 กรณีด้วยสูตรจริง → ผ่าน/ไม่ผ่าน, เปรียบเทียบกับ v4, ปุ่มส่งอนุมัติถูกล็อกถ้าทดสอบไม่ผ่าน |
+| CMS-01 · SEO-01…05 | SEO / AEO ระดับเว็บไซต์ | `/seo` | โหมดดู / แก้ไข, แท็บ General · Advanced · AEO, แท็บภาษา, Keywords กด Enter, SERP Preview สด, Toggle AI Crawler, ส่งอนุมัติ |
+| SCH-01 · SCH-02 | Schema — รายการ + เลือกประเภท | `/seo` › แท็บ Schema | กรองรายการ, Popup เลือกประเภท (ประเภทที่มีได้ 1 รายการถูกล็อก) |
+| SCH-03…06 | สร้าง Schema (3 ขั้นตอน) | `/seo/schema/new` | Apply to (Global / ประเภทเนื้อหา / Path), Map Property (เพิ่ม/ลบ, JSON-LD อัปเดตสด, คัดลอก), ผลตรวจ + Rich Result Preview, ส่งอนุมัติ |
+| CMS-02 | Menu Location | `/menu/location` | แท็บภาษา, Popup เลือก Set Menu ต่อตำแหน่ง |
+| CMS-03 | Set Menu | `/menu/set` | กรอง 4 ตัว, ลบ |
+| CMS-05 · CMS-10 | Hero / Promotion Banner | `/banner/hero`, `/banner/promotion` | กรอง, Move Order (↑↓), ลบ, ไปฟอร์มแก้ไข |
+| CMS-06A | Layout — รายการ | `/layout` | แท็บ Template, ทำสำเนา, ลบ, สร้างจาก Template |
+| CMS-06 · 06B | Edit Layout — General / Page Builder | `/layout/:id` | เลือก Template, Global components, Page Builder: เลือก Section/Widget, ย้าย ↑↓, ทำสำเนา, ลบ, Undo / Redo, แผงตั้งค่า Section (Anchor, Data Source, Background) |
+| CMS-06C | เพิ่ม Section + Widget Library | Page Builder | เลือกกริด 8 แบบ → เพิ่ม Section → เลือก Widget จาก Library |
+| CMS-06D | ตั้งค่า Widget (Calculator) | Page Builder | โหมดคำนวณ, ธีม (เข้ม/สว่าง/มิ้นต์) พรีวิวสดบน Canvas |
+| CMS-06E | Preview Mobile + ประวัติเวอร์ชัน | Page Builder › Mobile | Mockup มือถือ, แผงเวอร์ชัน v9–v13 |
+| CMS-07 | Path Structure | `/path` | Tree พับ/กาง, แท็บภาษา, Move Order, เพิ่ม Path ย่อย, แก้ไข, ลบ |
+| CMS-11 · CMS-12 | Products — สินเชื่อ / แก้ไขผลิตภัณฑ์ | `/products/loan`, `/products/loan/:id` | แท็บกลุ่ม, Move Order, ฟอร์ม 7 แท็บ (Calculator ตาม Figma + พรีวิวสลับโหมด) |
+| CMS-13 | Life Stage | `/life-stage` | เลือกช่วงชีวิต, เรียงลำดับ, สี/ไอคอน, เพิ่ม/ลบผลิตภัณฑ์แนะนำ |
+| CMS-14 · CMS-15 | อัตราดอกเบี้ย / อัตราแลกเปลี่ยน | `/rates/interest`, `/rates/exchange` | แท็บเงินฝาก/สินเชื่อ/ค่าธรรมเนียม/ประวัติ, แก้ไข → ส่งอนุมัติ, Import Excel, ดึงข้อมูล Treasury, จำกัดแสดงหน้าแรก 4 สกุล |
+| CMS-16 · 17 · 18 | Advisory / News / NPA | `/advisory`, `/news`, `/npa` | ตัวกรอง, แท็บหมวด, ปักหมุดข่าว (สูงสุด 3), ราคา NPA 2 ราคา, แท็บรายการจองซื้อ |
+| CMS-19 | Form — รายการติดต่อกลับ | `/form` | KPI, 4 แท็บฟอร์ม, ข้อมูลถูกปิดบัง (PDPA) |
+| CMS-20 · CMS-21 | FAQ / File Manager | `/faq`, `/files` | Move Order, คัดลอก URL, อัปโหลดเวอร์ชันใหม่ (URL เดิม) |
+| CMS-22 · CMS-23 | User & Role / Audit Log | `/setting/users`, `/setting/audit` | Active toggle, ตารางสิทธิ์ 2 Role, Log + Popup รายละเอียด (ก่อน/หลัง) |
+| CMS-24 · 24A · 24B | AI Assistants | `/ai`, `/ai/:id`, `/ai/:id/settings` | เปิด/ปิด Assistant, Workspace แชท + ใส่ผลลงฟิลด์ + AI Search Readiness, แหล่งข้อมูล & Guardrails |
+| CMS-25 · 25A · 25B | ภาษา / การเก็บเวอร์ชัน | `/setting/language`, `/setting/revision` | ตั้งค่าภาษาจีน, Fallback, Stepper 1–10, Popup ยืนยันลดเวอร์ชัน |
+| AU-01 … AU-05 | Auditor — Approval Flow | `/approval`, `/approval/:id`, `/approval/:id/result` | SLA, เปรียบเทียบ v12 → v13, Checklist (ต้องครบจึงอนุมัติ), ความคิดเห็น, Popup อนุมัติ (ทันที/ตั้งเวลา) และส่งกลับ (เลือกเหตุผล/Section), Approval Trail |
+| CS-08 | ถูกส่งกลับแก้ไข | `/content/8` | แบนเนอร์เหตุผลจาก Auditor, สถานะ “ต้องแก้ไข”, รอบที่ 2, แก้แล้วส่งใหม่ได้ |
 
-### 6. ย้ายภาษาเป็น TypeScript
-- [x] เปลี่ยนไฟล์ทั้งหมด `.jsx/.js` → `.tsx/.ts` และเพิ่ม `tsconfig.json` / `tsconfig.app.json` / `tsconfig.node.json` (strict mode, noUnusedLocals)
-- [x] สร้าง Domain types กลางที่ `src/types.ts` (ContentItem, TrashItem, RequestItem, VersionItem, MediaItem, Calculator, TestCase ฯลฯ)
-- [x] ใส่ type ให้ Component กลาง (props ของ Button / Field / Select / Tabs แบบ generic / Modal / PageHeader ฯลฯ) และ Store (`useStore()` คืนค่า type `Store` และ throw ถ้าไม่ได้อยู่ใน Provider)
-- [x] สูตร PMT คืนค่าเป็น discriminated union (`ok: true | false`) เพื่อแยกผลลัพธ์กับข้อความแจ้งเตือนอย่างปลอดภัย
-- [x] ESLint ใช้ `typescript-eslint`, คำสั่ง `build` รัน `tsc -b` ก่อน build
+## C. หน้าจอที่ไม่มีใน Figma — ออกแบบและพัฒนาเพิ่ม
 
-### 7. ตรวจสอบ
-- [x] `tsc -b` ผ่าน (0 error), `eslint` ผ่าน, `npm run build` ผ่าน
-- [x] เปิดทุกหน้าหลักใน Chrome หลังย้ายเป็น TypeScript — ไม่มี console error
-- [x] เปิดดูใน Chrome ที่ 1440px เทียบกับ Figma: Dashboard, Manage Content, ฟอร์มสร้างเนื้อหา, Popup ส่งอนุมัติ, Calculator, ถังขยะ
-- [x] แก้จุดที่พบ: ป้ายแกน Y ของกราฟถูกตัด, Path ในตารางตัดคำผิดที่, หน้าไม่เลื่อนขึ้นบนเมื่อเปลี่ยนเมนู
+| รหัส | หน้าจอ / Popup | Route / ที่อยู่ | ใส่ลง Figma |
+|---|---|---|---|
+| LG-00 | เข้าสู่ระบบ (SSO + เลือกบทบาทในโหมด Prototype) | `/login` | ✅ |
+| ER-404 | ไม่พบหน้า | ทุก Path ที่ไม่มี | ✅ |
+| PD-01 | Products — เงินฝาก (Template เดียวกับสินเชื่อ) | `/products/deposit` | ✅ |
+| PD-02 | แท็บอื่นของฟอร์มผลิตภัณฑ์ (ข้อมูลทั่วไป, จุดเด่น, ดอกเบี้ย, เอกสาร, FAQ, SEO) | `/products/:line/:id` | — |
+| SM-01 | Set Menu — แก้ไขรายการเมนูแบบลำดับชั้น | `/menu/set/:id` | ✅ |
+| BN-01 | สร้าง / แก้ไขแบนเนอร์ | `/banner/hero/new` | ✅ |
+| NW-01 | สร้าง / แก้ไขข่าว | `/news/new` | ✅ |
+| NP-01 | เพิ่ม / แก้ไขทรัพย์ NPA | `/npa/:id` | ✅ |
+| AD-01 · FQ-01 | ฟอร์ม Advisory / FAQ | `/advisory/:id`, `/faq/:id` | — (pattern เดียวกับ NW-01) |
+| FM-01 | รายละเอียด Lead (Drawer + เปิดดูข้อมูลเต็ม) | `/form` › ดูรายละเอียด | ✅ |
+| FM-02 | ตั้งค่าฟอร์ม | `/form` › ตั้งค่าฟอร์ม | — |
+| PS-01 | Popup เพิ่ม / แก้ไข Path | `/path` | ✅ |
+| RT-01 · RT-02 | Popup แก้ไขอัตรา / Import Excel | `/rates/interest` | ✅ |
+| FX-01 · FX-02 | Popup แก้อัตราแลกเปลี่ยนด้วยมือ / ประวัติอัตรา | `/rates/exchange` | — |
+| US-01 · US-02 | Popup เพิ่มผู้ใช้ / สิทธิ์ของ Role | `/setting/users` | ✅ |
+| AL-01 | Popup รายละเอียด Audit Log | `/setting/audit` | — |
+| LG-01 | Popup เพิ่มภาษา | `/setting/language` | ✅ |
+| AI-01 | Popup สร้าง Assistant | `/ai` | ✅ |
+| FL-01 | Popup อัปโหลดเวอร์ชันใหม่ (File Manager) | `/files` | ✅ |
+| — | กระดิ่งแจ้งเตือน (จำนวนงานรอ) + เมนูผู้ใช้ / ออกจากระบบ | Top Bar | — |
 
----
+## D. สิ่งที่ใส่ลง Figma
 
-## ข้อจำกัด / สิ่งที่ปรับจากดีไซน์
-- ไอคอนในเนื้อหาหน้า (ปุ่ม, ตาราง, Popup) ใช้ `lucide-react` เส้นแบบเดียวกับใน Figma; ไอคอน Sidebar / Top Bar / Dashboard ใช้ไฟล์ SVG จาก Figma โดยตรง
-- รูปใน Media Library เป็นข้อมูลที่ผู้ใช้อัปโหลด จึงแสดงเป็นภาพตัวอย่างสีแทนรูปจริง
-- ข้อมูลทั้งหมดเป็น Mock ในหน่วยความจำ — รีเฟรชหน้าแล้วข้อมูลกลับค่าเริ่มต้น
-- ปรับมาใช้ input แบบ `datetime-local` ของเบราว์เซอร์สำหรับวันเวลา
+Section ใหม่ **“Type 2 · ออกแบบเพิ่มเติม (จาก React Prototype)”** (node `304:34335`) อยู่ทางขวาของ Type 2 ในหน้า BackEnd
 
----
+- สร้างจาก Component เดิมของไฟล์: `CMS/Button`, `CMS/Field`, `CMS/Status`, `CMS/NavItem` + Text Styles (`CMS/*`, `LH/Heading/*`) + Variables `LH Color/*`
+- หน้าจอเต็ม 8 หน้า: BN-01, NW-01, NP-01 (pattern CMS-08), PD-01 (pattern CMS-11), SM-01, ER-404, LG-00, FM-01
+- Popup 8 รายการบนบอร์ดเดียว: PS-01, RT-01, RT-02, US-01, US-02, LG-01, AI-01, FL-01
+- ทุกเฟรมมีป้าย `Label · …` พร้อม Route ของ React ที่ตรงกัน
 
-## Task เฟสถัดไป (ยังเป็นหน้า Placeholder ที่บอกชื่อ Frame ใน Figma)
+## E. ตรวจสอบ
 
-- [ ] CMS-01 / SEO-01…05 — SEO / AEO ระดับเว็บไซต์ (General, Advanced, AEO / AI Search)
-- [ ] SCH-01…06 — Schema Flow (เลือกประเภท Schema, Map Property, Preview)
-- [ ] CMS-02 / 03 — Menu Location, Set Menu
-- [ ] CMS-05 / 10 — Hero Banner, Promotion Banner
-- [ ] CMS-06, 06A…06E — Layout / Page Builder (Section & Widget Library, ตั้งค่า Widget, Preview Mobile)
-- [ ] CMS-07 — Path Structure
-- [ ] CMS-11 / 12 — Products (รายการ + แก้ไขผลิตภัณฑ์)
-- [ ] CMS-13 — Life Stage
-- [ ] CMS-14 / 15 — Rates อัตราดอกเบี้ย, อัตราแลกเปลี่ยน
-- [ ] CMS-16…21 — Advisory, News, NPA, Form (Lead), FAQ, File Manager
-- [ ] CMS-24 / 24A / 24B — AI Assistants
-- [ ] CMS-22 / 23 / 25 / 25A / 25B — Setting (User & Role, Audit Log, ภาษา, การเก็บเวอร์ชัน)
-- [ ] AU-01…05 — มุมมอง Auditor (Approval Inbox, Review & เปรียบเทียบ, Approve / Reject)
-- [ ] CS-08 — หน้าแก้ไขเมื่อถูกส่งกลับ (แสดงความเห็น Auditor ในฟอร์ม)
-- [ ] เชื่อม API จริงแทน Mock data และระบบ Login / สิทธิ์ตาม Role
+- [x] `tsc -b` ผ่าน, `eslint` ผ่าน (0 error, warning 2 รายการเรื่อง Fast Refresh), `npm run build` ผ่าน
+- [x] เปิดครบ 53 Route ใน Chrome ด้วยสคริปต์ — ทุกหน้าแสดงผล ไม่มี console error
+- [x] ตรวจภาพหน้าหลักเทียบ Figma: Page Builder, Approval Review, Life Stage, Schema Wizard (แก้คอลัมน์ Life Stage แคบเกินแล้ว)
+- [x] ตรวจภาพทุกเฟรมที่ใส่ลง Figma
+
+## F. แก้ Sidebar ของ Role Auditor ให้ตรง Figma
+- [x] อ้างอิง Figma Type 2 · AU-01 ~ AU-05 (node 134:21228) — Sidebar ของ Auditor มีเพียง **Dashboard · งานรออนุมัติ · ประวัติการอนุมัติ · Setting** (เมนูจัดการเนื้อหาซ่อนทั้งหมด)
+- [x] `layout/nav.ts` เพิ่ม `AUDITOR_NAV` (ไอคอนตาม Figma: home / fileText / folder / settings) และ `AUDITOR_PATHS`
+- [x] `AppLayout.tsx` เลือกเมนูตาม Role · ไฮไลต์เมนูแบบ longest match (`/approval/history` ไม่ไฮไลต์ `/approval`) · Auditor เข้า URL หน้าจัดการเนื้อหาตรง ๆ จะถูก redirect ไป `/approval` · ปุ่มตั้งค่าบน Top bar ของ Auditor ไป Audit Log
+- [x] หน้าใหม่ `/approval/history` "ประวัติการอนุมัติ" (ApprovalInbox โหมด history — แสดงเฉพาะคำขอที่อนุมัติ/ส่งกลับแล้ว) · ปุ่ม "ประวัติการอนุมัติ" ใน AU-01 และ breadcrumb ของ AU-05 ลิงก์มาหน้านี้
+- [x] Setting ของ Auditor แสดงเฉพาะ Audit Log (ข้อสันนิษฐาน — Figma ไม่ได้กาง sub-menu ไว้)
+
+## ข้อจำกัด
+
+- ข้อมูลทั้งหมดเป็น Mock ในหน่วยความจำ — รีเฟรชแล้วกลับค่าเริ่มต้น
+- อัตราดอกเบี้ย / ราคาแสดงเป็น `x.xx` ตาม Figma (ไม่ใช้ตัวเลขจริง)
+- รูปใน Media / Banner เป็นภาพสีแทนรูปจริง
+- Drag & drop ใช้ปุ่ม ↑ ↓ แทนการลากจริง
+- SSO / Login เป็นการจำลอง — ยังไม่เชื่อม Identity Provider
+
+## งานเฟสถัดไป
+
+- [ ] เชื่อม API จริง + Login SSO + สิทธิ์ตาม Role ฝั่ง Server
+- [ ] Drag & drop จริงใน Page Builder / Menu / Path
+- [ ] ใส่ Figma เพิ่มสำหรับ PD-02, AD-01, FQ-01, FM-02, FX-01/02, AL-01 (ปัจจุบันมีใน React แล้ว)

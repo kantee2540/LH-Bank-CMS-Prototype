@@ -54,3 +54,13 @@
 .page-title { font-size: 20px; font-weight: 600; line-height: 1.4; }
 .back-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--lh-border-strong); display: grid; place-items: center; background: #fff; }
 .back-btn:hover { background: var(--lh-gray-100); }
+
+.avatar { border: 0; }
+.avatar.aud { background: #8e64a8; }
+.tb-icon.bell { position: relative; color: var(--lh-text-primary); }
+.badge { position: absolute; top: -6px; right: -8px; background: #e0322a; color: #fff; border-radius: 999px; font-size: 11px; min-width: 18px; height: 18px; display: grid; place-items: center; padding: 0 4px; }
+.user-menu { position: absolute; right: 0; top: 48px; background: #fff; border: 1px solid var(--lh-border-default); border-radius: 10px; box-shadow: var(--lh-shadow-modal); padding: 14px; width: 260px; display: flex; flex-direction: column; gap: 2px; z-index: 30; }
+.user-menu button { margin-top: 10px; border: 0; border-top: 1px solid var(--lh-border-default); background: none; padding: 10px 0 0; display: flex; gap: 8px; align-items: center; color: var(--lh-danger); }
+.login { min-height: 100vh; background: linear-gradient(160deg, #12386b 0%, #1f6fa8 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 24px; }
+.login-card { background: #fff; border-radius: 16px; padding: 36px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 20px; box-shadow: var(--lh-shadow-modal); }
+.login-demo { background: var(--lh-gray-100); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }

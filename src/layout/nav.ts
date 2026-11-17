@@ -85,37 +85,18 @@ export const NAV: NavItem[] = [
   },
 ];
 
-/* Figma frame references for modules that are placeholders in this prototype */
-export const PLACEHOLDER_INFO: Record<string, string[]> = {
-  '/seo': ['CMS-01 SEO / AEO — ตั้งค่าเว็บไซต์', 'SEO-01 … SEO-09'],
-  '/menu/location': ['CMS-02 Menu Location'],
-  '/menu/set': ['CMS-03 Set Menu'],
-  '/banner/hero': ['CMS-05 Hero Banner'],
-  '/banner/promotion': ['CMS-10 Promotion Banner'],
-  '/layout': ['CMS-06 Page Builder', 'CMS-06A … CMS-06E Layout'],
-  '/path': ['CMS-07 Path Structure'],
-  '/products/loan': ['CMS-11 Products — สินเชื่อ', 'CMS-12 Products — แก้ไขผลิตภัณฑ์'],
-  '/products/deposit': ['CMS-11 Products'],
-  '/life-stage': ['CMS-13 Life Stage'],
-  '/rates/interest': ['CMS-14 Rates — อัตราดอกเบี้ย'],
-  '/rates/exchange': ['CMS-15 Rates — อัตราแลกเปลี่ยน'],
-  '/advisory': ['CMS-16 LH Bank Advisory'],
-  '/news': ['CMS-17 News — ข่าวสารและกิจกรรม'],
-  '/npa': ['CMS-18 NPA — สินทรัพย์รอการขาย'],
-  '/form': ['CMS-19 Form — รายการติดต่อกลับ (Lead)'],
-  '/faq': ['CMS-20 FAQ — คำถามที่พบบ่อย'],
-  '/files': ['CMS-21 File Manager — เอกสารดาวน์โหลด'],
-  '/ai': ['CMS-24 AI Assistants', 'CMS-24A Workspace', 'CMS-24B ตั้งค่า & Guardrails'],
-  '/setting/users': ['CMS-22 Setting — User & Role'],
-  '/setting/audit': ['CMS-23 Setting — Audit Log'],
-  '/setting/language': ['CMS-25 Setting — ภาษา (Language)'],
-  '/setting/revision': ['CMS-25A Setting — การเก็บเวอร์ชัน', 'CMS-25B ยืนยันลดจำนวนเวอร์ชัน'],
-};
+/* Sidebar ของ Role Auditor — ตาม Figma "AU-01 Approval Inbox" (Type 2, node 134:21228)
+   แสดงเฉพาะ Dashboard · งานรออนุมัติ · ประวัติการอนุมัติ · Setting (เมนูจัดการเนื้อหาถูกซ่อน เพราะ Auditor แก้ไขเนื้อหาเองไม่ได้) */
+export const AUDITOR_NAV: NavItem[] = [
+  { label: 'Dashboard', icon: home, to: '/' },
+  { label: 'งานรออนุมัติ', icon: fileText, to: '/approval' },
+  { label: 'ประวัติการอนุมัติ', icon: folder, to: '/approval/history' },
+  {
+    label: 'Setting', icon: settings, children: [
+      { label: 'Audit Log', to: '/setting/audit' },
+    ],
+  },
+];
 
-export function findNavLabel(path: string): string {
-  for (const item of NAV) {
-    if (item.to === path) return item.label;
-    for (const c of item.children || []) if (c.to === path) return c.label;
-  }
-  return '';
-}
+/* path ที่ Auditor เข้าถึงได้ — นอกนั้น redirect ไปงานรออนุมัติ */
+export const AUDITOR_PATHS = ['/', '/approval', '/setting/audit'];

@@ -422,12 +422,14 @@ export default function ContentForm() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { contents, submitContent, toast } = useStore();
-  const isNew = !id;
   const existing = contents.find((c) => String(c.id) === id);
-  const [tab, setTab] = useState<FormTab>(isNew ? 'content' : 'versions');
+  const isRework = !!existing?.rejected; // CS-08 ถูกส่งกลับแก้ไข
+  const isNew = !id;
+  const editable = isNew || isRework;
+  const [tab, setTab] = useState<FormTab>(editable ? 'content' : 'versions');
   const [lang, setLang] = useState<Lang>('th');
   const [data, setData] = useState<FormData>(INITIAL);
-  const [hero, setHero] = useState<MediaItem | null>(isNew ? null : { name: 'promo-fixed-6m.jpg', kind: 'image', hue: 195, alt: 'เงินฝากประจำพิเศษ 6 เดือน' });
+  const [hero, setHero] = useState<MediaItem | null>(isNew ? null : isRework ? { name: 'hero-fixed-6m.webp', kind: 'image', hue: 200, alt: 'เงินฝากประจำพิเศษ 6 เดือน' } : { name: 'promo-fixed-6m.jpg', kind: 'image', hue: 195, alt: 'เงินฝากประจำพิเศษ 6 เดือน' });
   const [meta, setMeta] = useState<Meta>({ type: params.get('type') || existing?.type || 'Promotion', path: existing?.path?.replace(/^\/th/, '') || '/personal/deposit/fixed-6m' });
   const [submitOpen, setSubmitOpen] = useState(false);
   const [auditor, setAuditor] = useState('Auditor – ฝ่ายเงินฝาก (2 คน)');
@@ -436,16 +438,22 @@ export default function ContentForm() {
 
   const setField = (k: keyof LangData, v: string) => setData((d) => ({ ...d, [lang]: { ...d[lang], [k]: v } }));
   const allComplete = (['th', 'en', 'zh'] as Lang[]).every((l) => completeness(data[l]).missing === 0) && !!hero;
-  const title = isNew ? `สร้างเนื้อหาใหม่ · ${meta.type}` : `แก้ไขเนื้อหา · ${existing?.title || data.th.title}`;
+  const title = isNew ? `สร้างเนื้อหาใหม่ · ${meta.type}` : isRework ? `แก้ไขเนื้อหา · ${meta.type} (รอบที่ 2)` : `แก้ไขเนื้อหา · ${existing?.title || data.th.title}`;
 
   return (
     <>
+      {isRework && (
+        <div className="note-danger" style={{ padding: '12px 18px', border: '1px solid #f0b8b0' }}>
+          <b>ถูกส่งกลับแก้ไข · โดย Auditor – ฝ่ายเงินฝาก · {existing?.updated}</b>
+          <div>เหตุผล: Meta description ภาษาจีนยังสั้นเกินไป และเงื่อนไขถอนก่อนกำหนดใน FAQ ไม่ตรงกับประกาศอัตรา</div>
+        </div>
+      )}
       <PageHeader
         crumbs={[{ label: 'Manage Content', to: '/content' }, { label: isNew ? 'สร้างเนื้อหา' : 'แก้ไขเนื้อหา' }]}
         back="/content"
         title={title}
         badges={
-          isNew ? <Status status="Draft" /> : (
+          isNew ? <Status status="Draft" /> : isRework ? <span className="status status-rejected">ต้องแก้ไข</span> : (
             <>
               <Status status={existing?.status || 'Published'} />
               <span className="tag-version">v5 · เผยแพร่อยู่</span>
@@ -454,10 +462,10 @@ export default function ContentForm() {
         }
         actions={
           <>
-            {isNew && <Button icon={Sparkles} onClick={() => toast('AI ช่วยร่าง', 'สร้างร่าง EN / 中文 จากภาษาไทยแล้ว — โปรดตรวจทานก่อนส่ง')}>AI ช่วยร่าง (ส่วนเสริม)</Button>}
+            {editable && <Button icon={Sparkles} onClick={() => toast('AI ช่วยร่าง', 'สร้างร่าง EN / 中文 จากภาษาไทยแล้ว — โปรดตรวจทานก่อนส่ง')}>AI ช่วยร่าง (ส่วนเสริม)</Button>}
             <Button icon={Eye} onClick={() => toast('เปิด Preview', 'Desktop / Mobile')}>Preview</Button>
-            {isNew && <Button icon={Download} onClick={() => toast('บันทึก Draft แล้ว', data.th.title)}>บันทึก Draft</Button>}
-            {isNew && <Button variant="primary" icon={Send} onClick={() => setSubmitOpen(true)}>ส่งอนุมัติ</Button>}
+            {editable && <Button icon={Download} onClick={() => toast('บันทึก Draft แล้ว', data.th.title)}>บันทึก Draft</Button>}
+            {editable && <Button variant="primary" icon={Send} onClick={() => setSubmitOpen(true)}>ส่งอนุมัติ</Button>}
           </>
         }
       />

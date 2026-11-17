@@ -9,12 +9,13 @@ interface MediaPickerProps {
   open: boolean;
   onClose: () => void;
   onPick: (item: MediaItem) => void;
+  title?: string;
 }
 
 type PickerTab = 'library' | 'upload';
 
 /* CS-04A Popup Media — เลือกจาก Library / CS-04B อัปโหลดใหม่ */
-export default function MediaPicker({ open, onClose, onPick }: MediaPickerProps) {
+export default function MediaPicker({ open, onClose, onPick, title = 'เลือกรูป Hero' }: MediaPickerProps) {
   const [tab, setTab] = useState<PickerTab>('library');
   const [sel, setSel] = useState<MediaItem | null>(null);
   const [q, setQ] = useState('');
@@ -33,7 +34,7 @@ export default function MediaPicker({ open, onClose, onPick }: MediaPickerProps)
       open={open}
       onClose={onClose}
       width={1000}
-      title="เลือกรูป Hero"
+      title={title}
       footer={
         <>
           <Button onClick={onClose}>ยกเลิก</Button>
