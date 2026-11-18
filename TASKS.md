@@ -131,6 +131,15 @@ Section ใหม่ **“Type 2 · ออกแบบเพิ่มเติ�
 - [x] Figma: ลบ Frame "Breadcrumb" 99 จุดใน Section Type 2 และ "Type 2 · ออกแบบเพิ่มเติม" (เนื้อหาเลื่อนขึ้นตาม Auto layout) · Type 1 คงไว้เป็นประวัติแบบเดิม
 - หมายเหตุ: ตัวเลือก "แสดง Breadcrumb" ใน Layout และ Path Structure เป็นของหน้าเว็บไซต์ฝั่งลูกค้า ไม่ได้ตัดออก
 
+## H. ปรับตาม Feedback รอบที่ 2
+- [x] **Editor:** เปลี่ยน Rich text editor เป็น TinyMCE 7 (self-hosted, GPL) ใน `components/RichEditor.tsx` ใช้ Toolbar ตามแบบ (B I U S Quote · เลขลำดับ/Bullet · Paragraph · Indent · สีตัวอักษร/ไฮไลต์ · จัดแนว · Link · รูป · ตาราง · Clear format · Source code) มีป้ายภาษา TH/EN/ZH ที่มุมขวาบน · ใช้ทั้งใน Manage Content และฟอร์มหมวดหมู่อื่น (ModuleForm)
+- [x] **เวอร์ชัน:** มีเฉพาะ Manage Content · เปลี่ยนจากแท็บเป็น Modal "ประวัติเวอร์ชัน" (ปุ่มบน Header) · กู้คืนต้องผ่าน Modal ยืนยันทุกครั้ง · ลบประวัติเวอร์ชันออกจาก Layout (Page Builder) และ Calculator · หน้า Setting › การเก็บเวอร์ชัน เหลือเฉพาะ Manage Content
+- [x] **Preview:** หน้าใหม่ `/preview` เปิดในแท็บใหม่ สลับ Desktop / Mobile ได้ (ส่งข้อมูลผ่าน localStorage ไม่ใส่ใน URL) · ผูกกับปุ่ม Preview ทุกหน้า
+- [x] เปลี่ยนคำว่า "ถังขยะ" เป็น **Recycle Bin** ทั้งระบบ
+- [x] ตารางรายการทุกเมนูมีคอลัมน์ **ลำดับ** ด้านหน้า (ListPage และตารางเฉพาะหน้า: Content, คำขอ, งานรออนุมัติ, Rates, Calculator, Schema, Recycle Bin, ภาษา, การเก็บเวอร์ชัน)
+- [x] ช่องกรอก `.input` / `.select` สูง 42px เท่าปุ่ม
+- [x] เปลี่ยนคำว่า "โมดูล" / "Module" เป็น **หมวดหมู่**
+
 ## ข้อจำกัด
 
 - ข้อมูลทั้งหมดเป็น Mock ในหน่วยความจำ — รีเฟรชแล้วกลับค่าเริ่มต้น

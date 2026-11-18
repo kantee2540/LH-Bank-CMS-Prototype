@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { RefreshCw, Eye, ArrowLeft, Maximize2, Lock, Check, X, FileText, ExternalLink } from 'lucide-react';
 import { Button, Card, Field, Input, Select, Textarea, Tabs, Toggle, Status, Modal, PageHeader } from '../components/ui';
 import { useStore } from '../store';
+import { openPreview } from './Preview';
 import type { RequestItem, RequestTab } from '../types';
 import './pages.css';
 
@@ -35,7 +36,7 @@ export function ApprovalInbox({ history = false }: { history?: boolean }) {
         <div style={{ padding: '16px 18px 0' }}>
           <Tabs value={tab} onChange={setTab} tabs={history ? [{ value: 'all', label: 'ทั้งหมด' }, { value: 'approved', label: 'อนุมัติแล้ว' }, { value: 'rejected', label: 'ส่งกลับแก้ไข' }] : [{ value: 'pending', label: `รออนุมัติ (${pending})` }, { value: 'rejected', label: `ส่งกลับแก้ไข (${requests.filter((r) => r.tab === 'rejected').length})` }, { value: 'approved', label: 'อนุมัติแล้ว' }, { value: 'all', label: 'ทั้งหมด' }]} />
           <div className="filter-bar" style={{ gridTemplateColumns: 'repeat(5, minmax(0,1fr))', margin: '16px 0' }}>
-            <Field label="Module"><Select value={module} onChange={(e) => setModule(e.target.value)} options={['ทั้งหมด', ...new Set(requests.map((r) => r.module))]} /></Field>
+            <Field label="หมวดหมู่"><Select value={module} onChange={(e) => setModule(e.target.value)} options={['ทั้งหมด', ...new Set(requests.map((r) => r.module))]} /></Field>
             <Field label="เว็บไซต์"><Select options={['Personal', 'SME', 'Corporate']} /></Field>
             <Field label="ผู้ส่ง (Content Editor)"><Select options={['ทั้งหมด', 'Content Editor 01', 'Content Editor 02']} /></Field>
             <Field label="ประเภทคำขอ"><Select options={['สร้างใหม่ / แก้ไข', 'สร้างใหม่', 'แก้ไข', 'ลบ']} /></Field>
@@ -44,13 +45,14 @@ export function ApprovalInbox({ history = false }: { history?: boolean }) {
         </div>
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>รายการ</th><th>Module</th><th>ผู้ส่ง</th><th>ส่งเมื่อ</th><th>ต้องการเผยแพร่</th><th>{tab === 'pending' ? 'SLA' : 'สถานะ'}</th><th>Action</th></tr></thead>
+            <thead><tr><th className="col-no">ลำดับ</th><th>รายการ</th><th>หมวดหมู่</th><th>ผู้ส่ง</th><th>ส่งเมื่อ</th><th>ต้องการเผยแพร่</th><th>{tab === 'pending' ? 'SLA' : 'สถานะ'}</th><th>Action</th></tr></thead>
             <tbody>
               {list.map((r, i) => {
                 const [sla, cls] = slaOf(r);
                 return (
                   <tr key={r.id} className={i === 0 && tab === 'pending' ? 'highlight' : ''}>
-                    <td style={{ borderLeft: i === 0 && tab === 'pending' ? '3px solid var(--lh-nav-active)' : undefined }}><b style={{ fontWeight: 500 }}>{r.title}</b><div className="sub">{r.sub.split(' · ')[0]} · {r.sub.split(' · ')[1] ?? ''}</div></td>
+                    <td className="col-no" style={{ borderLeft: i === 0 && tab === 'pending' ? '3px solid var(--lh-nav-active)' : undefined }}>{i + 1}</td>
+                    <td><b style={{ fontWeight: 500 }}>{r.title}</b><div className="sub">{r.sub.split(' · ')[0]} · {r.sub.split(' · ')[1] ?? ''}</div></td>
                     <td><span className={`tag ${i === 0 && tab === 'pending' ? 'tag-solid' : 'tag-blue'}`} style={{ borderRadius: 999, fontSize: 15 }}>{r.module}</span></td>
                     <td>{r.id === 'r3' || r.id === 'r5' || r.id === 'r6' ? 'Content Editor 02' : 'Content Editor 01'}</td>
                     <td style={{ whiteSpace: 'nowrap' }}>{r.sent}</td>
@@ -60,7 +62,7 @@ export function ApprovalInbox({ history = false }: { history?: boolean }) {
                   </tr>
                 );
               })}
-              {!list.length && <tr><td colSpan={7} className="t-tertiary" style={{ textAlign: 'center', padding: 40 }}>ไม่มีงานในแท็บนี้ 🎉</td></tr>}
+              {!list.length && <tr><td colSpan={8} className="t-tertiary" style={{ textAlign: 'center', padding: 40 }}>ไม่มีงานในแท็บนี้ 🎉</td></tr>}
             </tbody>
           </table>
         </div>
@@ -78,7 +80,7 @@ const CHANGES: Change[] = [
   { kind: 'แก้ไข', section: 'Section: Disclaimer', before: '*เงื่อนไขเป็นไปตามที่ธนาคารกำหนด', after: '*อัตราดอกเบี้ยเฉลี่ย 3 ปีแรก 2.75% ต่อปี (MRR-x.xx%) เงื่อนไขเป็นไปตามที่ธนาคารกำหนด' },
   { kind: 'ลบ', section: 'Section: FAQ', before: 'ค่าธรรมเนียมรีไฟแนนซ์มีอะไรบ้าง?', after: '—' },
 ];
-const CHECKS = ['เนื้อหา TH / EN ครบและตรงกัน', 'อัตราดอกเบี้ยตรงกับโมดูล Rates', 'มี Disclaimer ตามเกณฑ์ Compliance', 'ลิงก์และปุ่ม CTA ใช้งานได้', 'รูปภาพมีสิทธิ์ใช้งาน / Alt text'];
+const CHECKS = ['เนื้อหา TH / EN ครบและตรงกัน', 'อัตราดอกเบี้ยตรงกับหมวดหมู่ Rates', 'มี Disclaimer ตามเกณฑ์ Compliance', 'ลิงก์และปุ่ม CTA ใช้งานได้', 'รูปภาพมีสิทธิ์ใช้งาน / Alt text'];
 
 /* AU-02 Review — ตรวจสอบ & เปรียบเทียบเวอร์ชัน · AU-03 Approve · AU-04 Reject */
 export function ApprovalReview() {
@@ -105,7 +107,7 @@ export function ApprovalReview() {
     <div className="with-bottom-bar">
       <PageHeader title={<span className="row"><Link to="/approval"><ArrowLeft size={18} /></Link>ตรวจสอบ · {r.title}</span>}
         badges={<><span className="status status-scheduled" style={{ background: '#fbe9df', color: '#8a3e1f' }}>รออนุมัติ</span><span className="sla sla-red">SLA {slaOf(r)[0]}</span></>}
-        actions={<Button icon={Maximize2} onClick={() => toast('เปิด Preview แท็บใหม่', r.title)}>เปิด Preview แท็บใหม่</Button>} />
+        actions={<Button icon={Maximize2} onClick={() => openPreview({ title: r.title, type: r.module, excerpt: r.sub })}>เปิด Preview แท็บใหม่</Button>} />
       <div className="split" style={{ gridTemplateColumns: 'minmax(0,1fr) 320px' }}>
         <section className="card">
           <Tabs value={tab} onChange={setTab} style={{ marginBottom: 14 }} tabs={[{ value: 'diff', label: 'เปรียบเทียบเวอร์ชัน' }, { value: 'desktop', label: 'Preview Desktop' }, { value: 'mobile', label: 'Preview Mobile' }, { value: 'seo', label: 'SEO' }]} />

@@ -9,7 +9,7 @@ import type { Rounding } from './calc';
 import type { TestCase } from '../../types';
 
 type VarRow = [code: string, label: string, source: string, range: string];
-type CalcTab = 'general' | 'formula' | 'test' | 'history';
+type CalcTab = 'general' | 'formula' | 'test';
 
 interface FormulaProps {
   buffer: number;
@@ -242,7 +242,6 @@ export default function CalculatorEdit() {
           { value: 'general', label: 'ข้อมูลทั่วไป' },
           { value: 'formula', label: 'ตัวแปรและสูตร' },
           { value: 'test', label: 'ทดสอบสูตร' },
-          { value: 'history', label: 'ประวัติเวอร์ชัน' },
         ]}
       />
       {tab === 'general' && (
@@ -257,18 +256,6 @@ export default function CalculatorEdit() {
       )}
       {tab === 'formula' && <FormulaTab {...{ buffer, setBuffer, rounding, setRounding }} />}
       {tab === 'test' && <TestTab buffer={buffer} rounding={rounding} onSubmit={submit} />}
-      {tab === 'history' && (
-        <Card title="ประวัติเวอร์ชัน">
-          <table className="table">
-            <thead><tr><th>เวอร์ชัน</th><th>สถานะ</th><th>สรุป</th><th>วันที่</th></tr></thead>
-            <tbody>
-              <tr className="highlight"><td><b>v5</b></td><td><Status status="Draft" /></td><td>ปัดเศษค่างวดขึ้นเป็นหลักร้อย</td><td>10/11/2026</td></tr>
-              <tr><td><b>v4</b> <span className="tag-version">Live</span></td><td><Status status="Published" /></td><td>เพิ่ม rate_buffer 1.00%</td><td>01/10/2026</td></tr>
-              <tr><td><b>v3</b></td><td><Status status="Expired" /></td><td>ดึงอัตราจาก Rates อัตโนมัติ</td><td>01/06/2026</td></tr>
-            </tbody>
-          </table>
-        </Card>
-      )}
     </>
   );
 }

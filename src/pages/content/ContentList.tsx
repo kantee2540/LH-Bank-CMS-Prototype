@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Info, Eye, Pencil, Search } from 'lucide-react';
 import { Button, Field, Input, Select, Status, IconButton, Modal, PageHeader, Pager } from '../../components/ui';
 import { useStore } from '../../store';
+import { openPreview } from '../Preview';
 import type { ContentItem } from '../../types';
 import '../pages.css';
 
@@ -32,7 +33,7 @@ function CreateTypeModal({ open, onClose }: { open: boolean; onClose: () => void
         </>
       }
     >
-      <p className="t-secondary" style={{ marginTop: -6 }}>สร้างใน Manage Content</p>
+      <p className="t-secondary" style={{ marginTop: -6 }}>สร้างใน Page Builder</p>
       <div className="type-cards">
         {cards.map(([t, d]) => (
           <button key={t} className={`type-card ${type === t ? 'on' : ''}`} onClick={() => setType(t)}>
@@ -41,7 +42,7 @@ function CreateTypeModal({ open, onClose }: { open: boolean; onClose: () => void
           </button>
         ))}
       </div>
-      <p style={{ fontWeight: 500 }}>ข้อมูลเฉพาะโมดูล — ไปกรอกที่เมนูของโมดูล</p>
+      <p style={{ fontWeight: 500 }}>ข้อมูลเฉพาะหมวดหมู่ — ไปกรอกที่เมนูของหมวดหมู่</p>
       <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
         {modules.map(([m, to]) => (
           <Link key={m} to={to} className="tag tag-blue">{m} →</Link>
@@ -80,7 +81,7 @@ export default function ContentList() {
 
   return (
     <>
-      <PageHeader title="Manage Content" />
+      <PageHeader title="Page Builder" />
 
       <form
         className="filter-bar"
@@ -101,18 +102,19 @@ export default function ContentList() {
         <div className="row-between" style={{ marginBottom: 16, flexWrap: 'wrap' }}>
           <div className="row" style={{ gap: 10 }}>
             <Button variant="primary" icon={Plus} onClick={() => setCreating(true)}>Create</Button>
-            <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({contentTrash})</Link>
+            <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({contentTrash})</Link>
           </div>
-          <span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> เนื้อหาทุกประเภทที่นำไปแสดงผ่าน Layout / Page Builder</span>
+          <span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> เนื้อหาทุกประเภทที่นำไปแสดงผ่าน Layout</span>
         </div>
         <div className="table-wrap">
           <table className="table">
             <thead>
-              <tr><th>ชื่อเนื้อหา</th><th>Content Type</th><th>Path</th><th>Status</th><th>Last Update</th><th>Action</th></tr>
+              <tr><th className="col-no">ลำดับ</th><th>ชื่อเนื้อหา</th><th>Content Type</th><th>Path</th><th>Status</th><th>Last Update</th><th>Action</th></tr>
             </thead>
             <tbody>
-              {shown.map((c) => (
+              {shown.map((c, i) => (
                 <tr key={c.id}>
+                  <td className="col-no">{(page - 1) * rows + i + 1}</td>
                   <td style={{ maxWidth: 240 }}>
                     <Link to={`/content/${c.id}`} className="t-link" style={{ fontWeight: 400 }}>{c.title}</Link>
                     <div className={c.rejected ? 't-danger' : ''} style={{ color: c.rejected ? '#e0625a' : undefined }}>
@@ -125,7 +127,7 @@ export default function ContentList() {
                   <td style={{ whiteSpace: 'nowrap' }}>{c.updated}</td>
                   <td>
                     <div className="row" style={{ gap: 4 }}>
-                      <IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => toast('เปิด Preview', c.title)} />
+                      <IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => openPreview({ title: c.title, type: c.type, path: c.path })} />
                       <Link to={`/content/${c.id}`}><IconButton icon={Pencil} title="แก้ไข" /></Link>
                       <IconButton icon={Trash2} danger title="ลบ" onClick={() => setToDelete(c)} />
                     </div>
@@ -133,7 +135,7 @@ export default function ContentList() {
                 </tr>
               ))}
               {!shown.length && (
-                <tr><td colSpan={6} style={{ textAlign: 'center', padding: 40 }} className="t-tertiary">ไม่พบเนื้อหาที่ตรงกับเงื่อนไข</td></tr>
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: 40 }} className="t-tertiary">ไม่พบเนื้อหาที่ตรงกับเงื่อนไข</td></tr>
               )}
             </tbody>
           </table>
@@ -152,11 +154,11 @@ export default function ContentList() {
 
       <CreateTypeModal open={creating} onClose={() => setCreating(false)} />
 
-      {/* TR-02 — ยืนยันย้ายไปถังขยะ */}
+      {/* TR-02 — ยืนยันย้ายไป Recycle Bin */}
       <Modal
         open={!!toDelete}
         onClose={() => setToDelete(null)}
-        title="ย้ายไปถังขยะ?"
+        title="ย้ายไป Recycle Bin?"
         footer={
           <>
             <Button onClick={() => setToDelete(null)}>ยกเลิก</Button>
@@ -165,17 +167,17 @@ export default function ContentList() {
               onClick={() => {
                 if (!toDelete) return;
                 moveContentToTrash(toDelete.id);
-                toast('ย้ายไปถังขยะแล้ว', `${toDelete.title} · กู้คืนได้ภายใน 30 วัน`);
+                toast('ย้ายไป Recycle Bin แล้ว', `${toDelete.title} · กู้คืนได้ภายใน 30 วัน`);
                 setToDelete(null);
               }}
             >
-              ย้ายไปถังขยะ
+              ย้ายไป Recycle Bin
             </Button>
           </>
         }
       >
         <p className="t-secondary">
-          “{toDelete?.title}” จะถูกนำออกจากหน้าเว็บและเก็บในถังขยะ 30 วัน ก่อนระบบลบถาวรอัตโนมัติ · กู้คืนได้จากเมนูถังขยะ
+          “{toDelete?.title}” จะถูกนำออกจากหน้าเว็บและเก็บใน Recycle Bin 30 วัน ก่อนระบบลบถาวรอัตโนมัติ · กู้คืนได้จากเมนู Recycle Bin
         </p>
       </Modal>
     </>

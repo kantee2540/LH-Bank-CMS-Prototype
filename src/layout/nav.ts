@@ -52,7 +52,7 @@ export const NAV: NavItem[] = [
   },
   { label: 'Layout', icon: layout, to: '/layout' },
   { label: 'Path Structure', icon: tree, to: '/path' },
-  { label: 'Manage Content', icon: layers, to: '/content' },
+  { label: 'Page Builder', icon: layers, to: '/content' },
   {
     label: 'Products', icon: gift, children: [
       { label: 'สินเชื่อ', to: '/products/loan' },
@@ -74,7 +74,7 @@ export const NAV: NavItem[] = [
   { label: 'FAQ', icon: help, to: '/faq' },
   { label: 'File Manager', icon: folder, to: '/files' },
   { label: 'AI Assistants', icon: sparkles, to: '/ai' },
-  { label: 'ถังขยะ', icon: trash, to: '/trash' },
+  { label: 'Recycle Bin', icon: trash, to: '/trash' },
   {
     label: 'Setting', icon: settings, children: [
       { label: 'User & Role', to: '/setting/users' },

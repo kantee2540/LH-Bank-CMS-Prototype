@@ -3,6 +3,7 @@ import { Eye, Plus, Move, X, Briefcase, Users, Shield, TrendingUp, Sun, Heart, H
 import type { LucideIcon } from 'lucide-react';
 import { Button, Card, Field, Input, Textarea, Status, LangSwitch, PageHeader, Modal, Select } from '../components/ui';
 import { useStore } from '../store';
+import { openPreview } from './Preview';
 import './pages.css';
 
 type Lang = 'th' | 'en' | 'zh';
@@ -60,7 +61,7 @@ export default function LifeStage() {
         title="Life Stage"
         sub="ข้อมูลแสดงที่ Section “ตามช่วงชีวิต” หน้าแรก และหน้า Life Stage"
         actions={<>
-          <Button icon={Eye} onClick={() => toast('Preview', 'Section ตามช่วงชีวิต · หน้าแรก')}>Preview</Button>
+          <Button icon={Eye} onClick={() => openPreview({ title: sel.headline || sel.name, excerpt: sel.desc, type: `Life Stage · ${sel.name}`, path: `/th/life-stage/${sel.slug}`, body: `<ul>${sel.products.map((p) => `<li>${p.name}</li>`).join('')}</ul>` })}>Preview</Button>
           <Button variant="primary" icon={Plus} onClick={() => { const n: Stage = { id: `s${Date.now()}`, name: 'ช่วงชีวิตใหม่', slug: 'new-stage', headline: '', desc: '', color: COLORS[0][0], icon: Heart, products: [] }; setStages([...stages, n]); setSelId(n.id); }}>เพิ่มช่วงชีวิต</Button>
         </>}
       />

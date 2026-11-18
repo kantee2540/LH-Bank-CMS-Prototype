@@ -4,6 +4,7 @@ import { Plus, RefreshCw, Info, Eye, Pencil } from 'lucide-react';
 import { Button, Status, Tabs, IconButton, PageHeader, InfoBanner } from '../../components/ui';
 import { CALCULATORS } from '../../data/mock';
 import { useStore } from '../../store';
+import { openPreview } from '../Preview';
 import '../pages.css';
 
 /* CMS-27 Calculator — รายการเครื่องมือคำนวณ */
@@ -36,10 +37,11 @@ export default function CalculatorList() {
         </div>
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>เครื่องมือคำนวณ</th><th>ประเภทสูตร</th><th>อัตราอ้างอิงจาก Rates</th><th>เวอร์ชัน</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th className="col-no">ลำดับ</th><th>เครื่องมือคำนวณ</th><th>ประเภทสูตร</th><th>อัตราอ้างอิงจาก Rates</th><th>เวอร์ชัน</th><th>Status</th><th>Action</th></tr></thead>
             <tbody>
-              {list.map((c) => (
+              {list.map((c, i) => (
                 <tr key={c.id}>
+                  <td className="col-no">{i + 1}</td>
                   <td>
                     <Link to={`/rates/calculator/${c.id}`} className="t-link" style={{ fontWeight: 400 }}>{c.name}</Link>
                     <div className="sub">{c.path}</div>
@@ -50,7 +52,7 @@ export default function CalculatorList() {
                   <td><Status status={c.status} /></td>
                   <td>
                     <div className="row" style={{ gap: 4 }}>
-                      <IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => toast('เปิด Preview', c.name)} />
+                      <IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => openPreview({ title: c.name, type: 'เครื่องมือคำนวณ', path: '/th/calculator' })} />
                       <Link to={`/rates/calculator/${c.id}`}><IconButton icon={Pencil} title="แก้ไขสูตร" /></Link>
                     </div>
                   </td>

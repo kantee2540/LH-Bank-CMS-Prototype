@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Sparkles, Eye, Download, Send, Image as ImageIcon, Info, Pencil, Trash2, Plus, Check, X } from 'lucide-react';
+import { Sparkles, Eye, History, Download, Send, Image as ImageIcon, Info, Pencil, Trash2, Plus, Check, X } from 'lucide-react';
 import { Button, Card, Field, Input, Select, Textarea, Tabs, Status, Modal, PageHeader, IconButton, InfoBanner } from '../../components/ui';
 import MediaPicker from '../../components/MediaPicker';
 import MediaThumb from '../../components/MediaThumb';
+import RichEditor from '../../components/RichEditor';
+import { openPreview } from '../Preview';
 import { useStore } from '../../store';
 import type { Dispatch, SetStateAction } from 'react';
 import type { TabItem } from '../../components/ui';
@@ -11,7 +13,7 @@ import type { MediaItem, VersionItem } from '../../types';
 import '../pages.css';
 
 type Lang = 'th' | 'en' | 'zh';
-type FormTab = 'content' | 'seo' | 'display' | 'versions';
+type FormTab = 'content' | 'seo' | 'display';
 
 interface LangData {
   title: string;
@@ -20,6 +22,7 @@ interface LangData {
   metaDesc: string;
   slug: string;
   answer: string;
+  body: string;
 }
 type FormData = Record<Lang, LangData>;
 
@@ -57,9 +60,9 @@ const LANG_TABS: TabItem<Lang>[] = [
 ];
 
 const INITIAL: FormData = {
-  th: { title: 'เงินฝากประจำพิเศษ 6 เดือน รับดอกเบี้ยสูง', excerpt: 'ฝากขั้นต่ำ 10,000 บาท รับดอกเบี้ย {rate:fd-6m} ต่อปี', metaTitle: 'เงินฝากประจำพิเศษ 6 เดือน ดอกเบี้ยสูง | LH Bank', metaDesc: 'ฝากขั้นต่ำ 10,000 บาท รับดอกเบี้ย {rate:fd-6m} ต่อปี เปิดบัญชีได้ถึง 31 ธ.ค. 2569', slug: '/th/personal/deposit/fixed-6m', answer: 'LH Bank เงินฝากประจำพิเศษ 6 เดือน ฝากขั้นต่ำ 10,000 บาท ดอกเบี้ย {rate:fd-6m} ต่อปี เปิดบัญชีได้ถึง 31 ธ.ค. 2569' },
-  en: { title: '6-Month Special Fixed Deposit, High Interest', excerpt: 'Minimum deposit THB 10,000, earn {rate:fd-6m} p.a.', metaTitle: '6-Month Special Fixed Deposit | LH Bank', metaDesc: 'Minimum deposit THB 10,000 and earn {rate:fd-6m} p.a. Open by 31 Dec 2026.', slug: '/en/personal/deposit/fixed-6m', answer: 'LH Bank 6-month special fixed deposit: minimum THB 10,000, {rate:fd-6m} p.a., open by 31 Dec 2026.' },
-  zh: { title: '6个月特别定期存款 · 高利率', excerpt: '', metaTitle: '6个月特别定期存款 · 高利率 | LH Bank', metaDesc: '', slug: '/zh/personal/deposit/fixed-6m', answer: 'LH Bank 6个月特别定期存款，最低存款10,000泰铢，年利率{rate:fd-6m}，2026年12月31日前开户有效。' },
+  th: { title: 'เงินฝากประจำพิเศษ 6 เดือน รับดอกเบี้ยสูง', excerpt: 'ฝากขั้นต่ำ 10,000 บาท รับดอกเบี้ย {rate:fd-6m} ต่อปี', metaTitle: 'เงินฝากประจำพิเศษ 6 เดือน ดอกเบี้ยสูง | LH Bank', metaDesc: 'ฝากขั้นต่ำ 10,000 บาท รับดอกเบี้ย {rate:fd-6m} ต่อปี เปิดบัญชีได้ถึง 31 ธ.ค. 2569', slug: '/th/personal/deposit/fixed-6m', answer: 'LH Bank เงินฝากประจำพิเศษ 6 เดือน ฝากขั้นต่ำ 10,000 บาท ดอกเบี้ย {rate:fd-6m} ต่อปี เปิดบัญชีได้ถึง 31 ธ.ค. 2569', body: '<p>สิทธิพิเศษสำหรับลูกค้าที่เปิดบัญชีเงินฝากประจำ 6 เดือน ภายในวันที่ 31 ธันวาคม 2569</p><ul><li>ฝากขั้นต่ำ 10,000 บาท สูงสุด 5,000,000 บาท</li><li>อัตราดอกเบี้ย {rate:fd-6m} ต่อปี (ดึงจากหมวดหมู่ Rates)</li><li>ไม่ต้องเสียค่าธรรมเนียมเปิดบัญชี</li></ul>' },
+  en: { title: '6-Month Special Fixed Deposit, High Interest', excerpt: 'Minimum deposit THB 10,000, earn {rate:fd-6m} p.a.', metaTitle: '6-Month Special Fixed Deposit | LH Bank', metaDesc: 'Minimum deposit THB 10,000 and earn {rate:fd-6m} p.a. Open by 31 Dec 2026.', slug: '/en/personal/deposit/fixed-6m', answer: 'LH Bank 6-month special fixed deposit: minimum THB 10,000, {rate:fd-6m} p.a., open by 31 Dec 2026.', body: '<p>Exclusive for customers opening a 6-month fixed deposit account by 31 December 2026.</p>' },
+  zh: { title: '6个月特别定期存款 · 高利率', excerpt: '', metaTitle: '6个月特别定期存款 · 高利率 | LH Bank', metaDesc: '', slug: '/zh/personal/deposit/fixed-6m', answer: 'LH Bank 6个月特别定期存款，最低存款10,000泰铢，年利率{rate:fd-6m}，2026年12月31日前开户有效。', body: '<p>2026年12月31日前开立6个月定期存款账户的客户专享。</p>' },
 };
 
 const FAQS: Faq[] = [
@@ -100,33 +103,7 @@ function ContentTab({ lang, setLang, data, setField, hero, setHero, meta, setMet
           </div>
           <div className="field">
             <span className="field-label">เนื้อหา <span className="req">*</span></span>
-            <div className="editor">
-              <div className="editor-tools">
-                {['B', 'I', 'U', 'H2', 'H3', '• List', '1. List', 'Link', 'รูป', 'ตาราง', '{ } ตัวแปรอัตรา'].map((t) => (
-                  <button key={t} type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => {
-                    const cmd = { B: 'bold', I: 'italic', U: 'underline', '• List': 'insertUnorderedList', '1. List': 'insertOrderedList' }[t];
-                    if (cmd) document.execCommand(cmd);
-                    if (t === '{ } ตัวแปรอัตรา') document.execCommand('insertText', false, '{rate:fd-6m}');
-                  }}>{t}</button>
-                ))}
-              </div>
-              <div className="editor-body" contentEditable suppressContentEditableWarning key={lang}>
-                {lang === 'th' ? (
-                  <>
-                    <p>สิทธิพิเศษสำหรับลูกค้าที่เปิดบัญชีเงินฝากประจำ 6 เดือน ภายในวันที่ 31 ธันวาคม 2569</p>
-                    <ul>
-                      <li>ฝากขั้นต่ำ 10,000 บาท สูงสุด 5,000,000 บาท</li>
-                      <li>อัตราดอกเบี้ย {'{rate:fd-6m}'} ต่อปี (ดึงจากโมดูล Rates)</li>
-                      <li>ไม่ต้องเสียค่าธรรมเนียมเปิดบัญชี</li>
-                    </ul>
-                  </>
-                ) : lang === 'en' ? (
-                  <p>Exclusive for customers opening a 6-month fixed deposit account by 31 December 2026.</p>
-                ) : (
-                  <p>2026年12月31日前开立6个月定期存款账户的客户专享。</p>
-                )}
-              </div>
-            </div>
+            <RichEditor key={lang} value={d.body} onChange={(html) => setField('body', html)} langLabel={lang.toUpperCase()} />
             <div className="var-hint"><Info size={16} /> อัตราดอกเบี้ยใส่เป็นตัวแปร {'{rate:...}'} เท่านั้น ระบบดึงค่าล่าสุดจาก Rates (CMS-14)</div>
           </div>
           <div className="grid-2">
@@ -299,15 +276,15 @@ function DisplayTab() {
   );
 }
 
-/* ---------- Tab: ประวัติเวอร์ชัน (VR-01 / VR-02 / VR-03) ---------- */
-function VersionTab({ isNew }: { isNew: boolean }) {
+/* ---------- Modal: ประวัติเวอร์ชัน (VR-01 / VR-02 / VR-03) — มีเฉพาะ Page Builder ---------- */
+function VersionModal({ open, onClose, isNew }: { open: boolean; onClose: () => void; isNew: boolean }) {
   const { versions, restoreVersion, toast } = useStore();
   const [restore, setRestore] = useState<VersionItem | null>(null);
   const [compare, setCompare] = useState<VersionItem | null>(null);
   const [parts, setParts] = useState<Record<RestorePart, boolean>>({ content: true, media: true, schedule: false, seo: false });
   const [reason, setReason] = useState('ฝ่ายการตลาดขอใช้คำโปรยและรูป Hero ชุดเดิม');
   if (isNew) {
-    return <Card><p className="t-secondary" style={{ textAlign: 'center', padding: 40 }}>ยังไม่มีประวัติเวอร์ชัน — ระบบจะเก็บเวอร์ชันทุกครั้งที่บันทึก ส่งอนุมัติ และเผยแพร่</p></Card>;
+    return <Modal open={open} onClose={onClose} width={640} title="ประวัติเวอร์ชัน"><p className="t-secondary" style={{ textAlign: 'center', padding: 24 }}>ยังไม่มีประวัติเวอร์ชัน — ระบบจะเก็บเวอร์ชันทุกครั้งที่บันทึก ส่งอนุมัติ และเผยแพร่</p></Modal>;
   }
   const PARTS: [RestorePart, string, string][] = [
     ['content', 'เนื้อหาทุกภาษา', 'หัวข้อ คำโปรย และเนื้อหา · TH / EN / 中文'],
@@ -317,19 +294,17 @@ function VersionTab({ isNew }: { isNew: boolean }) {
   ];
   return (
     <>
-      <InfoBanner title="ย้อนกลับไปแก้ไขหรือกู้คืนได้โดยไม่กระทบหน้าเว็บ">
-        ระบบสร้างฉบับร่างใหม่จากเวอร์ชันที่เลือก · v5 ที่เผยแพร่อยู่ยังแสดงบนเว็บจนกว่าฉบับร่างจะได้รับอนุมัติ · ไม่มีเวอร์ชันใดถูกลบ
-      </InfoBanner>
-      <Card
-        title={`ประวัติเวอร์ชัน (${versions.length})`}
-        sub="เก็บทุกครั้งที่บันทึก ส่งอนุมัติ และเผยแพร่ · เลือกเวอร์ชันเพื่อดู เปรียบเทียบ แก้ไขต่อ หรือกู้คืน"
-        action={
+      <Modal open={open} onClose={onClose} width={1040} title={`ประวัติเวอร์ชัน (${versions.length})`} footer={<Button onClick={onClose}>ปิด</Button>}>
+        <InfoBanner title="ย้อนกลับไปแก้ไขหรือกู้คืนได้โดยไม่กระทบหน้าเว็บ">
+          ระบบสร้างฉบับร่างใหม่จากเวอร์ชันที่เลือก · v5 ที่เผยแพร่อยู่ยังแสดงบนเว็บจนกว่าฉบับร่างจะได้รับอนุมัติ · ไม่มีเวอร์ชันใดถูกลบ
+        </InfoBanner>
+        <div className="row-between" style={{ alignItems: 'flex-end' }}>
+          <span className="t-secondary">เก็บทุกครั้งที่บันทึก ส่งอนุมัติ และเผยแพร่ · เลือกเวอร์ชันเพื่อดู เปรียบเทียบ แก้ไขต่อ หรือกู้คืน</span>
           <div className="row" style={{ gap: 10 }}>
             <Field label="สถานะ" style={{ width: 180 }}><Select options={['ทั้งหมด', 'Published', 'Expired', 'Rejected', 'Draft']} /></Field>
             <Field label="ช่วงเวลา" style={{ width: 180 }}><Select options={['90 วันล่าสุด', '30 วันล่าสุด', 'ทั้งหมด']} /></Field>
           </div>
-        }
-      >
+        </div>
         <div className="table-wrap">
           <table className="table">
             <thead><tr><th>เวอร์ชัน</th><th>สถานะ</th><th>สรุปการเปลี่ยนแปลง</th><th>ผู้แก้ไข · วันที่</th><th>Action</th></tr></thead>
@@ -352,8 +327,8 @@ function VersionTab({ isNew }: { isNew: boolean }) {
             </tbody>
           </table>
         </div>
-        <p className="t-sm t-secondary mt-16">Rejected แก้ไขต่อได้แต่กู้คืนไม่ได้ · เวอร์ชันที่เผยแพร่อยู่ (Live) แก้ไขได้ผ่านปุ่ม “แก้ไขต่อ” ซึ่งจะสร้างฉบับร่างใหม่</p>
-      </Card>
+        <p className="t-sm t-secondary">Rejected แก้ไขต่อได้แต่กู้คืนไม่ได้ · เวอร์ชันที่เผยแพร่อยู่ (Live) แก้ไขได้ผ่านปุ่ม “แก้ไขต่อ” ซึ่งจะสร้างฉบับร่างใหม่ · ทุกการกู้คืนต้องยืนยันก่อนเสมอ</p>
+      </Modal>
 
       {/* VR-02 ดูและเปรียบเทียบเวอร์ชัน */}
       <Modal open={!!compare} onClose={() => setCompare(null)} width={900} title={compare?.live ? `ดูเวอร์ชัน ${compare?.v}` : `เปรียบเทียบ ${compare?.v} กับ v5 (Live)`}>
@@ -385,7 +360,7 @@ function VersionTab({ isNew }: { isNew: boolean }) {
         open={!!restore}
         onClose={() => setRestore(null)}
         width={680}
-        title={`กู้คืน ${restore?.v} เป็นฉบับร่างใหม่`}
+        title={`ยืนยันการกู้คืน ${restore?.v} เป็นฉบับร่างใหม่?`}
         footer={
           <>
             <Button onClick={() => setRestore(null)}>ยกเลิก</Button>
@@ -395,7 +370,7 @@ function VersionTab({ isNew }: { isNew: boolean }) {
               restoreVersion(restore.v, chosen);
               toast(`สร้างฉบับร่าง v${versions.length + 1} แล้ว`, `กู้คืนจาก ${restore.v} · v5 ยังแสดงบนเว็บ`);
               setRestore(null);
-            }}>กู้คืนเป็นฉบับร่าง</Button>
+            }}>ยืนยันกู้คืน</Button>
           </>
         }
       >
@@ -409,7 +384,7 @@ function VersionTab({ isNew }: { isNew: boolean }) {
             </label>
           ))}
         </div>
-        <div className="note-soft-warning">⚠️ <span>{restore?.v} ใช้อัตราดอกเบี้ยแบบพิมพ์เอง (1.80%) ซึ่งไม่อัปเดตตามโมดูล Rates · แนะนำให้เปลี่ยนเป็นตัวแปร {'{rate:fd-6m}'} ในฉบับร่างก่อนส่งอนุมัติ</span></div>
+        <div className="note-soft-warning">⚠️ <span>{restore?.v} ใช้อัตราดอกเบี้ยแบบพิมพ์เอง (1.80%) ซึ่งไม่อัปเดตตามหมวดหมู่ Rates · แนะนำให้เปลี่ยนเป็นตัวแปร {'{rate:fd-6m}'} ในฉบับร่างก่อนส่งอนุมัติ</span></div>
         <Field label="เหตุผลการกู้คืน" required><Input value={reason} onChange={(e) => setReason(e.target.value)} /></Field>
       </Modal>
     </>
@@ -426,7 +401,8 @@ export default function ContentForm() {
   const isRework = !!existing?.rejected; // CS-08 ถูกส่งกลับแก้ไข
   const isNew = !id;
   const editable = isNew || isRework;
-  const [tab, setTab] = useState<FormTab>(editable ? 'content' : 'versions');
+  const [tab, setTab] = useState<FormTab>('content');
+  const [versionOpen, setVersionOpen] = useState(false);
   const [lang, setLang] = useState<Lang>('th');
   const [data, setData] = useState<FormData>(INITIAL);
   const [hero, setHero] = useState<MediaItem | null>(isNew ? null : isRework ? { name: 'hero-fixed-6m.webp', kind: 'image', hue: 200, alt: 'เงินฝากประจำพิเศษ 6 เดือน' } : { name: 'promo-fixed-6m.jpg', kind: 'image', hue: 195, alt: 'เงินฝากประจำพิเศษ 6 เดือน' });
@@ -462,7 +438,8 @@ export default function ContentForm() {
         actions={
           <>
             {editable && <Button icon={Sparkles} onClick={() => toast('AI ช่วยร่าง', 'สร้างร่าง EN / 中文 จากภาษาไทยแล้ว — โปรดตรวจทานก่อนส่ง')}>AI ช่วยร่าง (ส่วนเสริม)</Button>}
-            <Button icon={Eye} onClick={() => toast('เปิด Preview', 'Desktop / Mobile')}>Preview</Button>
+            <Button icon={History} onClick={() => setVersionOpen(true)}>ประวัติเวอร์ชัน</Button>
+            <Button icon={Eye} onClick={() => openPreview({ title: data[lang].title, excerpt: data[lang].excerpt, body: data[lang].body, type: meta.type, path: `/${lang}${meta.path}`, hero: hero?.name, lang })}>Preview</Button>
             {editable && <Button icon={Download} onClick={() => toast('บันทึก Draft แล้ว', data.th.title)}>บันทึก Draft</Button>}
             {editable && <Button variant="primary" icon={Send} onClick={() => setSubmitOpen(true)}>ส่งอนุมัติ</Button>}
           </>
@@ -475,13 +452,12 @@ export default function ContentForm() {
           { value: 'content', label: 'เนื้อหา' },
           { value: 'seo', label: 'SEO / AEO' },
           { value: 'display', label: 'ตั้งค่าการแสดงผล' },
-          { value: 'versions', label: 'ประวัติเวอร์ชัน' },
         ]}
       />
       {tab === 'content' && <ContentTab {...{ lang, setLang, data, setField, hero, setHero, meta, setMeta }} />}
       {tab === 'seo' && <SeoTab {...{ lang, setLang, data, setField, hero }} />}
       {tab === 'display' && <DisplayTab />}
-      {tab === 'versions' && <VersionTab isNew={isNew} />}
+      <VersionModal open={versionOpen} onClose={() => setVersionOpen(false)} isNew={isNew} />
 
       {/* CS-06 ยืนยันส่งอนุมัติ */}
       <Modal

@@ -12,7 +12,7 @@ interface ConfirmState {
 
 const GROUPS: TrashGroup[] = ['Content', 'Media', 'Banner', 'อื่นๆ'];
 
-/* TR-01 ถังขยะ · TR-03 กู้คืน · TR-04 ลบถาวร */
+/* TR-01 Recycle Bin · TR-03 กู้คืน · TR-04 ลบถาวร */
 export default function Trash() {
   const { trash, restoreFromTrash, deleteForever, toast } = useStore();
   const [tab, setTab] = useState<TrashGroup | 'all'>('all');
@@ -46,13 +46,13 @@ export default function Trash() {
 
   return (
     <>
-      <PageHeader title="ถังขยะ (Trash)" />
-      <InfoBanner title="รายการที่ลบจะอยู่ในถังขยะ 30 วัน ก่อนระบบลบถาวรอัตโนมัติ">
+      <PageHeader title="Recycle Bin" />
+      <InfoBanner title="รายการที่ลบจะอยู่ใน Recycle Bin 30 วัน ก่อนระบบลบถาวรอัตโนมัติ">
         กู้คืนแล้วรายการจะกลับไปที่เมนูเดิมในสถานะ Draft (ไม่เผยแพร่อัตโนมัติ) · การลบถาวรกู้คืนไม่ได้ และบันทึกใน Audit Log
       </InfoBanner>
       <form className="filter-bar filter-bar-3" onSubmit={(e) => { e.preventDefault(); setApplied(q); }}>
         <Field label="ค้นหาชื่อรายการ"><Input value={q} onChange={(e) => setQ(e.target.value)} /></Field>
-        <Field label="โมดูล"><Select options={['ทั้งหมด', 'Manage Content', 'Media', 'Banner', 'FAQ', 'News', 'NPA', 'Layout']} /></Field>
+        <Field label="หมวดหมู่"><Select options={['ทั้งหมด', 'Page Builder', 'Media', 'Banner', 'FAQ', 'News', 'NPA', 'Layout']} /></Field>
         <Field label="ลบโดย"><Select options={['ทุกคน', 'Content Editor 01', 'Content Editor 02']} /></Field>
         <Button variant="primary" type="submit">Search</Button>
       </form>
@@ -75,13 +75,14 @@ export default function Trash() {
             <thead>
               <tr>
                 <th><input type="checkbox" className="cb" checked={allSel} onChange={() => setSel(allSel ? [] : list.map((t) => t.id))} /></th>
-                <th>รายการ</th><th>โมดูล</th><th>ลบโดย · เมื่อ</th><th>ลบถาวรอัตโนมัติ</th><th>Action</th>
+                <th className="col-no">ลำดับ</th><th>รายการ</th><th>หมวดหมู่</th><th>ลบโดย · เมื่อ</th><th>ลบถาวรอัตโนมัติ</th><th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {list.map((t) => (
+              {list.map((t, i) => (
                 <tr key={t.id} className={sel.includes(t.id) ? 'highlight' : ''}>
                   <td><input type="checkbox" className="cb" checked={sel.includes(t.id)} onChange={() => setSel((s) => (s.includes(t.id) ? s.filter((x) => x !== t.id) : [...s, t.id]))} /></td>
+                  <td className="col-no">{i + 1}</td>
                   <td style={{ maxWidth: 280 }}><b style={{ fontWeight: 500 }}>{t.title}</b><div className="sub">{t.sub}</div></td>
                   <td><span className="tag-solid">{t.module}</span></td>
                   <td className="t-sm" style={{ maxWidth: 200 }}>{t.by}</td>
@@ -94,7 +95,7 @@ export default function Trash() {
                   </td>
                 </tr>
               ))}
-              {!list.length && <tr><td colSpan={6} className="t-tertiary" style={{ textAlign: 'center', padding: 40 }}>ถังขยะว่าง</td></tr>}
+              {!list.length && <tr><td colSpan={7} className="t-tertiary" style={{ textAlign: 'center', padding: 40 }}>Recycle Bin ว่าง</td></tr>}
             </tbody>
           </table>
         </div>

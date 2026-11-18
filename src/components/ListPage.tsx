@@ -103,21 +103,23 @@ export default function ListPage<T>({
           <table className="table">
             <thead>
               <tr>
+                <th className="col-no">ลำดับ</th>
                 {columns.map((c) => (
                   <th key={c.key} style={{ width: c.width, textAlign: c.align }}>{c.label}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {shown.map((r) => (
+              {shown.map((r, i) => (
                 <tr key={rowKey(r)} className={rowClass?.(r)}>
+                  <td className="col-no">{(cur - 1) * size + i + 1}</td>
                   {columns.map((c) => (
                     <td key={c.key} style={{ textAlign: c.align }}>{c.render(r)}</td>
                   ))}
                 </tr>
               ))}
               {!shown.length && (
-                <tr><td colSpan={columns.length} className="t-tertiary" style={{ textAlign: 'center', padding: 40 }}>{empty}</td></tr>
+                <tr><td colSpan={columns.length + 1} className="t-tertiary" style={{ textAlign: 'center', padding: 40 }}>{empty}</td></tr>
               )}
             </tbody>
           </table>

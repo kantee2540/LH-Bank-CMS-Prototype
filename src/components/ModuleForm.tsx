@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, Upload, Trash2, Image as ImageIcon } from 'lucide-react';
 import { Button, Card, Field, Input, Select, Textarea, Toggle, LangSwitch, PageHeader, Status } from './ui';
 import type { SelectOption } from './ui';
+import RichEditor from './RichEditor';
 import MediaPicker from './MediaPicker';
 import MediaThumb from './MediaThumb';
 import { useStore } from '../store';
+import { openPreview } from '../pages/Preview';
 import type { ContentStatus, MediaItem } from '../types';
 
 type Lang = 'th' | 'en' | 'zh';
@@ -49,12 +51,7 @@ function renderInput(f: FieldDef, value: string, onChange: (v: string) => void) 
       return <Textarea rows={3} value={value} placeholder={f.placeholder} onChange={(e) => onChange(e.target.value)} />;
     case 'rich':
       return (
-        <div className="editor">
-          <div className="editor-tools">
-            {['ย่อหน้า ▾', 'B', 'I', 'U', '• List', 'รูป', 'ตาราง', 'Link'].map((t) => <button key={t} type="button">{t}</button>)}
-          </div>
-          <textarea className="editor-body" style={{ border: 0, width: '100%', resize: 'vertical', minHeight: 160 }} value={value} onChange={(e) => onChange(e.target.value)} />
-        </div>
+        <RichEditor value={value} onChange={onChange} height={340} />
       );
     case 'select':
       return <Select value={value} onChange={(e) => onChange(e.target.value)} options={f.options ?? []} />;
@@ -113,7 +110,7 @@ export default function ModuleForm({ back, title, status = 'Draft', module, fiel
         back={back}
         title={title}
         badges={<Status status={status} />}
-        actions={<Button icon={Eye} onClick={() => toast('เปิด Preview', name)}>Preview</Button>}
+        actions={<Button icon={Eye} onClick={() => { const rich = fields.find((f) => f.type === 'rich'); openPreview({ title: name, body: rich ? data.th[rich.key] : undefined, type: module }); }}>Preview</Button>}
       />
       <div className="split">
         <Card title="เนื้อหา">

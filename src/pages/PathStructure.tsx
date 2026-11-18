@@ -129,8 +129,8 @@ export default function PathStructure() {
           </>
         )}
       </Modal>
-      <Modal open={!!del} onClose={() => setDel(null)} title="ลบ Path?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setTree(map(tree, (n) => (n.id === del?.id ? null : n))); toast('ย้าย Path ไปถังขยะแล้ว', del?.name); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
-        <p className="t-secondary">“{del?.name}” (/{del?.path}){del?.children?.length ? ` และ Path ย่อย ${flat(del.children).length} รายการ` : ''} จะถูกย้ายไปถังขยะ · หน้าเว็บที่ใช้ Path นี้จะแสดง 404 จนกว่าจะกู้คืน</p>
+      <Modal open={!!del} onClose={() => setDel(null)} title="ลบ Path?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setTree(map(tree, (n) => (n.id === del?.id ? null : n))); toast('ย้าย Path ไป Recycle Bin แล้ว', del?.name); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
+        <p className="t-secondary">“{del?.name}” (/{del?.path}){del?.children?.length ? ` และ Path ย่อย ${flat(del.children).length} รายการ` : ''} จะถูกย้ายไป Recycle Bin · หน้าเว็บที่ใช้ Path นี้จะแสดง 404 จนกว่าจะกู้คืน</p>
       </Modal>
     </>
   );

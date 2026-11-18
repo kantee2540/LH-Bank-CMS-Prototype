@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Plus, Copy, Trash2, Eye, Pencil, Info, RefreshCw, Move, Settings, LayoutGrid, Download, Upload, Maximize2, Undo2, Redo2, Clock, X, FileText, Image as ImageIcon, Menu, Users, Gift, ArrowLeftRight, Calculator, TrendingUp, Smartphone, Percent, HelpCircle, MessageSquare, Layers, Lock, Search } from 'lucide-react';
+import { Plus, Copy, Trash2, Eye, Pencil, Info, RefreshCw, Move, Settings, LayoutGrid, Download, Upload, Maximize2, Undo2, Redo2, X, FileText, Image as ImageIcon, Menu, Users, Gift, ArrowLeftRight, Calculator, TrendingUp, Smartphone, Percent, HelpCircle, MessageSquare, Layers, Lock, Search } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button, Card, Field, Input, Select, Tabs, Toggle, Status, IconButton, Modal, PageHeader, LangSwitch } from '../components/ui';
 import ListPage, { selectFilter, textFilter } from '../components/ListPage';
 import { useStore } from '../store';
+import { openPreview } from './Preview';
 import type { ContentStatus } from '../types';
 import './pages.css';
 
@@ -49,7 +50,7 @@ export function LayoutList() {
       toolbar={<>
         <Button variant="primary" icon={Plus} onClick={() => navigate('/layout/new')}>Create Layout</Button>
         <Button icon={Copy} onClick={() => setFromTpl(true)}>สร้างจาก Template</Button>
-        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'Layout').length})</Link>
+        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'Layout').length})</Link>
       </>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> 1 Layout ผูกกับ 1 Path ใน Path Structure · เผยแพร่ต้องผ่านผู้อนุมัติ</span>}
       columns={[
@@ -59,10 +60,10 @@ export function LayoutList() {
         { key: 's', label: 'Sections', render: (r) => r.sections },
         { key: 'st', label: 'Status', render: (r) => <Status status={r.status} /> },
         { key: 'u', label: 'แก้ไขล่าสุด', render: (r) => r.updated },
-        { key: 'a', label: 'Action', render: (r) => <div className="row" style={{ gap: 0 }}><IconButton icon={Eye} title="Preview" onClick={() => toast('Preview', r.path)} /><IconButton icon={Copy} title="ทำสำเนา" onClick={() => { setRows([...rows, { ...r, id: `${r.id}-copy`, name: `${r.name} (สำเนา)`, status: 'Draft' }]); toast('ทำสำเนาแล้ว', r.name); }} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/layout/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
+        { key: 'a', label: 'Action', render: (r) => <div className="row" style={{ gap: 0 }}><IconButton icon={Eye} title="Preview" onClick={() => openPreview({ title: r.name, type: 'Layout', path: r.path })} /><IconButton icon={Copy} title="ทำสำเนา" onClick={() => { setRows([...rows, { ...r, id: `${r.id}-copy`, name: `${r.name} (สำเนา)`, status: 'Draft' }]); toast('ทำสำเนาแล้ว', r.name); }} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/layout/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
       ]}
     >
-      <Modal open={!!del} onClose={() => setDel(null)} title="ย้าย Layout ไปถังขยะ?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไปถังขยะแล้ว', del?.name); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
+      <Modal open={!!del} onClose={() => setDel(null)} title="ย้าย Layout ไป Recycle Bin?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไป Recycle Bin แล้ว', del?.name); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
         <p className="t-secondary">Path {del?.path} จะแสดง 404 จนกว่าจะผูก Layout ใหม่หรือกู้คืน</p>
       </Modal>
       <Modal open={fromTpl} onClose={() => setFromTpl(false)} width={760} title="สร้าง Layout จาก Template" footer={<><Button onClick={() => setFromTpl(false)}>ยกเลิก</Button><Button variant="primary" onClick={() => navigate('/layout/new?tpl=Product Template')}>ถัดไป</Button></>}>
@@ -99,15 +100,9 @@ const WIDGET_LIB: Widget[] = [
   { id: 'lib7', name: 'Calculator', icon: Calculator, kind: 'calc' }, { id: 'lib8', name: 'FAQ', icon: HelpCircle }, { id: 'lib9', name: 'Article Cards', icon: TrendingUp },
   { id: 'lib10', name: 'Menu / Shortcuts', icon: Menu }, { id: 'lib11', name: 'Drop-lead Form', icon: MessageSquare }, { id: 'lib12', name: 'FX Rate Table', icon: ArrowLeftRight },
 ];
-const VERSIONS = [
-  ['v13', 'Draft', '02/11/2026', 'เพิ่ม Section ใหม่ 6-6 ต่อจาก Promotions', 'Content Editor 02 · 16:42 น.'],
-  ['v12', 'Published', '30/10/2026', 'อนุมัติและเผยแพร่', 'Auditor – Marketing · 09:15 น.'],
-  ['v11', 'Expired', '28/10/2026', 'ย้าย Section Tools ขึ้น 1 ลำดับ', 'Content Editor 01 · 14:20 น.'],
-  ['v10', 'Expired', '20/10/2026', 'เปลี่ยน Hero Banner เป็น Carousel', 'Content Editor 02 · 11:05 น.'],
-] as const;
 
 type Device = 'desktop' | 'tablet' | 'mobile';
-type Panel = 'section' | 'widget' | 'library' | 'history';
+type Panel = 'section' | 'widget' | 'library';
 
 /* CMS-06 / 06B / 06C / 06D / 06E — Edit Layout */
 export function LayoutEdit() {
@@ -184,7 +179,7 @@ export function LayoutEdit() {
     <div className="with-bottom-bar">
       <PageHeader title={title}
         badges={<Status status={hIdx > 0 ? 'Draft' : base?.status ?? 'Draft'} />}
-        actions={<><Button icon={RefreshCw} onClick={() => { setTab('layout'); setPanel('history'); }}>ประวัติการแก้ไข</Button><Button icon={Eye} onClick={() => { setTab('layout'); setDevice('mobile'); setPanel('history'); }}>Preview</Button></>} />
+        actions={<Button icon={Eye} onClick={() => openPreview({ title, type: 'Layout', path: base?.path ?? '/th', body: sections.map((x) => `<h3>${x.name}</h3><p>${x.widgets.map((w) => w.name).join(' · ')}</p>`).join('') })}>Preview</Button>} />
       <section className="card" style={{ padding: '4px 16px 0' }}>
         <Tabs value={tab} onChange={setTab} style={{ borderBottom: 0 }} tabs={[{ value: 'general', label: 'General' }, { value: 'layout', label: 'Layout' }, { value: 'seo', label: 'SEO' }]} />
       </section>
@@ -218,7 +213,7 @@ export function LayoutEdit() {
           </div>
           <div className="col">
             <Card title="การเผยแพร่"><div className="col"><Field label="สถานะ"><Select defaultValue={base?.status} options={['Published', 'Scheduled', 'Draft']} /></Field><Field label="วันที่เริ่มแสดง"><Input type="datetime-local" defaultValue="2026-10-15T00:00" /></Field><Field label="วันที่สิ้นสุด"><Select options={['ไม่กำหนด', '31/12/2026']} /></Field><Field label="ผู้อนุมัติ"><Select options={['Auditor – Marketing', 'Auditor – ฝ่ายสินเชื่อ']} /></Field></div></Card>
-            <Card title="ข้อมูลระบบ">{[['สร้างโดย', 'Content Editor 01 · 01/09/2026'], ['แก้ไขล่าสุด', 'Content Editor 02 · 26/10/2026 16:40'], ['เวอร์ชัน', 'v12 (Published) · v13 (Draft)'], ['URL', `lhbank.co.th${base?.path ?? '/'}`]].map(([k, v]) => <div key={k} style={{ marginBottom: 10 }}><div className="t-sm t-secondary">{k}</div><b className="t-sm" style={{ overflowWrap: 'anywhere' }}>{v}</b></div>)}</Card>
+            <Card title="ข้อมูลระบบ">{[['สร้างโดย', 'Content Editor 01 · 01/09/2026'], ['แก้ไขล่าสุด', 'Content Editor 02 · 26/10/2026 16:40'], ['URL', `lhbank.co.th${base?.path ?? '/'}`]].map(([k, v]) => <div key={k} style={{ marginBottom: 10 }}><div className="t-sm t-secondary">{k}</div><b className="t-sm" style={{ overflowWrap: 'anywhere' }}>{v}</b></div>)}</Card>
           </div>
         </div>
       )}
@@ -249,9 +244,8 @@ export function LayoutEdit() {
             <button className="pb-tool" title="Export JSON" onClick={() => toast('Export Layout', 'layout-home.json')}><Download size={15} /></button>
             <button className="pb-tool" title="Import JSON"><Upload size={15} /></button>
             <button className="pb-tool" title="เต็มจอ"><Maximize2 size={15} /></button>
-            <button className={`pb-tool ${panel !== 'library' && panel !== 'history' ? 'on' : ''}`} title="ตั้งค่า" onClick={() => setPanel(selW ? 'widget' : 'section')}><Settings size={15} /></button>
+            <button className={`pb-tool ${panel !== 'library' ? 'on' : ''}`} title="ตั้งค่า" onClick={() => setPanel(selW ? 'widget' : 'section')}><Settings size={15} /></button>
             <button className={`pb-tool ${panel === 'library' ? 'on' : ''}`} title="Widget Library" onClick={() => { setLibTarget(selSec); setPanel('library'); }}><LayoutGrid size={15} /></button>
-            <button className={`pb-tool ${panel === 'history' ? 'on' : ''}`} title="ประวัติเวอร์ชัน" onClick={() => setPanel('history')}><Clock size={15} /></button>
           </div>
           <div className="pb-body">
             <div className="pb-canvas">
@@ -308,21 +302,6 @@ export function LayoutEdit() {
                   <div className="row-between" style={{ padding: '12px 14px' }}><b>Widget Library</b><IconButton icon={X} title="ปิด" onClick={() => setPanel('section')} /></div>
                   <p className="t-sm t-secondary" style={{ padding: '0 14px 8px' }}>{libTarget ? `คลิกเพื่อเพิ่มใน Section “${sections.find((s) => s.id === libTarget)?.name}”` : 'เลือก Section ก่อนเพิ่ม Widget'}</p>
                   <div className="lib-grid">{WIDGET_LIB.map((w) => <button key={w.id} className="lib-item" disabled={!libTarget} onClick={() => { if (!libTarget) return; commit(sections.map((s) => (s.id === libTarget ? { ...s, widgets: [...s.widgets, { ...w, id: `w${Date.now()}` }] } : s))); toast('เพิ่ม Widget แล้ว', w.name); }}><w.icon size={18} /><span className="t-sm">{w.name}</span></button>)}</div>
-                </>
-              )}
-              {panel === 'history' && (
-                <>
-                  <div className="row-between" style={{ padding: '12px 14px' }}><b className="row" style={{ gap: 8 }}><Clock size={16} /> ประวัติเวอร์ชัน</b><IconButton icon={X} title="ปิด" onClick={() => setPanel('section')} /></div>
-                  <div className="col" style={{ gap: 10, padding: '0 14px 14px' }}>
-                    {VERSIONS.map(([v, st, d, sum, by], i) => (
-                      <div key={v} className={`ver-card ${i === 0 ? 'on' : ''}`}>
-                        <div className="row-between"><span className="row" style={{ gap: 8 }}><b>{v}</b><Status status={st} /></span><span className="t-sm">{d}</span></div>
-                        <div className="t-sm mt-8">{sum}</div><div className="t-sm t-secondary">{by}</div>
-                        {i > 0 && <div className="row t-sm mt-8" style={{ gap: 12 }}><a className="t-link">ดูเวอร์ชันนี้</a><a className="t-link">เปรียบเทียบ</a><a style={{ color: '#e0625a', cursor: 'pointer' }} onClick={() => toast(`กู้คืน ${v} เป็น Draft ใหม่`, 'ต้องผ่านการอนุมัติ')}>กู้คืน</a></div>}
-                      </div>
-                    ))}
-                    <p className="t-sm t-secondary">เก็บประวัติทุกเวอร์ชัน · การกู้คืนจะสร้าง Draft ใหม่และต้องผ่านการอนุมัติ</p>
-                  </div>
                 </>
               )}
             </aside>

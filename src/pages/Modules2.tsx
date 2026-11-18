@@ -5,6 +5,7 @@ import { Button, Field, Input, Select, IconButton, Modal, Status, Tabs } from '.
 import ListPage, { selectFilter, textFilter } from '../components/ListPage';
 import ModuleForm from '../components/ModuleForm';
 import { useStore } from '../store';
+import { openPreview } from './Preview';
 import type { ContentStatus } from '../types';
 import './pages.css';
 
@@ -36,7 +37,7 @@ export function FaqList() {
       toolbar={<>
         <Button variant="primary" icon={Plus} onClick={() => navigate('/faq/new')}>Create</Button>
         <Button icon={RefreshCw} variant={ordering ? 'primary' : 'secondary'} onClick={() => { if (ordering) toast('บันทึกลำดับแล้ว'); setOrdering(!ordering); }}>{ordering ? 'บันทึกลำดับ' : 'Move Order'}</Button>
-        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'FAQ').length})</Link>
+        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'FAQ').length})</Link>
       </>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> FAQ ผูกกับหน้าผลิตภัณฑ์ และสร้าง FAQPage Schema ให้ SEO / AI Search อัตโนมัติ</span>}
       columns={[
@@ -45,10 +46,10 @@ export function FaqList() {
         { key: 'c', label: 'หมวด', render: (r) => <span className="tag">{r.cat}</span> },
         { key: 'p', label: 'แสดงในหน้า', render: (r) => r.pages },
         { key: 's', label: 'Status', render: (r) => <Status status={r.status} /> },
-        { key: 'a', label: 'Action', render: (r) => <div className="row" style={{ gap: 2 }}><IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => toast('Preview', r.q)} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/faq/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
+        { key: 'a', label: 'Action', render: (r) => <div className="row" style={{ gap: 2 }}><IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => openPreview({ title: r.q, type: 'FAQ', path: '/th/faq' })} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/faq/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
       ]}
     >
-      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายคำถามไปถังขยะ?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไปถังขยะแล้ว', del?.q); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
+      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายคำถามไป Recycle Bin?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไป Recycle Bin แล้ว', del?.q); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
         <p className="t-secondary">“{del?.q}” จะถูกนำออกจากหน้า {del?.pages} และ FAQ Schema</p>
       </Modal>
     </ListPage>
@@ -113,7 +114,7 @@ export function FileManager() {
       toolbar={<>
         <Button variant="primary" icon={Upload} onClick={() => setUpload({ row: null, file: null, cat: FILE_CATS[0] })}>Upload</Button>
         <Button icon={FolderPlus} onClick={() => toast('สร้างโฟลเดอร์ใหม่')}>New Folder</Button>
-        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'File Manager').length})</Link>
+        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'File Manager').length})</Link>
       </>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> อัปโหลดเวอร์ชันใหม่ได้โดย URL เดิมไม่เปลี่ยน · เก็บประวัติทุกเวอร์ชัน</span>}
       columns={[
@@ -145,7 +146,7 @@ export function FileManager() {
           </>
         )}
       </Modal>
-      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายไฟล์ไปถังขยะ?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไปถังขยะแล้ว', del?.name); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
+      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายไฟล์ไป Recycle Bin?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไป Recycle Bin แล้ว', del?.name); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
         <p className="t-secondary">ลิงก์ดาวน์โหลด “{del?.name}” บนหน้าเว็บจะใช้งานไม่ได้จนกว่าจะกู้คืน</p>
       </Modal>
     </ListPage>

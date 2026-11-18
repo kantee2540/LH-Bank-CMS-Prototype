@@ -61,7 +61,7 @@ export default function RequestStatus() {
             ]}
           />
           <div className="filter-bar" style={{ gridTemplateColumns: 'repeat(5, minmax(0,1fr))', margin: '16px 0' }}>
-            <Field label="Module"><Select value={module} onChange={(e) => setModule(e.target.value)} options={['ทั้งหมด', 'Layout', 'Promotion', 'Banner', 'Rates', 'FAQ', 'News', 'Advisory']} /></Field>
+            <Field label="หมวดหมู่"><Select value={module} onChange={(e) => setModule(e.target.value)} options={['ทั้งหมด', 'Layout', 'Promotion', 'Banner', 'Rates', 'FAQ', 'News', 'Advisory']} /></Field>
             <Field label="เว็บไซต์"><Select options={['Personal', 'SME', 'Corporate']} /></Field>
             <Field label="Auditor ผู้ตรวจ"><Select options={['ทั้งหมด', 'Auditor – Marketing', 'Auditor – ฝ่ายเงินฝาก']} /></Field>
             <Field label="สถานะ"><Select options={['ทั้งหมด', 'กำลังรีวิว', 'รอคิว']} /></Field>
@@ -70,11 +70,12 @@ export default function RequestStatus() {
         </div>
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>รายการ</th><th>Module</th><th>Auditor ผู้ตรวจ</th><th>ส่งเมื่อ</th><th>ต้องการเผยแพร่</th><th>สถานะ</th><th>Action</th></tr></thead>
+            <thead><tr><th className="col-no">ลำดับ</th><th>รายการ</th><th>หมวดหมู่</th><th>Auditor ผู้ตรวจ</th><th>ส่งเมื่อ</th><th>ต้องการเผยแพร่</th><th>สถานะ</th><th>Action</th></tr></thead>
             <tbody>
               {list.map((r, i) => (
                 <tr key={r.id} className={r.fresh ? 'highlight' : ''}>
-                  <td style={{ borderLeft: i === 0 && r.state === 'Review' ? '3px solid var(--lh-nav-active)' : undefined }}>
+                  <td className="col-no" style={{ borderLeft: i === 0 && r.state === 'Review' ? '3px solid var(--lh-nav-active)' : undefined }}>{i + 1}</td>
+                  <td>
                     <b>{r.title}</b>
                     <div className="t-sm" style={{ color: r.state === 'Review' ? '#8e64a8' : r.state === 'Rejected' ? '#e0625a' : 'var(--lh-text-secondary)' }}>{r.sub}</div>
                   </td>
@@ -86,7 +87,7 @@ export default function RequestStatus() {
                   <td><Button variant={i === 0 ? 'primary' : 'secondary'} size="sm" icon={Eye} onClick={() => setDetail(r)}>ดูรายละเอียด</Button></td>
                 </tr>
               ))}
-              {!list.length && <tr><td colSpan={7} className="t-tertiary" style={{ textAlign: 'center', padding: 40 }}>ไม่มีรายการ</td></tr>}
+              {!list.length && <tr><td colSpan={8} className="t-tertiary" style={{ textAlign: "center", padding: 40 }}>ไม่มีรายการ</td></tr>}
             </tbody>
           </table>
         </div>

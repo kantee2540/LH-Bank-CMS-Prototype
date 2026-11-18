@@ -52,7 +52,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!item) return;
     setContents((list) => list.filter((c) => c.id !== id));
     setTrash((t) => [
-      { id: `c${id}`, title: item.title, sub: `${item.type} · ${item.path}`, module: 'Manage Content', group: 'Content', by: `${role} · ${now()}`, days: 30, origin: item },
+      { id: `c${id}`, title: item.title, sub: `${item.type} · ${item.path}`, module: 'Page Builder', group: 'Content', by: `${role} · ${now()}`, days: 30, origin: item },
       ...t,
     ]);
   }, [contents, role]);

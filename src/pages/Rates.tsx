@@ -80,10 +80,11 @@ export function InterestRates() {
               <span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> ประกาศล่าสุด มีผลตั้งแต่ 01/10/2026</span>
             </div>
             <table className="table">
-              <thead><tr><th>{tab === 'fee' ? 'รายการค่าธรรมเนียม' : 'ผลิตภัณฑ์ / ประเภทบัญชี'}</th><th>{tab === 'fee' ? 'เงื่อนไข' : 'ระยะเวลา / เงื่อนไข'}</th><th style={{ textAlign: 'right' }}>{tab === 'fee' ? 'อัตรา (บาท)' : 'อัตรา (% ต่อปี)'}</th><th>มีผลตั้งแต่</th><th>Status</th><th>Action</th></tr></thead>
+              <thead><tr><th className="col-no">ลำดับ</th><th>{tab === 'fee' ? 'รายการค่าธรรมเนียม' : 'ผลิตภัณฑ์ / ประเภทบัญชี'}</th><th>{tab === 'fee' ? 'เงื่อนไข' : 'ระยะเวลา / เงื่อนไข'}</th><th style={{ textAlign: 'right' }}>{tab === 'fee' ? 'อัตรา (บาท)' : 'อัตรา (% ต่อปี)'}</th><th>มีผลตั้งแต่</th><th>Status</th><th>Action</th></tr></thead>
               <tbody>
-                {rows[tab].map((r) => (
+                {rows[tab].map((r, i) => (
                   <tr key={r.id}>
+                    <td className="col-no">{i + 1}</td>
                     <td><b style={{ fontWeight: 500 }}>{r.product}</b></td>
                     <td>{r.term}</td>
                     <td style={{ textAlign: 'right', fontWeight: 600 }}>{r.rate}</td>
@@ -181,10 +182,11 @@ export function ExchangeRates() {
           <span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> แสดงที่หน้าแรก (Tools) {homeCount} สกุล · หน้าอัตราแลกเปลี่ยนแสดงทั้งหมด</span>
         </div>
         <table className="table">
-          <thead><tr><th>สกุลเงิน</th><th style={{ textAlign: 'right' }}>ราคาซื้อ (บาท)</th><th style={{ textAlign: 'right' }}>ราคาขาย (บาท)</th><th style={{ textAlign: 'center' }}>แสดงหน้าแรก</th><th>อัปเดตเมื่อ</th><th>Action</th></tr></thead>
+          <thead><tr><th className="col-no">ลำดับ</th><th>สกุลเงิน</th><th style={{ textAlign: 'right' }}>ราคาซื้อ (บาท)</th><th style={{ textAlign: 'right' }}>ราคาขาย (บาท)</th><th style={{ textAlign: 'center' }}>แสดงหน้าแรก</th><th>อัปเดตเมื่อ</th><th>Action</th></tr></thead>
           <tbody>
-            {rows.map((r) => (
+            {rows.map((r, i) => (
               <tr key={r.code}>
+                <td className="col-no">{i + 1}</td>
                 <td><b style={{ fontWeight: 500 }}>{r.code} · {r.name}</b></td>
                 <td style={{ textAlign: 'right', fontWeight: 500 }}>{r.buy}</td>
                 <td style={{ textAlign: 'right', fontWeight: 500 }}>{r.sell}</td>

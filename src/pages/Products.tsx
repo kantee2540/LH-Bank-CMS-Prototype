@@ -4,6 +4,7 @@ import { Plus, RefreshCw, Trash2, Eye, Pencil, Info, Percent, Lock, Calculator a
 import { Button, Card, Field, Input, Select, Textarea, Tabs, Toggle, Status, IconButton, Modal, PageHeader, LangSwitch } from '../components/ui';
 import ListPage, { selectFilter, textFilter } from '../components/ListPage';
 import { useStore } from '../store';
+import { openPreview } from './Preview';
 import type { ContentStatus } from '../types';
 import './pages.css';
 
@@ -61,7 +62,7 @@ export function ProductList({ line }: { line: ProductLine }) {
       toolbar={<>
         <Button variant="primary" icon={Plus} onClick={() => navigate(`/products/${line}/new`)}>Create</Button>
         <Button icon={RefreshCw} variant={ordering ? 'primary' : 'secondary'} onClick={() => { if (ordering) toast('บันทึกลำดับแล้ว'); setOrdering(!ordering); }}>{ordering ? 'บันทึกลำดับ' : 'Move Order'}</Button>
-        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'Products').length})</Link>
+        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'Products').length})</Link>
       </>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> ใช้ Product Template เดียวกัน · ดอกเบี้ยดึงจากเมนู Rates</span>}
       columns={[
@@ -71,10 +72,10 @@ export function ProductList({ line }: { line: ProductLine }) {
         { key: 'rate', label: 'ดอกเบี้ยเริ่มต้น', render: () => <span className="row" style={{ gap: 6 }}><Percent size={16} color="#1f6fa8" /> x.xx% (Rates)</span> },
         { key: 'calc', label: 'Calculator', render: (r) => r.calc },
         { key: 'status', label: 'Status', render: (r) => <Status status={r.status} /> },
-        { key: 'act', label: 'Action', render: (r) => <div className="row" style={{ gap: 2 }}><IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => toast('Preview', r.name)} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/products/${line}/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
+        { key: 'act', label: 'Action', render: (r) => <div className="row" style={{ gap: 2 }}><IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => openPreview({ title: r.name, type: `ผลิตภัณฑ์${LINE_LABEL[line]}`, path: `/th/personal/${line}` })} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/products/${line}/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
       ]}
     >
-      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายผลิตภัณฑ์ไปถังขยะ?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไปถังขยะแล้ว', del?.name); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
+      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายผลิตภัณฑ์ไป Recycle Bin?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไป Recycle Bin แล้ว', del?.name); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
         <p className="t-secondary">“{del?.name}” จะถูกนำออกจากหน้าเว็บ รวมถึงเมนู Life Stage และ Calculator ที่อ้างถึง · กู้คืนได้ภายใน 30 วัน</p>
       </Modal>
     </ListPage>
@@ -105,7 +106,7 @@ export function ProductEdit({ line }: { line: ProductLine }) {
         back={`/products/${line}`}
         title={isNew ? `สร้างผลิตภัณฑ์${LINE_LABEL[line]}` : `แก้ไขผลิตภัณฑ์: ${name}`}
         badges={<Status status={p?.status ?? 'Draft'} />}
-        actions={<Button icon={Eye} onClick={() => toast('Preview', name)}>Preview</Button>}
+        actions={<Button icon={Eye} onClick={() => openPreview({ title: name, type: `ผลิตภัณฑ์${LINE_LABEL[line]}`, path: `/th/personal/${line}` })}>Preview</Button>}
       />
       <section className="card" style={{ padding: '4px 16px 0' }}>
         <Tabs value={tab} onChange={setTab} style={{ borderBottom: 0 }} tabs={[

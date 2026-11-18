@@ -11,12 +11,6 @@
 .lang-tabs { margin-bottom: 18px; }
 .hero-picker { display: flex; gap: 16px; align-items: flex-start; }
 .hero-thumb { width: 180px; height: 100px; border-radius: 8px; background: var(--lh-gray-100); display: grid; place-items: center; flex: none; overflow: hidden; }
-.editor { border: 1px solid var(--lh-border-strong); border-radius: 8px; overflow: hidden; }
-.editor-tools { background: var(--lh-gray-100); border-bottom: 1px solid var(--lh-border-strong); display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 8px; }
-.editor-tools button { border: 0; background: none; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
-.editor-tools button:hover { background: #fff; }
-.editor-body { padding: 14px 16px; min-height: 180px; outline: none; }
-.editor-body ul { margin: 8px 0; padding-left: 18px; }
 .var-hint { background: var(--lh-info); color: #fff; border-radius: 8px; padding: 6px 14px; margin-top: 8px; font-size: 15px; display: flex; gap: 8px; align-items: center; }
 .lang-meter { display: grid; grid-template-columns: 34px 1fr 74px; gap: 10px; align-items: center; margin-bottom: 14px; }
 .lang-meter .bar { height: 6px; border-radius: 999px; background: #eef0f2; overflow: hidden; }
@@ -290,3 +284,8 @@
 .phone-life .row { border: 1px solid var(--lh-border-default); border-radius: 8px; padding: 6px 8px; font-size: 14px; }
 .phone-new { margin: 0 8px 10px; border: 1px dashed #9cc3e2; border-radius: 6px; padding: 8px; text-align: center; color: var(--lh-text-link); }
 @media (max-width: 1200px) { .pb-body { grid-template-columns: 1fr; } .tpl-grid, .grid-pick { grid-template-columns: 1fr 1fr; } }
+
+/* Rich text editor (TinyMCE) */
+.rich-editor { position: relative; display: flex; flex-direction: column; }
+.rich-editor-lang { align-self: flex-end; margin-right: 14px; padding: 2px 8px; font-size: 12px; line-height: 16px; color: var(--lh-text-secondary); background: #fff; border: 1px solid var(--lh-border-strong); border-bottom: 0; border-radius: 4px 4px 0 0; }
+.rich-editor .tox-tinymce { border: 1px solid var(--lh-border-strong); border-radius: 0; }

@@ -49,10 +49,10 @@ export default function Media() {
       <section className="card">
         <div className="row" style={{ justifyContent: 'flex-end', flexWrap: 'wrap', marginBottom: 16, gap: 10 }}>
           <Button icon={Move} disabled={!sel.length} onClick={() => toast(`ย้าย ${sel.length} ไฟล์แล้ว`)}>Move File</Button>
-          <Button variant="danger" icon={Trash2} disabled={!sel.length} onClick={() => { setItems(items.filter((m) => !sel.includes(m.name))); toast(`ย้าย ${sel.length} ไฟล์ไปถังขยะ`); setSel([]); }}>Delete File</Button>
+          <Button variant="danger" icon={Trash2} disabled={!sel.length} onClick={() => { setItems(items.filter((m) => !sel.includes(m.name))); toast(`ย้าย ${sel.length} ไฟล์ไป Recycle Bin`); setSel([]); }}>Delete File</Button>
           <Button icon={Plus} onClick={() => toast('สร้างโฟลเดอร์ใหม่', 'New Folder')}>New Folder</Button>
           <Button variant="primary" icon={Upload} onClick={() => setUpload({ step: 1, file: null, alt: { th: '', en: '', zh: '' }, folder: 'Promotion' })}>Upload</Button>
-          <Link className="btn btn-secondary" to="/trash"><Trash2 strokeWidth={1.6} /> ถังขยะ ({mediaTrash})</Link>
+          <Link className="btn btn-secondary" to="/trash"><Trash2 strokeWidth={1.6} /> Recycle Bin ({mediaTrash})</Link>
         </div>
         <div className="media-layout">
           <aside className="folders">

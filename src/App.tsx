@@ -24,11 +24,13 @@ import { AiList, AiWorkspace, AiSettings } from './pages/AiAssistants';
 import { ApprovalInbox, ApprovalReview, ApprovalResult } from './pages/Approval';
 import { LayoutList, LayoutEdit } from './pages/Layout';
 import Login, { NotFound } from './pages/Login';
+import Preview from './pages/Preview';
 
 export default function App() {
   return (
     <Routes>
       <Route path="login" element={<Login />} />
+      <Route path="preview" element={<Preview />} />
       <Route element={<AppLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="requests" element={<RequestStatus />} />

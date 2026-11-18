@@ -20,7 +20,7 @@ export const CONTENTS: ContentItem[] = [
 ];
 
 export const TRASH: TrashItem[] = [
-  { id: 't1', title: 'สินเชื่อบ้านแลกเงิน', sub: 'Product · /th/personal/loan/home-loan/home-for-cash', module: 'Manage Content', group: 'Content', by: 'Content Editor 01 · 12/11/2026 16:20', days: 29 },
+  { id: 't1', title: 'สินเชื่อบ้านแลกเงิน', sub: 'Product · /th/personal/loan/home-loan/home-for-cash', module: 'Page Builder', group: 'Content', by: 'Content Editor 01 · 12/11/2026 16:20', days: 29 },
   { id: 't2', title: 'hero-home-q3.webp', sub: 'รูปภาพ · 1920×800 · 412 KB', module: 'Media', group: 'Media', by: 'Content Editor 02 · 11/11/2026 10:05', days: 28 },
   { id: 't3', title: 'ลูกค้าใหม่ รับ E-Voucher 100 บาท', sub: 'Hero Banner · TH · EN', module: 'Banner', group: 'Banner', by: 'Content Editor 02 · 08/11/2026 14:30', days: 25 },
   { id: 't4', title: 'เปิดบัญชีออนไลน์ต้องใช้เอกสารอะไรบ้าง', sub: 'FAQ · หมวดเงินฝาก', module: 'FAQ', group: 'อื่นๆ', by: 'Content Editor 01 · 01/11/2026 09:12', days: 18 },

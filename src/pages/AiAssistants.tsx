@@ -9,7 +9,7 @@ type Cat = 'content' | 'seo' | 'compliance';
 interface Assistant { id: string; name: string; uses: number; desc: string; tags: string[]; color: string; on: boolean; cat: Cat }
 const ASSISTANTS: Assistant[] = [
   { id: 'writer', name: 'Content Writer', uses: 412, desc: 'ร่างข้อความ Hero, จุดเด่น และคำอธิบายผลิตภัณฑ์ตาม Tone of Voice ของ LH Bank', tags: ['Layout', 'Products', 'Promotion'], color: '#2f86c1', on: true, cat: 'content' },
-  { id: 'translator', name: 'Translator TH ⇄ EN', uses: 356, desc: 'แปลเนื้อหาไทย–อังกฤษ โดยคงคำศัพท์ธนาคารตาม Glossary 320 คำ', tags: ['ทุกโมดูล'], color: '#5ab4b8', on: true, cat: 'content' },
+  { id: 'translator', name: 'Translator TH ⇄ EN', uses: 356, desc: 'แปลเนื้อหาไทย–อังกฤษ โดยคงคำศัพท์ธนาคารตาม Glossary 320 คำ', tags: ['ทุกหมวดหมู่'], color: '#5ab4b8', on: true, cat: 'content' },
   { id: 'seo', name: 'SEO & AI Search Optimizer', uses: 238, desc: 'สร้าง SEO Title, Meta Description, Heading และ FAQ Schema ตาม Checklist SEO & AI Search 2027', tags: ['Layout', 'News', 'Advisory'], color: '#e8a557', on: true, cat: 'seo' },
   { id: 'faq', name: 'FAQ Generator', uses: 121, desc: 'สร้างคำถาม–คำตอบจากรายละเอียดผลิตภัณฑ์ ให้ AI Search อ่านได้บนหน้า', tags: ['FAQ', 'Products'], color: '#2f86c1', on: true, cat: 'seo' },
   { id: 'compliance', name: 'Compliance Checker', uses: 157, desc: 'ตรวจ Disclaimer คำต้องห้าม และตัวเลขที่ไม่ตรงกับ Rates ก่อนส่งอนุมัติ ช่วยงาน Auditor', tags: ['งานรออนุมัติ', 'Rates'], color: '#e3917f', on: true, cat: 'compliance' },
@@ -72,7 +72,7 @@ export function AiList() {
           <Field label="ชื่อ Assistant" required><Input placeholder="เช่น Promotion Copy Checker" /></Field>
           <Field label="หมวด"><Select options={['เนื้อหา', 'SEO & AI Search', 'Compliance']} /></Field>
         </div>
-        <Field label="ใช้กับโมดูล"><Select options={['Manage Content', 'Products', 'Banner', 'FAQ', 'ทุกโมดูล']} /></Field>
+        <Field label="ใช้กับหมวดหมู่"><Select options={['Page Builder', 'Products', 'Banner', 'FAQ', 'ทุกหมวดหมู่']} /></Field>
         <Field label="คำสั่งระบบ (System Instruction)" required><Textarea rows={4} placeholder="อธิบายหน้าที่ ข้อห้าม และรูปแบบผลลัพธ์" /></Field>
         <div className="info-soft t-sm"><Lock size={14} /> Guardrails บังคับ 3 ข้อ (ห้ามพิมพ์อัตราเอง · ห้าม PII · บันทึกเป็น Draft) ถูกใส่ให้อัตโนมัติ</div>
       </Modal>
@@ -128,7 +128,7 @@ export function AiWorkspace() {
                   <Result k="SEO Title (TH)" badge={`${title.length}/60`}>{title}</Result>
                   <Result k="Meta Description (TH)" badge="128/160">รีไฟแนนซ์บ้านกับ LH Bank ลดค่างวด ดอกเบี้ยเฉลี่ย 3 ปีแรก {'{rate:refinance_avg3y}'} คำนวณได้ทันทีด้วยเครื่องมือออนไลน์</Result>
                   <Result k="FAQ (3 ข้อ)" badge="TH/EN">1) รีไฟแนนซ์บ้านได้เมื่อไร? 2) ต้องใช้เอกสารอะไรบ้าง? 3) มีค่าใช้จ่ายอะไรบ้าง?</Result>
-                  <div className="note-warning">ตัวเลขดอกเบี้ยแสดงเป็นตัวแปร {'{rate:...}'} และจะดึงค่าจริงจากโมดูล Rates ตอนแสดงผล · AI ไม่สามารถพิมพ์ตัวเลขเองได้</div>
+                  <div className="note-warning">ตัวเลขดอกเบี้ยแสดงเป็นตัวแปร {'{rate:...}'} และจะดึงค่าจริงจากหมวดหมู่ Rates ตอนแสดงผล · AI ไม่สามารถพิมพ์ตัวเลขเองได้</div>
                   <p className="t-sm t-secondary">อ้างอิง: Products › สินเชื่อรีไฟแนนซ์ · Rates (มีผล 01/11/2026) · FAQ หมวดสินเชื่อบ้าน</p>
                 </div>
               </div>

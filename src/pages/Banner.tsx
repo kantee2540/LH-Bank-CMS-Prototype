@@ -5,6 +5,7 @@ import { Button, IconButton, Modal, Status } from '../components/ui';
 import ListPage, { selectFilter, textFilter } from '../components/ListPage';
 import ModuleForm from '../components/ModuleForm';
 import { useStore } from '../store';
+import { openPreview } from './Preview';
 import type { ContentStatus } from '../types';
 import './pages.css';
 
@@ -62,7 +63,7 @@ export function BannerList({ kind }: { kind: BannerKind }) {
       toolbar={<>
         <Button variant="primary" icon={Plus} onClick={() => navigate(`/banner/${kind}/new`)}>Create</Button>
         <Button icon={RefreshCw} variant={ordering ? 'primary' : 'secondary'} onClick={() => { if (ordering) toast('บันทึกลำดับแล้ว', 'ลำดับใหม่ต้องส่งอนุมัติก่อนแสดงบนเว็บ'); setOrdering(!ordering); }}>{ordering ? 'บันทึกลำดับ' : 'Move Order'}</Button>
-        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.group === 'Banner').length})</Link>
+        <Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.group === 'Banner').length})</Link>
       </>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> {isHero ? 'แสดงที่ Hero หน้าแรก · สูงสุด 5 สไลด์ · ภาพ 1120×640 px' : 'แบนเนอร์ขนาดกลางในหน้าผลิตภัณฑ์ / หน้าโปรโมชัน · 1200×300 px'}</span>}
       columns={[
@@ -73,10 +74,10 @@ export function BannerList({ kind }: { kind: BannerKind }) {
         { key: 'period', label: 'Display Period', render: (r) => r.period },
         { key: 'status', label: 'Status', render: (r) => <Status status={r.status} /> },
         ...(isHero ? [{ key: 'by', label: 'Update By', render: (r: BannerRow) => r.by }] : []),
-        { key: 'act', label: 'Action', render: (r) => <div className="row" style={{ gap: 2 }}><IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => toast('Preview', r.name)} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/banner/${kind}/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
+        { key: 'act', label: 'Action', render: (r) => <div className="row" style={{ gap: 2 }}><IconButton icon={Eye} title="ดูตัวอย่าง" onClick={() => openPreview({ title: r.name, type: 'Banner', path: '/th' })} /><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/banner/${kind}/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
       ]}
     >
-      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายแบนเนอร์ไปถังขยะ?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไปถังขยะแล้ว', del?.name); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
+      <Modal open={!!del} onClose={() => setDel(null)} title="ย้ายแบนเนอร์ไป Recycle Bin?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไป Recycle Bin แล้ว', del?.name); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
         <p className="t-secondary">“{del?.name}” จะหยุดแสดงบนเว็บทันที และกู้คืนได้ภายใน 30 วัน</p>
       </Modal>
     </ListPage>

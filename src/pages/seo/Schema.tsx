@@ -67,10 +67,11 @@ export function SchemaList({ picking, onClosePicker }: { picking: boolean; onClo
       </form>
       <div className="table-wrap mt-16">
         <table className="table">
-          <thead><tr><th>ชื่อ Schema</th><th>ประเภท (@type)</th><th>ใช้กับหน้า</th><th>สถานะ</th><th>Last Update</th><th>Action</th></tr></thead>
+          <thead><tr><th className="col-no">ลำดับ</th><th>ชื่อ Schema</th><th>ประเภท (@type)</th><th>ใช้กับหน้า</th><th>สถานะ</th><th>Last Update</th><th>Action</th></tr></thead>
           <tbody>
-            {rows.map((s) => (
+            {rows.map((s, i) => (
               <tr key={s.name}>
+                <td className="col-no">{i + 1}</td>
                 <td><a className="t-link" style={{ fontWeight: 400 }}>{s.name}</a><div className="sub">{s.sub}</div></td>
                 <td>{s.type}</td>
                 <td>{s.applies}</td>

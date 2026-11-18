@@ -4,6 +4,7 @@ import { Pencil, Plus, Trash2, Settings, GripVertical, ChevronRight, ChevronDown
 import { Button, Card, Field, Input, Select, Modal, IconButton, LangSwitch, PageHeader, Status } from '../../components/ui';
 import ListPage, { selectFilter, textFilter } from '../../components/ListPage';
 import { useStore } from '../../store';
+import { openPreview } from '../Preview';
 import '../pages.css';
 
 type Lang = 'th' | 'en' | 'zh';
@@ -110,7 +111,7 @@ export function SetMenuList() {
         { key: 'act', label: 'Action', align: 'center', render: (r) => <div className="row" style={{ gap: 4, justifyContent: 'center' }}><IconButton icon={Pencil} title="แก้ไข" onClick={() => navigate(`/menu/set/${r.id}`)} /><IconButton icon={Trash2} danger title="ลบ" onClick={() => setDel(r)} /></div> },
       ]}
     >
-      <Modal open={!!del} onClose={() => setDel(null)} title="ย้าย Set Menu ไปถังขยะ?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไปถังขยะแล้ว', del?.name); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
+      <Modal open={!!del} onClose={() => setDel(null)} title="ย้าย Set Menu ไป Recycle Bin?" footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไป Recycle Bin แล้ว', del?.name); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
         <p className="t-secondary">“{del?.name}” ถูกใช้ที่ตำแหน่ง <b>{del?.location}</b> · หากลบ ตำแหน่งนี้จะไม่แสดงเมนูจนกว่าจะเลือก Set Menu ใหม่</p>
       </Modal>
     </ListPage>
@@ -218,7 +219,7 @@ export function SetMenuEditor() {
         title={isNew ? 'สร้าง Set Menu ใหม่' : `แก้ไข Set Menu · ${base?.name}`}
         badges={<Status status={isNew ? 'Draft' : 'Published'} />}
         actions={<>
-          <Button icon={Eye} onClick={() => toast('เปิด Preview', 'แสดงเมนูบน Desktop / Mobile')}>Preview</Button>
+          <Button icon={Eye} onClick={() => openPreview({ title: 'ตัวอย่างเมนูเว็บไซต์', type: 'Menu', path: '/th' })}>Preview</Button>
           <Button onClick={() => toast('บันทึก Draft แล้ว', name)}>บันทึก Draft</Button>
           <Button variant="primary" disabled={!name || !tree.length} onClick={() => { submitRequest({ title: name, module: 'Menu', sub: `Menu · ${location}` }); toast('ส่งอนุมัติแล้ว', name); navigate('/requests'); }}>ส่งอนุมัติ</Button>
         </>}

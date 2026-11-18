@@ -17,7 +17,7 @@ function useDelete<T extends { id: string; title: string }>(rows: T[], setRows: 
   const { toast } = useStore();
   const [del, setDel] = useState<T | null>(null);
   const modal = (
-    <Modal open={!!del} onClose={() => setDel(null)} title={`ย้าย${label}ไปถังขยะ?`} footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไปถังขยะแล้ว', del?.title); setDel(null); }}>ย้ายไปถังขยะ</Button></>}>
+    <Modal open={!!del} onClose={() => setDel(null)} title={`ย้าย${label}ไป Recycle Bin?`} footer={<><Button onClick={() => setDel(null)}>ยกเลิก</Button><Button variant="danger" onClick={() => { setRows(rows.filter((r) => r.id !== del?.id)); toast('ย้ายไป Recycle Bin แล้ว', del?.title); setDel(null); }}>ย้ายไป Recycle Bin</Button></>}>
       <p className="t-secondary">“{del?.title}” จะถูกนำออกจากหน้าเว็บ และกู้คืนได้ภายใน 30 วัน</p>
     </Modal>
   );
@@ -49,7 +49,7 @@ export function AdvisoryList() {
       filters={[textFilter('t', 'ชื่อบทความ / รายงาน', (r) => r.title), selectFilter('type', 'ประเภท', ['Weekly Report', 'Monthly Outlook'], (r) => r.type), selectFilter('s', 'Status', ['Published', 'Scheduled', 'Draft'], (r) => r.status)]}
       rows={rows}
       rowKey={(r) => r.id}
-      toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/advisory/new')}>Create</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'Advisory').length})</Link></>}
+      toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/advisory/new')}>Create</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'Advisory').length})</Link></>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> ตามแผน IV-07 แสดงเฉพาะ Weekly Report (List + ดาวน์โหลด PDF)</span>}
       columns={[
         { key: 'img', label: 'ภาพปก', render: (r) => <Thumb color={r.file ? '#4a6378' : '#eef1f4'} light={!r.file} /> },
@@ -108,7 +108,7 @@ export function NewsList() {
       rows={rows.filter((r) => cat === 'all' || r.cat === cat)}
       rowKey={(r) => r.id}
       above={<Tabs value={cat} onChange={setCat} style={{ marginBottom: 16, marginTop: -8 }} tabs={[{ value: 'all', label: 'ทั้งหมด' }, ...NEWS_CATS.map((c) => ({ value: c, label: c }))]} />}
-      toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/news/new')}>Create</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'News').length})</Link></>}
+      toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/news/new')}>Create</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'News').length})</Link></>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> 3 ข่าวล่าสุดที่ปักหมุดจะแสดงบนหน้าแรก ({pinned}/3)</span>}
       columns={[
         { key: 'img', label: 'ภาพปก', render: (r) => <Thumb color={r.color} /> },
@@ -180,7 +180,7 @@ export function NpaList() {
       title="NPA"
       filters={[textFilter('t', 'รหัสทรัพย์ / ชื่อโครงการ', (r) => `${r.code} ${r.title}`), selectFilter('type', 'ประเภททรัพย์', [...new Set(NPA.map((n) => n.type))], (r) => r.type), selectFilter('prov', 'จังหวัด', [...new Set(NPA.map((n) => n.prov))], (r) => r.prov), { key: 'sp', label: 'ราคาพิเศษ', kind: 'select', options: ['All', 'มีราคาพิเศษ', 'ราคาปกติ'], match: (r, v) => (v === 'มีราคาพิเศษ' ? !!r.special : !r.special) }]}
       rows={rows} rowKey={(r) => r.id} above={tabs}
-      toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/npa/new')}>Create</Button><Button icon={Upload}>Import Excel</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> ถังขยะ ({trash.filter((t) => t.module === 'NPA').length})</Link></>}
+      toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/npa/new')}>Create</Button><Button icon={Upload}>Import Excel</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'NPA').length})</Link></>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> การ์ดบนเว็บแสดง 2 ราคา: ราคาปกติขีดฆ่า + ราคาพิเศษ</span>}
       columns={[
         { key: 'img', label: 'ภาพ', render: (r) => <Thumb color={r.color} icon={r.icon} /> },

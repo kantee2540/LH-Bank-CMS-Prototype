@@ -17,7 +17,7 @@ const USERS: User[] = [
   { id: 'u5', code: 'C3', name: 'Content Editor (ZH)', email: 'editor.zh@...lhbank.co.th', role: 'Content Editor', sites: 'Personal', last: '28/10/2026 13:20', active: true },
   { id: 'u6', code: 'A3', name: 'Auditor – Compliance', email: 'auditor.comp@...lhbank.co.th', role: 'Auditor', sites: 'ทุกเว็บไซต์', last: '20/10/2026 10:00', active: false },
 ];
-const PERMS = ['ดู Dashboard', 'สร้าง / แก้ไขเนื้อหา', 'ส่งอนุมัติ', 'อนุมัติ / ส่งกลับ', 'เผยแพร่ / ตั้งเวลา', 'ลบไปถังขยะ', 'ลบถาวร', 'ดูข้อมูล Lead เต็ม', 'จัดการ User & Role', 'ดู Audit Log'];
+const PERMS = ['ดู Dashboard', 'สร้าง / แก้ไขเนื้อหา', 'ส่งอนุมัติ', 'อนุมัติ / ส่งกลับ', 'เผยแพร่ / ตั้งเวลา', 'ลบไป Recycle Bin', 'ลบถาวร', 'ดูข้อมูล Lead เต็ม', 'จัดการ User & Role', 'ดู Audit Log'];
 const ROLE_PERMS: Record<Role, boolean[]> = {
   'Content Editor': [true, true, true, false, false, true, false, false, false, false],
   Auditor: [true, false, false, true, true, true, true, true, true, true],
@@ -103,14 +103,14 @@ export function AuditLog() {
   return (
     <ListPage<Log>
       title="Audit Log"
-      filters={[selectFilter('u', 'ผู้ใช้', [...new Set(LOGS.map((l) => l.user))], (r) => r.user), selectFilter('m', 'Module', [...new Set(LOGS.map((l) => l.module))], (r) => r.module), selectFilter('a', 'Action', Object.keys(ACTION_CLASS), (r) => r.action), { key: 'd', label: 'ช่วงวันที่', kind: 'select', options: ['24/10/2026 – 30/10/2026', '30 วันล่าสุด'], match: () => true }]}
+      filters={[selectFilter('u', 'ผู้ใช้', [...new Set(LOGS.map((l) => l.user))], (r) => r.user), selectFilter('m', 'หมวดหมู่', [...new Set(LOGS.map((l) => l.module))], (r) => r.module), selectFilter('a', 'Action', Object.keys(ACTION_CLASS), (r) => r.action), { key: 'd', label: 'ช่วงวันที่', kind: 'select', options: ['24/10/2026 – 30/10/2026', '30 วันล่าสุด'], match: () => true }]}
       rows={LOGS} rowKey={(r) => r.t + r.detail}
       toolbar={<Button icon={Download} onClick={() => toast('Export CSV', 'audit-log-24-30-10-2026.csv')}>Export CSV</Button>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Lock size={16} /> เก็บประวัติ 2 ปี · แก้ไขหรือลบไม่ได้</span>}
       columns={[
         { key: 't', label: 'วันเวลา', render: (r) => r.t },
         { key: 'u', label: 'ผู้ใช้', render: (r) => <span className="row"><span className={`avatar-sm solid ${r.code.startsWith('A') ? 'aud' : ''}`}>{r.code}</span>{r.user}</span> },
-        { key: 'm', label: 'Module', render: (r) => r.module },
+        { key: 'm', label: 'หมวดหมู่', render: (r) => r.module },
         { key: 'a', label: 'Action', render: (r) => <span className={`tag ${ACTION_CLASS[r.action]}`} style={{ fontWeight: 500 }}>{r.action}</span> },
         { key: 'd', label: 'รายละเอียด', width: 260, render: (r) => <a style={{ cursor: 'pointer' }} onClick={() => setDetail(r)}>{r.detail}</a> },
         { key: 'ip', label: 'IP', render: (r) => r.ip },
@@ -120,7 +120,7 @@ export function AuditLog() {
         {detail && (
           <>
             <div className="ready-box">
-              {[['วันเวลา', detail.t], ['ผู้ใช้', detail.user], ['Module', detail.module], ['Action', detail.action], ['IP / อุปกรณ์', `${detail.ip} · Chrome 131 / macOS`]].map(([k, v]) => <div className="row-between" key={k}><span className="t-secondary">{k}</span><b style={{ fontWeight: 500 }}>{v}</b></div>)}
+              {[['วันเวลา', detail.t], ['ผู้ใช้', detail.user], ['หมวดหมู่', detail.module], ['Action', detail.action], ['IP / อุปกรณ์', `${detail.ip} · Chrome 131 / macOS`]].map(([k, v]) => <div className="row-between" key={k}><span className="t-secondary">{k}</span><b style={{ fontWeight: 500 }}>{v}</b></div>)}
             </div>
             {detail.action === 'Update' && (
               <table className="table"><thead><tr><th>ฟิลด์</th><th>ก่อน</th><th>หลัง</th></tr></thead><tbody><tr><td>คำอธิบายสั้น (TH)</td><td style={{ background: '#fdecea' }}>ฝากระยะสั้น รับผลตอบแทนสูง</td><td style={{ background: '#e6f5ef' }}>ฝากระยะสั้น รับผลตอบแทนตามเงื่อนไขที่ธนาคารกำหนด</td></tr></tbody></table>
@@ -146,14 +146,15 @@ export function LanguageSetting() {
   const [adding, setAdding] = useState(false);
   return (
     <>
-      <PageHeader title="ภาษา (Language)" sub="กำหนดภาษาที่เปิดใช้บนเว็บไซต์ และแท็บภาษาที่แสดงในฟอร์มกรอกเนื้อหาทุกโมดูลของ CMS"
+      <PageHeader title="ภาษา (Language)" sub="กำหนดภาษาที่เปิดใช้บนเว็บไซต์ และแท็บภาษาที่แสดงในฟอร์มกรอกเนื้อหาทุกหมวดหมู่ของ CMS"
         actions={<><Button icon={RefreshCw} onClick={() => toast('ประวัติการเปลี่ยนแปลง', 'ดูได้ที่ Audit Log')}>ประวัติการเปลี่ยนแปลง</Button><Button variant="primary" onClick={() => toast('บันทึกการตั้งค่าแล้ว', 'ภาษา')}>บันทึกการตั้งค่า</Button></>} />
       <Card title="ภาษาที่เปิดใช้" sub="เมื่อเปิดภาษา ทุกฟอร์มกรอกเนื้อหาจะมีแท็บภาษานั้นเพิ่ม (TH · EN · 中文)" action={<Button icon={Plus} onClick={() => setAdding(true)}>เพิ่มภาษา</Button>}>
         <table className="table">
-          <thead><tr><th>ภาษา</th><th>รหัส · URL</th><th>เปิดใช้งาน</th><th>ภาษาหลัก</th><th>ความครบของเนื้อหา</th><th>Action</th></tr></thead>
+          <thead><tr><th className="col-no">ลำดับ</th><th>ภาษา</th><th>รหัส · URL</th><th>เปิดใช้งาน</th><th>ภาษาหลัก</th><th>ความครบของเนื้อหา</th><th>Action</th></tr></thead>
           <tbody>
-            {langs.map((l) => (
+            {langs.map((l, i) => (
               <tr key={l.code} style={{ background: l.isNew ? '#eef3d3' : undefined }}>
+                <td className="col-no" style={{ background: 'inherit' }}>{i + 1}</td>
                 <td style={{ background: 'inherit' }}><b style={{ fontWeight: 500 }}>{l.name}</b> {l.isNew && <span className="tag" style={{ background: '#fbe9df', color: '#8a3e1f', fontSize: 13 }}>ใหม่</span>}<div className="sub">{l.sub}</div></td>
                 <td style={{ background: 'inherit' }}>{l.url}</td>
                 <td style={{ background: 'inherit' }}><span className="row" style={{ gap: 6 }}><Toggle checked={l.on} disabled={l.main} onChange={(v) => setLangs(langs.map((x) => (x.code === l.code ? { ...x, on: v } : x)))} /> {l.on ? 'เปิด' : 'ปิด'}</span></td>
@@ -198,8 +199,8 @@ export function LanguageSetting() {
               <Toggle label='แสดงแถบแจ้ง "此内容暂无中文版本" เมื่อแสดงภาษาอื่นแทน' checked={cfg.notice} onChange={(v) => setCfg({ ...cfg, notice: v })} />
             </div>
           </Card>
-          <Card title="ความครบของเนื้อหาภาษาจีน ตามโมดูล">
-            {[['Menu & Path', 100, '86 / 86'], ['Products', 88, '46 / 52'], ['Rates', 100, 'ตัวเลขใช้ร่วมกัน'], ['Manage Content', 39, '120 / 310'], ['FAQ', 67, '64 / 96'], ['News', 8, '18 / 240']].map(([m, p, c]) => (
+          <Card title="ความครบของเนื้อหาภาษาจีน ตามหมวดหมู่">
+            {[['Menu & Path', 100, '86 / 86'], ['Products', 88, '46 / 52'], ['Rates', 100, 'ตัวเลขใช้ร่วมกัน'], ['Page Builder', 39, '120 / 310'], ['FAQ', 67, '64 / 96'], ['News', 8, '18 / 240']].map(([m, p, c]) => (
               <div className="lang-meter" key={m as string} style={{ gridTemplateColumns: '130px 1fr 50px 110px' }}><span>{m}</span><div className="bar"><i style={{ width: `${p}%`, background: (p as number) < 50 ? '#e8a557' : (p as number) < 100 ? '#2f86c1' : '#5ab4b8' }} /></div><b className="t-sm">{p}%</b><span className="t-sm t-secondary">{c}</span></div>
             ))}
           </Card>
@@ -218,14 +219,7 @@ export function LanguageSetting() {
 /* ================= CMS-25A Setting — การเก็บเวอร์ชัน · CMS-25B ยืนยันลดจำนวน ================= */
 interface Rev { mod: string; sub: string; n: number; usage: string; avg: number; max: number }
 const REVS: Rev[] = [
-  { mod: 'Manage Content', sub: 'เนื้อหาทุกประเภท', n: 10, usage: 'เฉลี่ย 6 · สูงสุด 10', avg: 6, max: 10 },
-  { mod: 'Layout / Page Builder', sub: 'โครงหน้าและ Widget', n: 10, usage: 'เฉลี่ย 7 · สูงสุด 10', avg: 7, max: 10 },
-  { mod: 'Products', sub: 'ผลิตภัณฑ์ทุกหมวด', n: 8, usage: 'เฉลี่ย 6 · สูงสุด 8', avg: 6, max: 8 },
-  { mod: 'Banner', sub: 'Hero และ Promotion Banner', n: 5, usage: 'เฉลี่ย 3 · สูงสุด 5', avg: 3, max: 5 },
-  { mod: 'Calculator', sub: 'ตัวแปรและสูตรคำนวณ', n: 10, usage: 'เฉลี่ย 4 · สูงสุด 5', avg: 4, max: 5 },
-  { mod: 'SEO / AEO', sub: 'ค่าระดับเว็บไซต์และ Schema', n: 5, usage: 'เฉลี่ย 2 · สูงสุด 5', avg: 2, max: 5 },
-  { mod: 'FAQ', sub: 'คำถามที่พบบ่อย', n: 3, usage: 'เฉลี่ย 2 · สูงสุด 3', avg: 2, max: 3 },
-  { mod: 'Media', sub: 'ไฟล์ก่อนหน้าเมื่ออัปโหลดแทนที่', n: 1, usage: '1 ไฟล์ก่อนหน้า', avg: 1, max: 1 },
+  { mod: 'Page Builder', sub: 'เนื้อหาทุกประเภท · ประวัติเวอร์ชันมีเฉพาะ Page Builder', n: 10, usage: 'เฉลี่ย 6 · สูงสุด 10', avg: 6, max: 10 },
 ];
 export function RevisionSetting() {
   const { toast } = useStore();
@@ -241,20 +235,21 @@ export function RevisionSetting() {
     <>
       <PageHeader title="การเก็บเวอร์ชัน (Revision)" sub="กำหนดจำนวนเวอร์ชันย้อนหลังที่ระบบเก็บไว้ ให้ย้อนกลับไปแก้ไขหรือกู้คืนได้ · ปรับได้ 1–10 เวอร์ชันต่อรายการ"
         actions={<><Button icon={RefreshCw}>ประวัติการเปลี่ยนแปลง</Button><Button variant="primary" onClick={() => (reduced.length ? setConfirm(true) : toast('บันทึกการตั้งค่าแล้ว'))}>บันทึกการตั้งค่า</Button></>} />
-      <Card title="ค่าเริ่มต้นของทุกโมดูล" sub="ใช้กับโมดูลที่ไม่ได้ตั้งค่าแยก และโมดูลที่เพิ่มในอนาคต">
+      <Card title="ค่าเริ่มต้นของทุกหมวดหมู่" sub="ใช้กับหมวดหมู่ที่ไม่ได้ตั้งค่าแยก และหมวดหมู่ที่เพิ่มในอนาคต">
         <div className="row-between"><div><b style={{ fontWeight: 500 }}>จำนวนเวอร์ชันที่เก็บย้อนหลัง</b><div className="t-sm t-secondary">ต่ำสุด 1 · สูงสุด 10 เวอร์ชันต่อรายการ</div></div><div className="row"><Stepper v={def} onChange={setDef} />{def === 10 && <span className="tag-version">ตั้งค่าสูงสุดแล้ว</span>}</div></div>
         <div className="seg-bar mt-16">{Array.from({ length: 10 }, (_, i) => <i key={i} className={i < def ? 'on' : ''} />)}</div>
         <div className="row-between t-sm mt-8"><span>1</span><span>10 (สูงสุด)</span></div>
       </Card>
-      <Card title="ตั้งค่าแยกตามโมดูล" sub="กด − / + เพื่อเพิ่มหรือลดจำนวน · ลดจำนวนต้องยืนยันก่อนบันทึก" action={<Button size="sm" icon={RefreshCw} onClick={() => setRows(REVS.map((r) => ({ ...r, n: def })))}>รีเซ็ตเป็นค่าเริ่มต้น</Button>}>
+      <Card title="ตั้งค่าแยกตามหมวดหมู่" sub="กด − / + เพื่อเพิ่มหรือลดจำนวน · ลดจำนวนต้องยืนยันก่อนบันทึก" action={<Button size="sm" icon={RefreshCw} onClick={() => setRows(REVS.map((r) => ({ ...r, n: def })))}>รีเซ็ตเป็นค่าเริ่มต้น</Button>}>
         <table className="table">
-          <thead><tr><th>โมดูล</th><th>จำนวนเวอร์ชันที่เก็บ</th><th>ใช้อยู่ตอนนี้</th><th>หมายเหตุ</th></tr></thead>
+          <thead><tr><th className="col-no">ลำดับ</th><th>หมวดหมู่</th><th>จำนวนเวอร์ชันที่เก็บ</th><th>ใช้อยู่ตอนนี้</th><th>หมายเหตุ</th></tr></thead>
           <tbody>
-            {rows.map((r) => {
+            {rows.map((r, i) => {
               const orig = REVS.find((x) => x.mod === r.mod)!;
               const lower = r.n < orig.n;
               return (
                 <tr key={r.mod} className={lower ? 'highlight' : ''}>
+                  <td className="col-no">{i + 1}</td>
                   <td><b style={{ fontWeight: 500 }}>{r.mod}</b><div className="sub">{r.sub}</div></td>
                   <td><Stepper v={r.n} onChange={(n) => setRows(rows.map((x) => (x.mod === r.mod ? { ...x, n } : x)))} /></td>
                   <td>{r.usage}</td>
@@ -267,23 +262,23 @@ export function RevisionSetting() {
       </Card>
       <Card title="เมื่อจำนวนเวอร์ชันเกินที่กำหนด" sub="ระบบจัดการเวอร์ชันที่เก่าที่สุดอัตโนมัติทุกครั้งที่บันทึกเวอร์ชันใหม่">
         <div className="grid-2">
-          <label className={`radio-card ${policy === 'trash' ? 'on' : ''}`}><input type="radio" checked={policy === 'trash'} onChange={() => setPolicy('trash')} /><div><b style={{ fontWeight: 500 }}>ย้ายเวอร์ชันที่เก่าที่สุดไปถังขยะ (แนะนำ)</b><div className="t-sm t-secondary">กู้คืนได้ภายใน 30 วันจากเมนูถังขยะ</div></div></label>
+          <label className={`radio-card ${policy === 'trash' ? 'on' : ''}`}><input type="radio" checked={policy === 'trash'} onChange={() => setPolicy('trash')} /><div><b style={{ fontWeight: 500 }}>ย้ายเวอร์ชันที่เก่าที่สุดไป Recycle Bin (แนะนำ)</b><div className="t-sm t-secondary">กู้คืนได้ภายใน 30 วันจากเมนู Recycle Bin</div></div></label>
           <label className={`radio-card ${policy === 'delete' ? 'on' : ''}`}><input type="radio" checked={policy === 'delete'} onChange={() => setPolicy('delete')} /><div><b style={{ fontWeight: 500 }}>ลบเวอร์ชันที่เก่าที่สุดทันที</b><div className="t-sm t-secondary">ประหยัดพื้นที่ แต่กู้คืนไม่ได้</div></div></label>
         </div>
       </Card>
       <InfoBanner>เวอร์ชันที่เผยแพร่อยู่ (Live) ฉบับร่าง และเวอร์ชันที่รออนุมัติ ไม่นับรวมและไม่ถูกลบ · ทุกการเปลี่ยนแปลงในหน้านี้บันทึกใน Audit Log (CMS-23)</InfoBanner>
-      <Modal open={confirm} onClose={() => setConfirm(false)} title="ลดจำนวนเวอร์ชันที่เก็บ?" footer={<><Button onClick={() => setConfirm(false)}>ยกเลิก</Button><Button variant="primary" onClick={() => { toast('บันทึกการตั้งค่าแล้ว', `ย้ายเวอร์ชันเกินไป${policy === 'trash' ? 'ถังขยะ' : 'ลบ'} · บันทึกใน Audit Log`); setConfirm(false); }}>ยืนยันและบันทึก</Button></>}>
+      <Modal open={confirm} onClose={() => setConfirm(false)} title="ลดจำนวนเวอร์ชันที่เก็บ?" footer={<><Button onClick={() => setConfirm(false)}>ยกเลิก</Button><Button variant="primary" onClick={() => { toast('บันทึกการตั้งค่าแล้ว', `ย้ายเวอร์ชันเกินไป${policy === 'trash' ? 'Recycle Bin' : 'ลบ'} · บันทึกใน Audit Log`); setConfirm(false); }}>ยืนยันและบันทึก</Button></>}>
         {reduced.map((r) => {
           const orig = REVS.find((x) => x.mod === r.mod)!;
           return <div key={r.mod} className="ready-box row-between" style={{ flexDirection: 'row' }}><div><b>{r.mod}</b><div className="t-sm t-secondary">จำนวนเวอร์ชันที่เก็บ</div></div><b className="t-h3" style={{ fontSize: 18 }}>{orig.n} → {r.n} เวอร์ชัน</b></div>;
         })}
-        <div className="note-soft-warning" style={{ flexDirection: 'column', gap: 2 }}><b>⚠️ มี 42 เวอร์ชันเก่าจาก 14 รายการที่เกินจำนวนใหม่</b><span>ระบบจะเก็บ {reduced[0]?.n} เวอร์ชันล่าสุดของแต่ละรายการ และ{policy === 'trash' ? 'ย้ายเวอร์ชันที่เก่ากว่าไปถังขยะ' : 'ลบเวอร์ชันที่เก่ากว่าทันที'}</span></div>
+        <div className="note-soft-warning" style={{ flexDirection: 'column', gap: 2 }}><b>⚠️ มี 42 เวอร์ชันเก่าจาก 14 รายการที่เกินจำนวนใหม่</b><span>ระบบจะเก็บ {reduced[0]?.n} เวอร์ชันล่าสุดของแต่ละรายการ และ{policy === 'trash' ? 'ย้ายเวอร์ชันที่เก่ากว่าไป Recycle Bin' : 'ลบเวอร์ชันที่เก่ากว่าทันที'}</span></div>
         <div style={{ border: '1px solid var(--lh-border-default)', borderRadius: 10 }}>
           {[['สินเชื่อบ้าน Home 1st Class', 'เก็บ v6–v10 · ย้าย v3–v5', '3'], ['บัตรเดบิต LHB Rewards', 'เก็บ v4–v8 · ย้าย v2–v3', '2'], ['และอีก 12 รายการ', 'ดูรายการทั้งหมดก่อนยืนยัน', '37']].map(([t, s, n], i) => (
             <div key={t} className="row-between" style={{ padding: '10px 14px', borderTop: i ? '1px solid var(--lh-border-default)' : 0 }}><div><b style={{ fontWeight: 500, color: i === 2 ? 'var(--lh-text-link)' : undefined }}>{t}</b><div className="t-sm t-secondary">{s}</div></div><span>{n} เวอร์ชัน</span></div>
           ))}
         </div>
-        <div className="row-between"><span>เวอร์ชันที่เกิน: {policy === 'trash' ? 'ย้ายไปถังขยะ (กู้คืนได้ 30 วัน)' : 'ลบทันที (กู้คืนไม่ได้)'}</span><a className="t-link" onClick={() => setPolicy(policy === 'trash' ? 'delete' : 'trash')}>เปลี่ยน</a></div>
+        <div className="row-between"><span>เวอร์ชันที่เกิน: {policy === 'trash' ? 'ย้ายไป Recycle Bin (กู้คืนได้ 30 วัน)' : 'ลบทันที (กู้คืนไม่ได้)'}</span><a className="t-link" onClick={() => setPolicy(policy === 'trash' ? 'delete' : 'trash')}>เปลี่ยน</a></div>
         <p className="t-sm t-secondary">ไม่กระทบเวอร์ชันที่เผยแพร่อยู่ ฉบับร่าง และเวอร์ชันที่รออนุมัติ · บันทึกใน Audit Log</p>
       </Modal>
     </>
