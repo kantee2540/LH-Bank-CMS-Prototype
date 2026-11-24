@@ -18,7 +18,7 @@ interface Store {
   restoreFromTrash: (ids: string[]) => void;
   deleteForever: (ids: string[]) => void;
   submitContent: (data: SubmitContentInput) => void;
-  restoreVersion: (from: string, parts: string[]) => void;
+  restoreVersion: (from: VersionItem) => void;
   submitRequest: (r: { title: string; module: string; sub: string; auditor?: string; publish?: string }) => void;
   decideRequest: (id: string, decision: 'approve-now' | 'approve-schedule' | 'reject', note?: string) => void;
 }
@@ -77,12 +77,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     ]);
   }, []);
 
-  const restoreVersion = useCallback((from: string, parts: string[]) => {
+  const restoreVersion = useCallback((from: VersionItem) => {
+    const d = new Date();
+    const p = (n: number) => String(n).padStart(2, '0');
     setVersions((v) => [
-      { v: `v${v.length + 1}`, status: 'Draft', summary: `กู้คืนจาก ${from} (${parts.join(', ')})`, by: role, date: now().slice(0, 10), draft: true },
+      { id: `v${v.length + 1}`, date: `${now()}:${p(d.getSeconds())}`, action: 'RECOVER', changes: from.changes.length ? from.changes : ['เนื้อหา'] },
       ...v,
     ]);
-  }, [role]);
+  }, []);
 
   const submitRequest = useCallback((r: { title: string; module: string; sub: string; auditor?: string; publish?: string }) => {
     const ts = now();

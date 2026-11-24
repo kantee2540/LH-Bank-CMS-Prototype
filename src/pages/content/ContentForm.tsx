@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Sparkles, Eye, History, Download, Send, Image as ImageIcon, Info, Pencil, Trash2, Plus, Check, X } from 'lucide-react';
-import { Button, Card, Field, Input, Select, Textarea, Tabs, Status, Modal, PageHeader, IconButton, InfoBanner } from '../../components/ui';
+import { Sparkles, Eye, History, RotateCw, Download, Send, Image as ImageIcon, Info, Pencil, Trash2, Plus, Check, X } from 'lucide-react';
+import { Button, Card, Field, Input, Select, Textarea, Tabs, Status, Modal, PageHeader, IconButton } from '../../components/ui';
 import MediaPicker from '../../components/MediaPicker';
 import MediaThumb from '../../components/MediaThumb';
 import RichEditor from '../../components/RichEditor';
@@ -36,7 +36,6 @@ interface Faq {
   a: string;
 }
 
-type RestorePart = 'content' | 'media' | 'schedule' | 'seo';
 type Check = [label: string, ok: boolean];
 
 interface LangProps {
@@ -276,82 +275,44 @@ function DisplayTab() {
   );
 }
 
-/* ---------- Modal: ประวัติเวอร์ชัน (VR-01 / VR-02 / VR-03) — มีเฉพาะ Page Builder ---------- */
+/* ---------- Modal: ประวัติการแก้ไข (VR-01 / VR-03) — มีเฉพาะ Page Builder ---------- */
+const ACTION_CLASS: Record<VersionItem['action'], string> = { INSERT: 'insert', UPDATE: 'update', RECOVER: 'recover' };
+
 function VersionModal({ open, onClose, isNew }: { open: boolean; onClose: () => void; isNew: boolean }) {
   const { versions, restoreVersion, toast } = useStore();
-  const [restore, setRestore] = useState<VersionItem | null>(null);
-  const [compare, setCompare] = useState<VersionItem | null>(null);
-  const [parts, setParts] = useState<Record<RestorePart, boolean>>({ content: true, media: true, schedule: false, seo: false });
-  const [reason, setReason] = useState('ฝ่ายการตลาดขอใช้คำโปรยและรูป Hero ชุดเดิม');
-  if (isNew) {
-    return <Modal open={open} onClose={onClose} width={640} title="ประวัติเวอร์ชัน"><p className="t-secondary" style={{ textAlign: 'center', padding: 24 }}>ยังไม่มีประวัติเวอร์ชัน — ระบบจะเก็บเวอร์ชันทุกครั้งที่บันทึก ส่งอนุมัติ และเผยแพร่</p></Modal>;
-  }
-  const PARTS: [RestorePart, string, string][] = [
-    ['content', 'เนื้อหาทุกภาษา', 'หัวข้อ คำโปรย และเนื้อหา · TH / EN / 中文'],
-    ['media', 'รูปและไฟล์แนบ', 'รูป Hero และ Alt text'],
-    ['schedule', 'ช่วงเวลาแสดงผล', 'ไม่เลือก = ใช้ค่าปัจจุบันของ v5'],
-    ['seo', 'SEO / AEO', 'ไม่เลือก = ใช้ค่าปัจจุบันของ v5'],
-  ];
+  const [restore, setRestore] = useState<{ item: VersionItem; no: number } | null>(null);
   return (
     <>
-      <Modal open={open} onClose={onClose} width={1040} title={`ประวัติเวอร์ชัน (${versions.length})`} footer={<Button onClick={onClose}>ปิด</Button>}>
-        <InfoBanner title="ย้อนกลับไปแก้ไขหรือกู้คืนได้โดยไม่กระทบหน้าเว็บ">
-          ระบบสร้างฉบับร่างใหม่จากเวอร์ชันที่เลือก · v5 ที่เผยแพร่อยู่ยังแสดงบนเว็บจนกว่าฉบับร่างจะได้รับอนุมัติ · ไม่มีเวอร์ชันใดถูกลบ
-        </InfoBanner>
-        <div className="row-between" style={{ alignItems: 'flex-end' }}>
-          <span className="t-secondary">เก็บทุกครั้งที่บันทึก ส่งอนุมัติ และเผยแพร่ · เลือกเวอร์ชันเพื่อดู เปรียบเทียบ แก้ไขต่อ หรือกู้คืน</span>
-          <div className="row" style={{ gap: 10 }}>
-            <Field label="สถานะ" style={{ width: 180 }}><Select options={['ทั้งหมด', 'Published', 'Expired', 'Rejected', 'Draft']} /></Field>
-            <Field label="ช่วงเวลา" style={{ width: 180 }}><Select options={['90 วันล่าสุด', '30 วันล่าสุด', 'ทั้งหมด']} /></Field>
-          </div>
-        </div>
-        <div className="table-wrap">
-          <table className="table">
-            <thead><tr><th>เวอร์ชัน</th><th>สถานะ</th><th>สรุปการเปลี่ยนแปลง</th><th>ผู้แก้ไข · วันที่</th><th>Action</th></tr></thead>
+      <Modal open={open} onClose={onClose} width={880} title="ประวัติการแก้ไข">
+        {isNew ? (
+          <p className="t-secondary" style={{ textAlign: 'center', padding: 24 }}>ยังไม่มีประวัติการแก้ไข — ระบบจะบันทึกทุกครั้งที่สร้างหรือแก้ไขเนื้อหา</p>
+        ) : (
+          <table className="table ver-table">
+            <thead><tr><th className="col-no">ลำดับ</th><th>วันที่แก้ไข</th><th>ประเภท</th><th>การเปลี่ยนแปลง</th><th style={{ textAlign: 'right' }}>จัดการ</th></tr></thead>
             <tbody>
-              {versions.map((v) => (
-                <tr key={v.v} className={v.draft ? 'highlight' : ''}>
-                  <td><b>{v.v}</b>{v.live && <div><span className="tag-version">Live</span></div>}</td>
-                  <td><Status status={v.status} /></td>
-                  <td style={{ maxWidth: 300 }}>{v.summary}</td>
-                  <td className="t-sm t-secondary">{v.by}{v.approver && <><br />{v.approver}</>} · {v.date}</td>
+              {versions.map((v, i) => (
+                <tr key={v.id} className={i === 0 ? 'current' : ''}>
+                  <td className="col-no">{i + 1}</td>
+                  <td>{v.date}</td>
+                  <td><span className={`ver-action ${ACTION_CLASS[v.action]}`}>{v.action}</span></td>
                   <td>
-                    <div className="row" style={{ gap: 14 }}>
-                      <button className="btn-ghost btn" onClick={() => setCompare(v)}>{v.live ? 'ดู' : 'ดู / เทียบ'}</button>
-                      {!v.live && <button className="btn-ghost btn" onClick={() => toast(`สร้างฉบับร่างจาก ${v.v}`, 'เปิดแท็บเนื้อหาเพื่อแก้ไขต่อ')}>แก้ไขต่อ</button>}
-                      {!v.live && v.status !== 'Rejected' && !v.draft && <button className="btn-ghost btn" onClick={() => setRestore(v)}>กู้คืน</button>}
-                    </div>
+                    {v.changes.length ? (
+                      <span className="row" style={{ gap: 6, flexWrap: 'wrap' }}>{v.changes.map((c) => <span key={c} className="ver-chip">{c}</span>)}</span>
+                    ) : (
+                      <span className="t-secondary">{v.note}</span>
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    {i === 0 ? (
+                      <span className="t-secondary" style={{ whiteSpace: 'nowrap' }}>เวอร์ชันปัจจุบัน</span>
+                    ) : (
+                      <span className="row" style={{ justifyContent: 'flex-end' }}><IconButton icon={RotateCw} title="กู้คืนเวอร์ชันนี้" onClick={() => setRestore({ item: v, no: i + 1 })} /></span>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-        <p className="t-sm t-secondary">Rejected แก้ไขต่อได้แต่กู้คืนไม่ได้ · เวอร์ชันที่เผยแพร่อยู่ (Live) แก้ไขได้ผ่านปุ่ม “แก้ไขต่อ” ซึ่งจะสร้างฉบับร่างใหม่ · ทุกการกู้คืนต้องยืนยันก่อนเสมอ</p>
-      </Modal>
-
-      {/* VR-02 ดูและเปรียบเทียบเวอร์ชัน */}
-      <Modal open={!!compare} onClose={() => setCompare(null)} width={900} title={compare?.live ? `ดูเวอร์ชัน ${compare?.v}` : `เปรียบเทียบ ${compare?.v} กับ v5 (Live)`}>
-        {compare && (
-          <div className="table-wrap">
-            <table className="table">
-              <thead><tr><th>ฟิลด์</th><th>{compare.v}</th>{!compare.live && <th>v5 (Live)</th>}</tr></thead>
-              <tbody>
-                {[
-                  ['คำโปรย (TH)', compare.live ? 'ฝากขั้นต่ำ 10,000 บาท รับดอกเบี้ย {rate:fd-6m} ต่อปี' : 'ฝากขั้นต่ำ 10,000 บาท รับดอกเบี้ย 1.80% ต่อปี', 'ฝากขั้นต่ำ 10,000 บาท รับดอกเบี้ย {rate:fd-6m} ต่อปี'],
-                  ['รูป Hero', compare.live ? 'promo-fixed-6m.jpg' : 'hero-fixed-6m-v1.jpg', 'promo-fixed-6m.jpg'],
-                  ['ช่วงเวลาแสดงผล', '05/10/2026 – 31/12/2026', '05/11/2026 – 31/12/2026'],
-                  ['FAQ', compare.v === 'v4' || compare.live ? '3 ข้อ' : '0 ข้อ', '3 ข้อ'],
-                ].map(([f, a, b]) => (
-                  <tr key={f}>
-                    <td><b>{f}</b></td>
-                    <td style={{ background: !compare.live && a !== b ? '#fdecea' : undefined }}>{a}</td>
-                    {!compare.live && <td style={{ background: a !== b ? '#e6f5ef' : undefined }}>{b}</td>}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         )}
       </Modal>
 
@@ -359,33 +320,21 @@ function VersionModal({ open, onClose, isNew }: { open: boolean; onClose: () => 
       <Modal
         open={!!restore}
         onClose={() => setRestore(null)}
-        width={680}
-        title={`ยืนยันการกู้คืน ${restore?.v} เป็นฉบับร่างใหม่?`}
+        width={480}
+        title="กู้คืนเวอร์ชันนี้?"
         footer={
           <>
             <Button onClick={() => setRestore(null)}>ยกเลิก</Button>
-            <Button variant="primary" disabled={!reason.trim() || !Object.values(parts).some(Boolean)} onClick={() => {
+            <Button variant="primary" onClick={() => {
               if (!restore) return;
-              const chosen = PARTS.filter(([k]) => parts[k]).map(([, l]) => l);
-              restoreVersion(restore.v, chosen);
-              toast(`สร้างฉบับร่าง v${versions.length + 1} แล้ว`, `กู้คืนจาก ${restore.v} · v5 ยังแสดงบนเว็บ`);
+              restoreVersion(restore.item);
+              toast('กู้คืนเวอร์ชันแล้ว', `จากรายการลำดับที่ ${restore.no} · ${restore.item.date}`);
               setRestore(null);
-            }}>ยืนยันกู้คืน</Button>
+            }}>กู้คืน</Button>
           </>
         }
       >
-        <p className="t-secondary" style={{ marginTop: -6 }}>ระบบจะสร้างฉบับร่าง v{versions.length + 1} จากเวอร์ชัน {restore?.v} · v5 ยังแสดงบนเว็บจนกว่า v{versions.length + 1} จะได้รับอนุมัติ · {restore?.v} และ v5 ไม่ถูกเปลี่ยนแปลง</p>
-        <b>เลือกส่วนที่ต้องการกู้คืน</b>
-        <div style={{ border: '1px solid var(--lh-border-default)', borderRadius: 10 }}>
-          {PARTS.map(([k, l, s], i) => (
-            <label key={k} className="row" style={{ alignItems: 'flex-start', padding: '12px 16px', borderTop: i ? '1px solid var(--lh-border-default)' : 0, cursor: 'pointer' }}>
-              <input type="checkbox" className="cb" style={{ marginTop: 4 }} checked={parts[k]} onChange={(e) => setParts({ ...parts, [k]: e.target.checked })} />
-              <div><b>{l}</b><div className="t-sm t-secondary">{s}</div></div>
-            </label>
-          ))}
-        </div>
-        <div className="note-soft-warning">⚠️ <span>{restore?.v} ใช้อัตราดอกเบี้ยแบบพิมพ์เอง (1.80%) ซึ่งไม่อัปเดตตามหมวดหมู่ Rates · แนะนำให้เปลี่ยนเป็นตัวแปร {'{rate:fd-6m}'} ในฉบับร่างก่อนส่งอนุมัติ</span></div>
-        <Field label="เหตุผลการกู้คืน" required><Input value={reason} onChange={(e) => setReason(e.target.value)} /></Field>
+        <p className="t-secondary" style={{ margin: 0 }}>เนื้อหาจะถูกย้อนกลับเป็นเวอร์ชันวันที่ {restore?.item.date} และบันทึกเป็นรายการ RECOVER ใหม่ในประวัติการแก้ไข</p>
       </Modal>
     </>
   );
@@ -438,7 +387,7 @@ export default function ContentForm() {
         actions={
           <>
             {editable && <Button icon={Sparkles} onClick={() => toast('AI ช่วยร่าง', 'สร้างร่าง EN / 中文 จากภาษาไทยแล้ว — โปรดตรวจทานก่อนส่ง')}>AI ช่วยร่าง (ส่วนเสริม)</Button>}
-            <Button icon={History} onClick={() => setVersionOpen(true)}>ประวัติเวอร์ชัน</Button>
+            <Button icon={History} onClick={() => setVersionOpen(true)}>ประวัติการแก้ไข</Button>
             <Button icon={Eye} onClick={() => openPreview({ title: data[lang].title, excerpt: data[lang].excerpt, body: data[lang].body, type: meta.type, path: `/${lang}${meta.path}`, hero: hero?.name, lang })}>Preview</Button>
             {editable && <Button icon={Download} onClick={() => toast('บันทึก Draft แล้ว', data.th.title)}>บันทึก Draft</Button>}
             {editable && <Button variant="primary" icon={Send} onClick={() => setSubmitOpen(true)}>ส่งอนุมัติ</Button>}

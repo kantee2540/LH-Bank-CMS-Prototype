@@ -47,11 +47,11 @@ export const REQUESTS: RequestItem[] = [
 ];
 
 export const VERSIONS: VersionItem[] = [
-  { v: 'v5', live: true, status: 'Published', summary: 'ใช้ตัวแปร {rate:fd-6m} แทนตัวเลข · เปลี่ยนรูป Hero · ปรับช่วงเวลาแสดงผล', by: 'Content Editor 01', approver: 'อนุมัติโดย Auditor – Marketing', date: '01/11/2026' },
-  { v: 'v4', status: 'Expired', summary: 'เพิ่ม FAQ 3 ข้อ · แก้คำโปรยภาษาอังกฤษ', by: 'Content Editor 02', date: '20/10/2026' },
-  { v: 'v3', status: 'Expired', summary: 'ขยายช่วงเวลาแสดงผลถึง 31/12/2026 · ใช้รูป Hero ชุดแรก', by: 'Content Editor 01', date: '05/10/2026' },
-  { v: 'v2', status: 'Rejected', summary: 'เปลี่ยนเงื่อนไขฝากขั้นต่ำ · ส่งกลับ: ขาด Disclaimer', by: 'Content Editor 02', date: '28/09/2026' },
-  { v: 'v1', status: 'Expired', summary: 'สร้างเนื้อหาครั้งแรก', by: 'Content Editor 01', date: '15/09/2026' },
+  { id: 'v5', date: '24/11/2026 17:23:41', action: 'RECOVER', changes: ['เนื้อหา', 'is_feedback_enabled', 'แสดงป้าย New'] },
+  { id: 'v4', date: '10/11/2026 09:46:34', action: 'RECOVER', changes: ['เนื้อหา'] },
+  { id: 'v3', date: '26/10/2026 16:25:42', action: 'UPDATE', changes: ['เนื้อหา'] },
+  { id: 'v2', date: '26/10/2026 16:25:29', action: 'UPDATE', changes: ['Meta'] },
+  { id: 'v1', date: '26/10/2026 16:24:33', action: 'INSERT', changes: [], note: 'สร้างเนื้อหา' },
 ];
 
 export const MEDIA_FOLDERS: string[] = ['Homepage Banner', 'Promotion', 'Life Stage', 'Products', 'Advisory', 'News & Activity', 'Documents (PDF)', 'Logo & Brand'];

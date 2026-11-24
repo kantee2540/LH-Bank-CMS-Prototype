@@ -290,3 +290,11 @@
 .rich-editor { position: relative; display: flex; flex-direction: column; }
 .rich-editor-lang { align-self: flex-end; margin-right: 14px; padding: 2px 8px; font-size: 12px; line-height: 16px; color: var(--lh-text-secondary); background: #fff; border: 1px solid var(--lh-border-strong); border-bottom: 0; border-radius: 4px 4px 0 0; }
 .rich-editor .tox-tinymce { border: 1px solid var(--lh-border-strong); border-radius: 0; }
+
+/* ประวัติการแก้ไข (Version history) */
+.ver-table tr.current td { background: var(--lh-bg-subtle, #f3f4f6); }
+.ver-action { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 12px; font-weight: 600; letter-spacing: .02em; }
+.ver-action.recover { background: #d9f2f7; color: #1d6f80; }
+.ver-action.update { background: #f3f4f6; color: #3a3f47; }
+.ver-action.insert { background: #dcefe4; color: #2a6a47; }
+.ver-chip { display: inline-block; background: #e8e9ec; color: #2c2f35; border-radius: 4px; padding: 2px 8px; font-size: 12px; font-weight: 500; }

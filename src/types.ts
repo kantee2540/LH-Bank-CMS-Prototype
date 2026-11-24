@@ -46,15 +46,17 @@ export interface RequestItem {
   fresh?: boolean;
 }
 
+export type VersionAction = 'INSERT' | 'UPDATE' | 'RECOVER';
+
 export interface VersionItem {
-  v: string;
-  status: ContentStatus;
-  summary: string;
-  by: string;
+  id: string;
+  /** วันที่และเวลาที่แก้ไข dd/mm/yyyy hh:mm:ss */
   date: string;
-  live?: boolean;
-  approver?: string;
-  draft?: boolean;
+  action: VersionAction;
+  /** ส่วนที่เปลี่ยนแปลง แสดงเป็นป้าย */
+  changes: string[];
+  /** ข้อความแทนป้าย เช่น "สร้างเนื้อหา" */
+  note?: string;
 }
 
 export type MediaKind = 'image' | 'logo' | 'pdf';
