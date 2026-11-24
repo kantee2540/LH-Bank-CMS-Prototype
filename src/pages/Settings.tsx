@@ -223,7 +223,6 @@ const REVS: Rev[] = [
 ];
 export function RevisionSetting() {
   const { toast } = useStore();
-  const [def, setDef] = useState(10);
   const [rows, setRows] = useState(REVS);
   const [policy, setPolicy] = useState<'trash' | 'delete'>('trash');
   const [confirm, setConfirm] = useState(false);
@@ -235,12 +234,7 @@ export function RevisionSetting() {
     <>
       <PageHeader title="การเก็บเวอร์ชัน (Revision)" sub="กำหนดจำนวนเวอร์ชันย้อนหลังที่ระบบเก็บไว้ ให้ย้อนกลับไปแก้ไขหรือกู้คืนได้ · ปรับได้ 1–10 เวอร์ชันต่อรายการ"
         actions={<><Button icon={RefreshCw}>ประวัติการเปลี่ยนแปลง</Button><Button variant="primary" onClick={() => (reduced.length ? setConfirm(true) : toast('บันทึกการตั้งค่าแล้ว'))}>บันทึกการตั้งค่า</Button></>} />
-      <Card title="ค่าเริ่มต้นของทุกหมวดหมู่" sub="ใช้กับหมวดหมู่ที่ไม่ได้ตั้งค่าแยก และหมวดหมู่ที่เพิ่มในอนาคต">
-        <div className="row-between"><div><b style={{ fontWeight: 500 }}>จำนวนเวอร์ชันที่เก็บย้อนหลัง</b><div className="t-sm t-secondary">ต่ำสุด 1 · สูงสุด 10 เวอร์ชันต่อรายการ</div></div><div className="row"><Stepper v={def} onChange={setDef} />{def === 10 && <span className="tag-version">ตั้งค่าสูงสุดแล้ว</span>}</div></div>
-        <div className="seg-bar mt-16">{Array.from({ length: 10 }, (_, i) => <i key={i} className={i < def ? 'on' : ''} />)}</div>
-        <div className="row-between t-sm mt-8"><span>1</span><span>10 (สูงสุด)</span></div>
-      </Card>
-      <Card title="ตั้งค่าแยกตามหมวดหมู่" sub="กด − / + เพื่อเพิ่มหรือลดจำนวน · ลดจำนวนต้องยืนยันก่อนบันทึก" action={<Button size="sm" icon={RefreshCw} onClick={() => setRows(REVS.map((r) => ({ ...r, n: def })))}>รีเซ็ตเป็นค่าเริ่มต้น</Button>}>
+      <Card title="ตั้งค่าแยกตามหมวดหมู่" sub="กด − / + เพื่อเพิ่มหรือลดจำนวน · ลดจำนวนต้องยืนยันก่อนบันทึก">
         <table className="table">
           <thead><tr><th className="col-no">ลำดับ</th><th>หมวดหมู่</th><th>จำนวนเวอร์ชันที่เก็บ</th><th>ใช้อยู่ตอนนี้</th><th>หมายเหตุ</th></tr></thead>
           <tbody>
@@ -253,7 +247,7 @@ export function RevisionSetting() {
                   <td><b style={{ fontWeight: 500 }}>{r.mod}</b><div className="sub">{r.sub}</div></td>
                   <td><Stepper v={r.n} onChange={(n) => setRows(rows.map((x) => (x.mod === r.mod ? { ...x, n } : x)))} /></td>
                   <td>{r.usage}</td>
-                  <td>{lower ? <div className="note-soft-warning" style={{ padding: '6px 10px', fontSize: 14 }}>ลดจาก {orig.n} → {r.n} เวอร์ชัน{r.max > r.n ? ` · เกินอยู่ ${Math.max(0, (r.max - r.n) * 14)} เวอร์ชัน · ยืนยันตอนบันทึก` : ''}</div> : r.n === def ? <span className="t-secondary">ใช้ค่าเริ่มต้น</span> : <span className="tag-version">ตั้งค่าแยก</span>}</td>
+                  <td>{lower ? <div className="note-soft-warning" style={{ padding: '6px 10px', fontSize: 14 }}>ลดจาก {orig.n} → {r.n} เวอร์ชัน{r.max > r.n ? ` · เกินอยู่ ${Math.max(0, (r.max - r.n) * 14)} เวอร์ชัน · ยืนยันตอนบันทึก` : ''}</div> : <span className="t-secondary">—</span>}</td>
                 </tr>
               );
             })}
