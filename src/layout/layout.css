@@ -44,7 +44,7 @@
 .role-chip.auditor { background: #f2e8f5; color: #7b3f8f; }
 .avatar { width: 40px; height: 40px; border-radius: 20px; background: var(--lh-teal); color: #fff; display: grid; place-items: center; }
 
-.content { padding: 24px; display: flex; flex-direction: column; gap: 20px; max-width: 1400px; width: 100%; }
+.content { padding: 24px; display: flex; flex-direction: column; gap: 20px; width: 100%; min-width: 0; }
 
 /* Page header */
 .page-header { display: flex; flex-direction: column; gap: 14px; }

@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { Field, Select } from '../components/ui';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { Button, Field, Input, Modal, Select } from '../components/ui';
+import { useStore } from '../store';
+import type { TopList } from '../types';
 import { MONTHS, VISITOR_SERIES, TOP_LISTS } from '../data/mock';
 import icUsers from '../assets/figma/stats/users.svg';
 import icLayout from '../assets/figma/stats/layout.svg';
@@ -110,9 +114,64 @@ function VisitorChart() {
   );
 }
 
+/* NEW — Popup "ดูทั้งหมด" ของการ์ดอันดับบน Dashboard */
+function TopListModal({ list, period, onClose }: { list: TopList | null; period: string; onClose: () => void }) {
+  const navigate = useNavigate();
+  const [q, setQ] = useState('');
+  const all = list ? [...list.rows, ...(list.more ?? [])] : [];
+  const total = all.reduce((s, [, v]) => s + v, 0);
+  const shown = all.map(([k, v], i) => ({ rank: i + 1, k, v })).filter((r) => r.k.toLowerCase().includes(q.trim().toLowerCase()));
+  const close = () => { setQ(''); onClose(); };
+  return (
+    <Modal
+      open={!!list}
+      onClose={close}
+      width={720}
+      title={list ? `${list.title} — ทั้งหมด` : ''}
+      footer={
+        <>
+          {list?.link && <Button icon={ArrowRight} onClick={() => { close(); navigate(list.link!.to); }}>ไปที่เมนู {list.link.label}</Button>}
+          <Button variant="primary" onClick={close}>ปิด</Button>
+        </>
+      }
+    >
+      <div className="row-between" style={{ gap: 12, alignItems: 'flex-end' }}>
+        <span className="t-secondary">{period} · ทั้งหมด {all.length} รายการ · รวม {total.toLocaleString()} {list?.unit ?? ''}</span>
+        <Field label="ค้นหา" style={{ width: 240 }}><Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="พิมพ์ชื่อรายการ" /></Field>
+      </div>
+      <div className="table-wrap" style={{ maxHeight: 420, overflow: 'auto' }}>
+        <table className="table">
+          <thead><tr><th className="col-no">ลำดับ</th><th>รายการ</th><th style={{ textAlign: 'right' }}>จำนวน{list?.unit ? ` (${list.unit})` : ''}</th><th style={{ width: 200 }}>สัดส่วน</th></tr></thead>
+          <tbody>
+            {shown.map((r) => {
+              const pct = total ? (r.v / total) * 100 : 0;
+              return (
+                <tr key={r.k}>
+                  <td className="col-no">{r.rank}</td>
+                  <td>{r.k}</td>
+                  <td style={{ textAlign: 'right', fontWeight: 500 }}>{r.v.toLocaleString()}</td>
+                  <td>
+                    <div className="row" style={{ gap: 8 }}>
+                      <div className="share-bar"><i style={{ width: `${pct}%` }} /></div>
+                      <span className="t-sm t-secondary" style={{ minWidth: 44, textAlign: 'right' }}>{pct.toFixed(1)}%</span>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {!shown.length && <tr><td colSpan={4} className="t-tertiary" style={{ textAlign: 'center', padding: 32 }}>ไม่พบรายการที่ตรงกับคำค้นหา</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </Modal>
+  );
+}
+
 export default function Dashboard() {
   const [mode, setMode] = useState('ข้อมูลปี');
   const [year, setYear] = useState('2569');
+  const [openList, setOpenList] = useState<TopList | null>(null);
+  const { toast } = useStore();
   return (
     <>
       <div className="row-between dash-head">
@@ -124,10 +183,10 @@ export default function Dashboard() {
           <Field label="ปี" style={{ width: 120 }}>
             <Select value={year} onChange={(e) => setYear(e.target.value)} options={['2569', '2568', '2567']} />
           </Field>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={() => toast('เรียกดูข้อมูลแล้ว', `${mode} · ปี ${year}`)}>
             <img src={icSearchBtn} alt="" width="18" height="18" /> เรียกดูข้อมูล
           </button>
-          <button className="btn btn-secondary" style={{ height: 44 }}>
+          <button className="btn btn-secondary" style={{ height: 44 }} onClick={() => toast('ส่งออกข้อมูลแล้ว', `dashboard-${year}.xlsx`)}>
             <img src={icExportBtn} alt="" width="18" height="18" /> ส่งออกข้อมูล
           </button>
         </div>
@@ -177,7 +236,7 @@ export default function Dashboard() {
           <section className="card top-list" key={l.title}>
             <div className="row-between top-list-head">
               <h3 className="card-title">{l.title}</h3>
-              <a className="t-link" href="#" onClick={(e) => e.preventDefault()}>ดูทั้งหมด</a>
+              <button type="button" className="t-link link-btn" onClick={() => setOpenList(l)}>ดูทั้งหมด</button>
             </div>
             {l.rows.map(([k, v]) => (
               <div className="row-between top-row" key={k}>
@@ -188,6 +247,7 @@ export default function Dashboard() {
           </section>
         ))}
       </div>
+      <TopListModal list={openList} period={`${mode} ${year}`} onClose={() => setOpenList(null)} />
     </>
   );
 }

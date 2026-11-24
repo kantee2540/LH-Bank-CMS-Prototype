@@ -100,7 +100,14 @@ export interface ChartSeries {
 
 export interface TopList {
   title: string;
+  /** อันดับต้น ๆ ที่แสดงบนการ์ด Dashboard */
   rows: [string, number][];
+  /** อันดับถัดไป — แสดงเพิ่มใน Popup "ดูทั้งหมด" */
+  more?: [string, number][];
+  /** หน่วยของตัวเลข เช่น ครั้ง, วิว, คลิก */
+  unit?: string;
+  /** เมนูที่เกี่ยวข้องสำหรับปุ่มลัดใน Popup */
+  link?: { label: string; to: string };
 }
 
 export type Role = 'Content Editor' | 'Auditor';
