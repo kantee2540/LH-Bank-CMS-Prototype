@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { RotateCcw } from 'lucide-react';
-import { Button, Field, Input, Select, Tabs, Modal, PageHeader, InfoBanner } from '../components/ui';
+import { RotateCcw, Trash2 } from 'lucide-react';
+import { Button, IconButton, Field, Input, Select, Tabs, Modal, PageHeader, InfoBanner } from '../components/ui';
 import { useStore } from '../store';
 import type { TrashGroup } from '../types';
 import './pages.css';
@@ -88,9 +88,9 @@ export default function Trash() {
                   <td className="t-sm" style={{ maxWidth: 200 }}>{t.by}</td>
                   <td style={{ color: t.days <= 3 ? 'var(--lh-danger)' : undefined, fontWeight: t.days <= 3 ? 500 : 400 }}>อีก {t.days} วัน</td>
                   <td>
-                    <div className="row" style={{ gap: 14 }}>
-                      <button className="btn btn-ghost" onClick={() => setConfirm({ kind: 'restore', ids: [t.id] })}>กู้คืน</button>
-                      <button className="btn btn-ghost" style={{ color: 'var(--lh-danger)' }} onClick={() => setConfirm({ kind: 'delete', ids: [t.id] })}>ลบถาวร</button>
+                    <div className="row" style={{ gap: 2 }}>
+                      <IconButton icon={RotateCcw} title="กู้คืน" onClick={() => setConfirm({ kind: 'restore', ids: [t.id] })} />
+                      <IconButton icon={Trash2} danger title="ลบถาวร" onClick={() => setConfirm({ kind: 'delete', ids: [t.id] })} />
                     </div>
                   </td>
                 </tr>
