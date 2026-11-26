@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Monitor, Smartphone, X } from 'lucide-react';
 import logo from '../assets/figma/logo-lh-bank.svg';
+import { PHOTOS, photoFor } from '../data/photos';
 import './preview.css';
 
 /* NEW — PV-01 Preview หน้าแยก (เปิดแท็บใหม่) · สลับ Desktop / Mobile */
@@ -53,7 +54,13 @@ function SitePage({ d, mobile }: { d: PreviewData; mobile: boolean }) {
           <nav className="site-nav"><span>บุคคล</span><span>ธุรกิจ</span><span>ผลิตภัณฑ์</span><span>อัตราดอกเบี้ย</span><span>โปรโมชั่น</span><span className="site-lang">{(d.lang ?? 'th').toUpperCase()}</span></nav>
         )}
       </header>
-      <div className="site-hero" style={{ minHeight: mobile ? 180 : 320 }}>
+      <div
+        className="site-hero"
+        style={{
+          minHeight: mobile ? 180 : 320,
+          backgroundImage: `linear-gradient(90deg, rgba(15,59,107,.88) 0%, rgba(15,59,107,.55) 55%, rgba(15,59,107,.1) 100%), url(${photoFor(d.hero || `${d.type} ${d.path}`)})`,
+        }}
+      >
         <div className="site-hero-text">
           {d.type && <span className="site-chip">{d.type}</span>}
           <h1>{d.title || 'ไม่มีหัวข้อ'}</h1>
@@ -66,7 +73,7 @@ function SitePage({ d, mobile }: { d: PreviewData; mobile: boolean }) {
         {d.body
           ? <div className="site-rich" dangerouslySetInnerHTML={{ __html: d.body.replace(/\{rate:[^}]+\}/g, '1.95%') }} />
           : <p className="site-muted">ไม่มีเนื้อหา</p>}
-        <div className="site-cards">{[1, 2, 3].map((i) => <div key={i} className="site-card"><i /><b>ผลิตภัณฑ์แนะนำ {i}</b><span>รายละเอียดสั้น ๆ</span></div>)}</div>
+        <div className="site-cards">{[PHOTOS.saving, PHOTOS.creditCard, PHOTOS.familyAdvisor].map((src, i) => <div key={src} className="site-card"><img src={src} alt="" loading="lazy" /><b>ผลิตภัณฑ์แนะนำ {i + 1}</b><span>รายละเอียดสั้น ๆ</span></div>)}</div>
       </main>
       <footer className="site-foot">© 2026 LH Bank · ข้อมูลตัวอย่างสำหรับ Preview เท่านั้น</footer>
     </div>

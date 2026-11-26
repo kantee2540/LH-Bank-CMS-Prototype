@@ -7,10 +7,15 @@ import ListPage, { selectFilter, textFilter } from '../components/ListPage';
 import ModuleForm from '../components/ModuleForm';
 import { useStore } from '../store';
 import type { ContentStatus } from '../types';
+import { PHOTOS } from '../data/photos';
 import './pages.css';
 
-function Thumb({ color, icon: Icon = ImageIcon, light }: { color: string; icon?: LucideIcon; light?: boolean }) {
-  return <div className="thumb-cell" style={{ background: color, color: light ? '#4d4d4f' : undefined, width: 70, height: 42 }}><Icon size={16} /></div>;
+function Thumb({ src, icon: Icon = ImageIcon }: { src?: string; icon?: LucideIcon }) {
+  return (
+    <div className="thumb-cell" style={{ background: src ? undefined : '#eef1f4', color: '#4d4d4f', width: 70, height: 42 }}>
+      {src ? <img src={src} alt="" loading="lazy" /> : <Icon size={16} />}
+    </div>
+  );
 }
 
 function useDelete<T extends { id: string; title: string }>(rows: T[], setRows: (r: T[]) => void, label: string) {
@@ -30,6 +35,8 @@ function rowActions(onView: () => void, onEdit: () => void, onDel: () => void) {
 
 /* ================= Advisory (CMS-16) ================= */
 interface AdvisoryRow { id: string; title: string; sub: string; file: string | null; date: string; status: ContentStatus; type: string }
+/* ภาพปก Weekly Report / บทความ (ตัวอย่างจาก lhbank.co.th) */
+const ADV_IMG: Record<string, string> = { a1: PHOTOS.weeklyCreditHorizon, a2: PHOTOS.weeklyAmericanRoulette, a3: PHOTOS.advisoryWinnerLoser, a4: PHOTOS.advisoryReits, a6: PHOTOS.advisoryEsg };
 const ADVISORY: AdvisoryRow[] = [
   { id: 'a1', title: 'Weekly Report: สรุปภาวะตลาดประจำสัปดาห์', sub: '27 ต.ค. 2569 · TH', file: 'weekly-20261027.pdf', date: '27/10/2026', status: 'Published', type: 'Weekly Report' },
   { id: 'a2', title: 'Weekly Report: มุมมองการลงทุนไตรมาส 4', sub: '20 ต.ค. 2569 · TH', file: 'weekly-20261020.pdf', date: '20/10/2026', status: 'Published', type: 'Weekly Report' },
@@ -52,7 +59,7 @@ export function AdvisoryList() {
       toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/advisory/new')}>Create</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'Advisory').length})</Link></>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> ตามแผน IV-07 แสดงเฉพาะ Weekly Report (List + ดาวน์โหลด PDF)</span>}
       columns={[
-        { key: 'img', label: 'ภาพปก', render: (r) => <Thumb color={r.file ? '#4a6378' : '#eef1f4'} light={!r.file} /> },
+        { key: 'img', label: 'ภาพปก', render: (r) => <Thumb src={r.file ? ADV_IMG[r.id] : undefined} /> },
         { key: 't', label: 'ชื่อรายงาน', render: (r) => <><Link className="t-link" style={{ fontWeight: 400 }} to={`/advisory/${r.id}`}>{r.title}</Link><div className="sub">{r.sub}</div></> },
         { key: 'f', label: 'ไฟล์ PDF', render: (r) => r.file ? <span className="row" style={{ gap: 6, alignItems: 'flex-start' }}><FileText size={16} color="#e0625a" style={{ marginTop: 4 }} />{r.file}</span> : <span className="row t-secondary" style={{ gap: 6 }}><Upload size={16} /> ยังไม่อัปโหลด</span> },
         { key: 'd', label: 'วันที่เผยแพร่', render: (r) => r.date },
@@ -79,19 +86,19 @@ export function AdvisoryForm() {
       ]}
       initial={r ? { th: { title: r.title, type: r.type, author: 'ทีมวิเคราะห์การลงทุน LH Bank', summary: 'สรุปภาวะตลาดหุ้น ตราสารหนี้ และค่าเงินประจำสัปดาห์', file: r.file ?? '' } } : {}}
       publishFields={[{ key: 'date', label: 'วันที่เผยแพร่', type: 'datetime' }, { key: 'pin', label: 'แสดงบนหน้า Advisory เป็นรายการแรก', type: 'toggle' }]}
-      image={{ label: 'ภาพปก', hint: 'ขนาด 800×450 px · JPG/PNG/WebP · ไม่เกิน 300 KB', initial: r?.file ? { name: `cover-${r.id}.jpg`, kind: 'image', hue: 205 } : null }}
+      image={{ label: 'ภาพปก', hint: 'ขนาด 800×450 px · JPG/PNG/WebP · ไม่เกิน 300 KB', initial: r?.file ? { name: `cover-${r.id}.jpg`, kind: 'image', src: ADV_IMG[r.id] } : null }}
     />
   );
 }
 
 /* ================= News (CMS-17) ================= */
-interface NewsRow { id: string; title: string; langs: string; cat: string; pinned: boolean; date: string; status: ContentStatus; color: string }
+interface NewsRow { id: string; title: string; langs: string; cat: string; pinned: boolean; date: string; status: ContentStatus; img: string }
 const NEWS: NewsRow[] = [
-  { id: 'n1', title: 'LH Bank SMART Money ให้ความรู้การเงินแก่นักศึกษา ม.ธรรมศาสตร์ ศูนย์รังสิต', langs: 'TH · EN', cat: 'กิจกรรม', pinned: true, date: '20/10/2026', status: 'Published', color: '#8fa6c4' },
-  { id: 'n2', title: 'หัวข้อข่าว — รอเนื้อหาจากธนาคาร', langs: 'TH', cat: 'ข่าวธนาคาร', pinned: true, date: '15/10/2026', status: 'Published', color: '#c9a2a7' },
-  { id: 'n3', title: 'หัวข้อข่าว — รอเนื้อหาจากธนาคาร', langs: 'TH', cat: 'ประกาศ', pinned: true, date: '28/09/2026', status: 'Published', color: '#a3b07c' },
-  { id: 'n4', title: 'ESG Day 2569', langs: 'TH · EN', cat: 'ESG / CSR', pinned: false, date: '05/11/2026', status: 'Scheduled', color: '#7fb8bf' },
-  { id: 'n5', title: '(ร่าง) ข่าวประชาสัมพันธ์', langs: 'TH', cat: 'ข่าวธนาคาร', pinned: false, date: '—', status: 'Draft', color: '#d8c48a' },
+  { id: 'n1', title: 'LH Bank SMART Money ให้ความรู้การเงินแก่นักศึกษา ม.ธรรมศาสตร์ ศูนย์รังสิต', langs: 'TH · EN', cat: 'กิจกรรม', pinned: true, date: '20/10/2026', status: 'Published', img: PHOTOS.newsMouChula },
+  { id: 'n2', title: 'หัวข้อข่าว — รอเนื้อหาจากธนาคาร', langs: 'TH', cat: 'ข่าวธนาคาร', pinned: true, date: '15/10/2026', status: 'Published', img: PHOTOS.bannerVision },
+  { id: 'n3', title: 'หัวข้อข่าว — รอเนื้อหาจากธนาคาร', langs: 'TH', cat: 'ประกาศ', pinned: true, date: '28/09/2026', status: 'Published', img: PHOTOS.bannerIpo },
+  { id: 'n4', title: 'ESG Day 2569', langs: 'TH · EN', cat: 'ESG / CSR', pinned: false, date: '05/11/2026', status: 'Scheduled', img: PHOTOS.advisoryEsg },
+  { id: 'n5', title: '(ร่าง) ข่าวประชาสัมพันธ์', langs: 'TH', cat: 'ข่าวธนาคาร', pinned: false, date: '—', status: 'Draft', img: PHOTOS.branch },
 ];
 const NEWS_CATS = ['ข่าวธนาคาร', 'กิจกรรม', 'ประกาศ', 'ESG / CSR'];
 export function NewsList() {
@@ -111,7 +118,7 @@ export function NewsList() {
       toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/news/new')}>Create</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'News').length})</Link></>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> 3 ข่าวล่าสุดที่ปักหมุดจะแสดงบนหน้าแรก ({pinned}/3)</span>}
       columns={[
-        { key: 'img', label: 'ภาพปก', render: (r) => <Thumb color={r.color} /> },
+        { key: 'img', label: 'ภาพปก', render: (r) => <Thumb src={r.img} /> },
         { key: 't', label: 'หัวข้อข่าว', width: 260, render: (r) => <><Link className="t-link" style={{ fontWeight: 400 }} to={`/news/${r.id}`}>{r.title}</Link><div className="sub">{r.langs}</div></> },
         { key: 'c', label: 'หมวด', render: (r) => <span className="tag">{r.cat}</span> },
         { key: 'p', label: 'ปักหมุดหน้าแรก', align: 'center', render: (r) => <Toggle checked={r.pinned} onChange={(v) => { if (v && pinned >= 3) { toast('ปักหมุดได้สูงสุด 3 ข่าว', 'เลิกปักหมุดข่าวอื่นก่อน'); return; } setRows(rows.map((x) => (x.id === r.id ? { ...x, pinned: v } : x))); }} /> },
@@ -139,19 +146,19 @@ export function NewsForm() {
       ]}
       initial={r ? { th: { title: r.title, cat: r.cat, slug: `news-${r.id}`, excerpt: 'LH Bank จัดกิจกรรมให้ความรู้ด้านการเงินแก่นักศึกษา', body: 'รายละเอียดข่าว...' } } : {}}
       publishFields={[{ key: 'date', label: 'วันที่เผยแพร่', type: 'datetime' }, { key: 'pin', label: 'ปักหมุดหน้าแรก', type: 'toggle', desc: 'สูงสุด 3 ข่าว' }, { key: 'schema', label: 'Schema', type: 'select', options: ['NewsArticle (อัตโนมัติ)', 'Event'] }]}
-      image={{ label: 'ภาพปก', hint: 'ขนาด 1200×630 px · ใช้เป็น OG Image ด้วย', initial: r ? { name: `news-${r.id}.jpg`, kind: 'image', hue: 215 } : null }}
+      image={{ label: 'ภาพปก', hint: 'ขนาด 1200×630 px · ใช้เป็น OG Image ด้วย', initial: r ? { name: `news-${r.id}.jpg`, kind: 'image', src: r.img } : null }}
     />
   );
 }
 
 /* ================= NPA (CMS-18) ================= */
-interface NpaRow { id: string; title: string; code: string; size: string; type: string; prov: string; price: string; special?: string; status: ContentStatus; color: string; icon: LucideIcon }
+interface NpaRow { id: string; title: string; code: string; size: string; type: string; prov: string; price: string; special?: string; status: ContentStatus; img: string; icon: LucideIcon }
 const NPA: NpaRow[] = [
-  { id: 'npa-0101', title: 'บ้านเดี่ยว 2 ชั้น', code: 'NPA-0101', size: '52 ตร.วา', type: 'บ้านเดี่ยว', prov: 'กรุงเทพฯ', price: 'x,xxx,xxx', special: 'x,xxx,xxx', status: 'Published', color: '#c9a2a7', icon: Home },
-  { id: 'npa-0102', title: 'คอนโดใกล้รถไฟฟ้า', code: 'NPA-0102', size: '32 ตร.ม.', type: 'คอนโด', prov: 'นนทบุรี', price: 'x,xxx,xxx', special: 'x,xxx,xxx', status: 'Published', color: '#8fa6c4', icon: Building2 },
-  { id: 'npa-0103', title: 'ทาวน์โฮม 3 ชั้น', code: 'NPA-0103', size: '21 ตร.วา', type: 'ทาวน์โฮม', prov: 'ปทุมธานี', price: 'x,xxx,xxx', status: 'Published', color: '#a3b07c', icon: Home },
-  { id: 'npa-0104', title: 'ที่ดินเปล่า', code: 'NPA-0104', size: '1-2-50 ไร่', type: 'ที่ดิน', prov: 'ชลบุรี', price: 'xx,xxx,xxx', special: 'x,xxx,xxx', status: 'Scheduled', color: '#7fb8bf', icon: MapPin },
-  { id: 'npa-0012', title: 'อาคารพาณิชย์', code: 'NPA-0012', size: 'ขายแล้ว', type: 'อาคารพาณิชย์', prov: 'เชียงใหม่', price: 'x,xxx,xxx', status: 'Expired', color: '#d8c48a', icon: Building2 },
+  { id: 'npa-0101', title: 'บ้านเดี่ยว 2 ชั้น', code: 'NPA-0101', size: '52 ตร.วา', type: 'บ้านเดี่ยว', prov: 'กรุงเทพฯ', price: 'x,xxx,xxx', special: 'x,xxx,xxx', status: 'Published', img: PHOTOS.npaHouse, icon: Home },
+  { id: 'npa-0102', title: 'คอนโดใกล้รถไฟฟ้า', code: 'NPA-0102', size: '32 ตร.ม.', type: 'คอนโด', prov: 'นนทบุรี', price: 'x,xxx,xxx', special: 'x,xxx,xxx', status: 'Published', img: PHOTOS.npaCondo, icon: Building2 },
+  { id: 'npa-0103', title: 'ทาวน์โฮม 3 ชั้น', code: 'NPA-0103', size: '21 ตร.วา', type: 'ทาวน์โฮม', prov: 'ปทุมธานี', price: 'x,xxx,xxx', status: 'Published', img: PHOTOS.npaTownhome, icon: Home },
+  { id: 'npa-0104', title: 'ที่ดินเปล่า', code: 'NPA-0104', size: '1-2-50 ไร่', type: 'ที่ดิน', prov: 'ชลบุรี', price: 'xx,xxx,xxx', special: 'x,xxx,xxx', status: 'Scheduled', img: PHOTOS.npaLand, icon: MapPin },
+  { id: 'npa-0012', title: 'อาคารพาณิชย์', code: 'NPA-0012', size: 'ขายแล้ว', type: 'อาคารพาณิชย์', prov: 'เชียงใหม่', price: 'x,xxx,xxx', status: 'Expired', img: PHOTOS.npaShophouse, icon: Building2 },
 ];
 const BOOKINGS = [
   ['30/10/2026 10:12', 'คุณ ส***** ม*****', '08x-xxx-x221', 'NPA-0102 คอนโดใกล้รถไฟฟ้า', 'ใหม่'],
@@ -183,7 +190,7 @@ export function NpaList() {
       toolbar={<><Button variant="primary" icon={Plus} onClick={() => navigate('/npa/new')}>Create</Button><Button icon={Upload}>Import Excel</Button><Link to="/trash" className="btn btn-secondary"><Trash2 strokeWidth={1.6} /> Recycle Bin ({trash.filter((t) => t.module === 'NPA').length})</Link></>}
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> การ์ดบนเว็บแสดง 2 ราคา: ราคาปกติขีดฆ่า + ราคาพิเศษ</span>}
       columns={[
-        { key: 'img', label: 'ภาพ', render: (r) => <Thumb color={r.color} icon={r.icon} /> },
+        { key: 'img', label: 'ภาพ', render: (r) => <Thumb src={r.img} icon={r.icon} /> },
         { key: 't', label: 'ทรัพย์', render: (r) => <><Link className="t-link" style={{ fontWeight: 400 }} to={`/npa/${r.id}`}>{r.title}</Link><div className="sub">{r.code} · {r.size}</div></> },
         { key: 'ty', label: 'ประเภท', render: (r) => <span className="tag">{r.type}</span> },
         { key: 'p', label: 'จังหวัด', render: (r) => r.prov },
@@ -215,7 +222,7 @@ export function NpaForm() {
       ]}
       initial={r ? { th: { title: r.title, code: r.code, type: r.type, size: r.size, prov: r.prov, price: '3500000', special: r.special ? '2990000' : '', desc: 'รายละเอียดทรัพย์ สภาพ และสิ่งอำนวยความสะดวก' } } : {}}
       publishFields={[{ key: 'status', label: 'สถานะทรัพย์', type: 'select', options: ['พร้อมขาย', 'ติดจอง', 'ขายแล้ว'] }, { key: 'end', label: 'ราคาพิเศษถึงวันที่', type: 'date' }, { key: 'booking', label: 'เปิดรับจองซื้อออนไลน์', type: 'toggle' }]}
-      image={{ label: 'ภาพทรัพย์ (ภาพหลัก)', hint: 'อัปโหลดได้สูงสุด 10 ภาพ · 1200×800 px · ภาพแรกใช้เป็นภาพปก', initial: r ? { name: `${r.code}.jpg`, kind: 'image', hue: 20 } : null }}
+      image={{ label: 'ภาพทรัพย์ (ภาพหลัก)', hint: 'อัปโหลดได้สูงสุด 10 ภาพ · 1200×800 px · ภาพแรกใช้เป็นภาพปก', initial: r ? { name: `${r.code}.jpg`, kind: 'image', src: r.img } : null }}
     />
   );
 }

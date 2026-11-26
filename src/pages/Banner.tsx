@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Plus, RefreshCw, Trash2, Eye, Pencil, Info, Move, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react';
+import { Plus, RefreshCw, Trash2, Eye, Pencil, Info, Move, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button, IconButton, Modal, Status } from '../components/ui';
 import ListPage, { selectFilter, textFilter } from '../components/ListPage';
 import ModuleForm from '../components/ModuleForm';
 import { useStore } from '../store';
 import { openPreview } from './Preview';
 import type { ContentStatus } from '../types';
+import { PHOTOS } from '../data/photos';
 import './pages.css';
 
 export type BannerKind = 'hero' | 'promotion';
@@ -18,23 +19,23 @@ interface BannerRow {
   period: string;
   status: ContentStatus;
   by: string;
-  color: string;
+  img: string;
   position?: string;
 }
 
 const HERO: BannerRow[] = [
-  { id: 'h1', name: 'ลูกค้าใหม่ เปิดบัญชีออมทรัพย์ รับ E-Voucher 200 บาท', langs: 'TH · EN', period: '01/10/2026 – 31/12/2026', status: 'Published', by: 'Content Editor 02', color: '#2f86c1' },
-  { id: 'h2', name: 'เงินฝากประจำพิเศษ 6 เดือน', langs: 'TH · EN', period: '15/10/2026 – 15/01/2027', status: 'Published', by: 'Content Editor 02', color: '#8fa6c4' },
-  { id: 'h3', name: 'อยู่ครบ 1 ปี ก็รีได้ (Retention)', langs: 'TH · EN', period: '01/11/2026 – 31/01/2027', status: 'Scheduled', by: 'Content Editor 02', color: '#a3b07c' },
-  { id: 'h4', name: 'ทำธุรกรรมได้ทุกที่ ด้วยแอป LHB You', langs: 'TH · EN', period: '—', status: 'Draft', by: 'Content Editor 02', color: '#dfe6a6' },
-  { id: 'h5', name: 'สินเชื่อบ้าน LH Bank', langs: 'TH · EN', period: '01/07/2026 – 30/09/2026', status: 'Expired', by: 'Content Editor 02', color: '#c9a2a7' },
+  { id: 'h1', name: 'ลูกค้าใหม่ เปิดบัญชีออมทรัพย์ รับ E-Voucher 200 บาท', langs: 'TH · EN', period: '01/10/2026 – 31/12/2026', status: 'Published', by: 'Content Editor 02', img: PHOTOS.heroLhbYou },
+  { id: 'h2', name: 'เงินฝากประจำพิเศษ 6 เดือน', langs: 'TH · EN', period: '15/10/2026 – 15/01/2027', status: 'Published', by: 'Content Editor 02', img: PHOTOS.saving },
+  { id: 'h3', name: 'อยู่ครบ 1 ปี ก็รีได้ (Retention)', langs: 'TH · EN', period: '01/11/2026 – 31/01/2027', status: 'Scheduled', by: 'Content Editor 02', img: PHOTOS.familyBanking },
+  { id: 'h4', name: 'ทำธุรกรรมได้ทุกที่ ด้วยแอป LHB You', langs: 'TH · EN', period: '—', status: 'Draft', by: 'Content Editor 02', img: PHOTOS.cardlessWithdrawal },
+  { id: 'h5', name: 'สินเชื่อบ้าน LH Bank', langs: 'TH · EN', period: '01/07/2026 – 30/09/2026', status: 'Expired', by: 'Content Editor 02', img: PHOTOS.familyAdvisor },
 ];
 const PROMO: BannerRow[] = [
-  { id: 'p1', name: 'เปิดบัญชีผ่านแอป LHB You', langs: 'TH · EN', position: 'หน้าเงินฝาก', period: '01/10/2026 – 31/12/2026', status: 'Published', by: 'Content Editor 01', color: '#2f86c1' },
-  { id: 'p2', name: 'สินเชื่อบ้าน ผ่อนสบาย', langs: 'TH', position: 'หน้าสินเชื่อบ้าน', period: '15/10/2026 – 15/01/2027', status: 'Published', by: 'Content Editor 01', color: '#c9a2a7' },
-  { id: 'p3', name: 'บัตรเครดิต Foreigner Signature', langs: 'TH · EN', position: 'หน้าบัตรเครดิต', period: '01/11/2026 – 31/01/2027', status: 'Scheduled', by: 'Content Editor 02', color: '#a3b07c' },
-  { id: 'p4', name: 'กองทุนแนะนำประจำเดือน', langs: 'TH', position: 'หน้าการลงทุน', period: '—', status: 'Draft', by: 'Content Editor 02', color: '#d8c48a' },
-  { id: 'p5', name: 'ทรัพย์ราคาพิเศษ NPA', langs: 'TH', position: 'หน้าสินทรัพย์รอการขาย', period: '01/07/2026 – 30/09/2026', status: 'Expired', by: 'Content Editor 02', color: '#7fb8bf' },
+  { id: 'p1', name: 'เปิดบัญชีผ่านแอป LHB You', langs: 'TH · EN', position: 'หน้าเงินฝาก', period: '01/10/2026 – 31/12/2026', status: 'Published', by: 'Content Editor 01', img: PHOTOS.mobileBanking },
+  { id: 'p2', name: 'สินเชื่อบ้าน ผ่อนสบาย', langs: 'TH', position: 'หน้าสินเชื่อบ้าน', period: '15/10/2026 – 15/01/2027', status: 'Published', by: 'Content Editor 01', img: PHOTOS.npaHouse },
+  { id: 'p3', name: 'บัตรเครดิต Foreigner Signature', langs: 'TH · EN', position: 'หน้าบัตรเครดิต', period: '01/11/2026 – 31/01/2027', status: 'Scheduled', by: 'Content Editor 02', img: PHOTOS.creditCard },
+  { id: 'p4', name: 'กองทุนแนะนำประจำเดือน', langs: 'TH', position: 'หน้าการลงทุน', period: '—', status: 'Draft', by: 'Content Editor 02', img: PHOTOS.bannerFundRmf },
+  { id: 'p5', name: 'ทรัพย์ราคาพิเศษ NPA', langs: 'TH', position: 'หน้าสินทรัพย์รอการขาย', period: '01/07/2026 – 30/09/2026', status: 'Expired', by: 'Content Editor 02', img: PHOTOS.npaTownhome },
 ];
 
 /* CMS-05 Hero Banner · CMS-10 Promotion Banner */
@@ -68,7 +69,7 @@ export function BannerList({ kind }: { kind: BannerKind }) {
       toolbarRight={<span className="row t-secondary" style={{ gap: 8 }}><Info size={18} color="#1f6fa8" /> {isHero ? 'แสดงที่ Hero หน้าแรก · สูงสุด 5 สไลด์ · ภาพ 1120×640 px' : 'แบนเนอร์ขนาดกลางในหน้าผลิตภัณฑ์ / หน้าโปรโมชัน · 1200×300 px'}</span>}
       columns={[
         { key: 'order', label: 'Order', render: (r) => { const i = rows.indexOf(r); return ordering ? <div className="row" style={{ gap: 0 }}><IconButton icon={ArrowUp} title="ขึ้น" disabled={i === 0} onClick={() => move(i, -1)} /><IconButton icon={ArrowDown} title="ลง" disabled={i === rows.length - 1} onClick={() => move(i, 1)} /></div> : <span className="order-cell">{isHero && <Move size={16} />}{i + 1}</span>; } },
-        { key: 'thumb', label: 'Thumbnail', render: (r) => <div className="thumb-cell" style={{ background: r.color, width: isHero ? 86 : 114, height: isHero ? 48 : 30 }}><ImageIcon size={16} /></div> },
+        { key: 'thumb', label: 'Thumbnail', render: (r) => <div className="thumb-cell" style={{ width: isHero ? 86 : 114, height: isHero ? 48 : 30 }}><img src={r.img} alt="" loading="lazy" /></div> },
         { key: 'name', label: 'Banner Name', render: (r) => <><Link className="t-link" style={{ fontWeight: 400 }} to={`/banner/${kind}/${r.id}`}>{r.name}</Link><div className="sub">{r.langs}</div></> },
         ...(isHero ? [] : [{ key: 'pos', label: 'ตำแหน่งแสดง', render: (r: BannerRow) => r.position }]),
         { key: 'period', label: 'Display Period', render: (r) => r.period },
@@ -112,7 +113,7 @@ export function BannerForm({ kind }: { kind: BannerKind }) {
         { key: 'order', label: 'ลำดับการแสดงผล', type: 'select', options: ['1', '2', '3', '4', '5'] },
         { key: 'mobile', label: 'ใช้ภาพแยกสำหรับ Mobile', type: 'toggle', desc: 'แนะนำ 750×900 px' },
       ]}
-      image={{ label: 'ภาพแบนเนอร์', hint: isHero ? 'ขนาด 1120×640 px · JPG/PNG/WebP · ไม่เกิน 500 KB · ห้ามฝังข้อความโปรโมชันในรูป' : 'ขนาด 1200×300 px · JPG/PNG/WebP · ไม่เกิน 300 KB', initial: row ? { name: `banner-${row.id}.jpg`, kind: 'image', hue: 205, alt: row.name } : null }}
+      image={{ label: 'ภาพแบนเนอร์', hint: isHero ? 'ขนาด 1120×640 px · JPG/PNG/WebP · ไม่เกิน 500 KB · ห้ามฝังข้อความโปรโมชันในรูป' : 'ขนาด 1200×300 px · JPG/PNG/WebP · ไม่เกิน 300 KB', initial: row ? { name: `banner-${row.id}.jpg`, kind: 'image', src: row.img, alt: row.name } : null }}
     />
   );
 }

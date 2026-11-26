@@ -1,3 +1,4 @@
+import { PHOTOS } from './photos';
 import type { Calculator, ChartSeries, ContentItem, MediaItem, RequestItem, TestCase, TopList, TrashItem, VersionItem } from '../types';
 
 /* Mock data — values taken from the Figma screens (CS-02, CMS-26, TR-01, VR-01, CMS-27 …) */
@@ -57,15 +58,15 @@ export const VERSIONS: VersionItem[] = [
 export const MEDIA_FOLDERS: string[] = ['Homepage Banner', 'Promotion', 'Life Stage', 'Products', 'Advisory', 'News & Activity', 'Documents (PDF)', 'Logo & Brand'];
 
 export const MEDIA: MediaItem[] = [
-  { name: 'hero-evoucher-200.jpg', folder: 'Homepage Banner', kind: 'image', hue: 330, mine: true },
-  { name: 'promo-fixed-6m.jpg', folder: 'Promotion', kind: 'image', hue: 195, mine: true },
-  { name: 'promo-retention.jpg', folder: 'Promotion', kind: 'image', hue: 160 },
-  { name: 'promo-richman-300.jpg', folder: 'Promotion', kind: 'image', hue: 50, warn: true },
-  { name: 'lifestage-first-job.jpg', folder: 'Life Stage', kind: 'image', hue: 30 },
-  { name: 'lifestage-family.jpg', folder: 'Life Stage', kind: 'image', hue: 110, mine: true },
-  { name: 'advisory-weekly.jpg', folder: 'Advisory', kind: 'image', hue: 185 },
-  { name: 'news-smart-money.jpg', folder: 'News & Activity', kind: 'image', hue: 220 },
-  { name: 'app-lhb-you.png', folder: 'Products', kind: 'image', hue: 210 },
+  { name: 'hero-evoucher-200.jpg', folder: 'Homepage Banner', kind: 'image', src: PHOTOS.heroLhbYou, mine: true },
+  { name: 'promo-fixed-6m.jpg', folder: 'Promotion', kind: 'image', src: PHOTOS.saving, mine: true },
+  { name: 'promo-retention.jpg', folder: 'Promotion', kind: 'image', src: PHOTOS.familyBanking },
+  { name: 'promo-richman-300.jpg', folder: 'Promotion', kind: 'image', src: PHOTOS.bannerTaxSaving, warn: true },
+  { name: 'lifestage-first-job.jpg', folder: 'Life Stage', kind: 'image', src: PHOTOS.firstJob },
+  { name: 'lifestage-family.jpg', folder: 'Life Stage', kind: 'image', src: PHOTOS.familyAdvisor, mine: true },
+  { name: 'advisory-weekly.jpg', folder: 'Advisory', kind: 'image', src: PHOTOS.weeklyCreditHorizon },
+  { name: 'news-smart-money.jpg', folder: 'News & Activity', kind: 'image', src: PHOTOS.newsMouChula },
+  { name: 'app-lhb-you.png', folder: 'Products', kind: 'image', src: PHOTOS.appLhbYou },
   { name: 'logo-lhbank-color.svg', folder: 'Logo & Brand', kind: 'logo' },
   { name: 'fee-schedule-2569.pdf', folder: 'Documents (PDF)', kind: 'pdf' },
   { name: 'fact-sheet-LHAI.pdf', folder: 'Documents (PDF)', kind: 'pdf', error: true },

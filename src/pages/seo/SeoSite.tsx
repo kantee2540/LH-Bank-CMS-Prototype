@@ -4,6 +4,7 @@ import { Pencil, Image as ImageIcon, Plus } from 'lucide-react';
 import { SchemaList } from './Schema';
 import { Button, Card, Field, Input, Select, Textarea, Tabs, Toggle, TagInput, KV, LangSwitch } from '../../components/ui';
 import { useStore } from '../../store';
+import { PHOTOS } from '../../data/photos';
 import logo from '../../assets/figma/logo-lh-bank.svg';
 import '../pages.css';
 
@@ -48,8 +49,9 @@ function Favicon() {
 }
 function OgImage() {
   return (
-    <div className="thumb-box" style={{ width: 184, height: 100 }}>
-      <img src={logo} alt="" width="120" height="30" />
+    <div className="thumb-box" style={{ width: 184, height: 100, overflow: 'hidden', position: 'relative' }}>
+      <img src={PHOTOS.branch} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      <img src={logo} alt="" width="72" height="18" style={{ position: 'absolute', left: 8, top: 8, background: '#fff', padding: '3px 5px', borderRadius: 4, boxSizing: 'content-box' }} />
     </div>
   );
 }

@@ -129,7 +129,7 @@ export default function Media() {
         {upload?.step === 2 && (
           <div className="row" style={{ alignItems: 'flex-start', gap: 20 }}>
             <div style={{ width: 240, flex: 'none' }}>
-              <MediaThumb item={{ kind: 'image', hue: 210 }} height={150} />
+              <MediaThumb item={{ kind: 'image', name: upload.file ?? '' }} height={150} />
               <p className="t-sm mt-8">{upload.file}</p>
             </div>
             <div className="col grow">

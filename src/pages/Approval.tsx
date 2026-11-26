@@ -6,6 +6,10 @@ import { useStore } from '../store';
 import { openPreview } from './Preview';
 import type { RequestItem, RequestTab } from '../types';
 import './pages.css';
+import { PHOTOS } from '../data/photos';
+
+/* ภาพ Hero ตัวอย่าง (สินเชื่อรีไฟแนนซ์บ้าน) */
+const PF_HERO = { backgroundImage: `linear-gradient(90deg, rgba(18,56,107,.9), rgba(18,56,107,.35)), url(${PHOTOS.familyAdvisor})`, backgroundSize: 'cover', backgroundPosition: 'center' };
 
 const SLA: Record<string, [string, string]> = { r1: ['เหลือ 6 ชม.', 'sla-red'], r2: ['เหลือ 1 วัน', 'sla-amber'] };
 const slaOf = (r: RequestItem): [string, string] => SLA[r.id] ?? (r.fresh ? ['เหลือ 3 วัน', 'sla-green'] : ['เหลือ 2 วัน', 'sla-green']);
@@ -132,8 +136,8 @@ export function ApprovalReview() {
               </div>
             </>
           )}
-          {tab === 'desktop' && <div className="preview-frame"><div className="pf-hero"><b>สินเชื่อรีไฟแนนซ์บ้าน</b><span>ดอกเบี้ยเริ่มต้น 2.75% 3 ปีแรก*</span><button>สมัครเลย</button></div><div className="pf-row"><i /><i /><i /></div><p className="t-sm t-secondary" style={{ padding: 16 }}>*อัตราดอกเบี้ยเฉลี่ย 3 ปีแรก 2.75% ต่อปี (MRR-x.xx%)</p></div>}
-          {tab === 'mobile' && <div className="preview-frame mobile"><div className="pf-hero"><b>สินเชื่อรีไฟแนนซ์บ้าน</b><span>ดอกเบี้ยเริ่มต้น 2.75% 3 ปีแรก*</span><button>สมัครเลย</button></div><div className="pf-row col"><i /><i /></div></div>}
+          {tab === 'desktop' && <div className="preview-frame"><div className="pf-hero" style={PF_HERO}><b>สินเชื่อรีไฟแนนซ์บ้าน</b><span>ดอกเบี้ยเริ่มต้น 2.75% 3 ปีแรก*</span><button>สมัครเลย</button></div><div className="pf-row"><i /><i /><i /></div><p className="t-sm t-secondary" style={{ padding: 16 }}>*อัตราดอกเบี้ยเฉลี่ย 3 ปีแรก 2.75% ต่อปี (MRR-x.xx%)</p></div>}
+          {tab === 'mobile' && <div className="preview-frame mobile"><div className="pf-hero" style={PF_HERO}><b>สินเชื่อรีไฟแนนซ์บ้าน</b><span>ดอกเบี้ยเริ่มต้น 2.75% 3 ปีแรก*</span><button>สมัครเลย</button></div><div className="pf-row col"><i /><i /></div></div>}
           {tab === 'seo' && <div className="serp"><div className="t-sm t-secondary">lhbank.co.th › th › personal › loan › refinance</div><div className="title">รีไฟแนนซ์บ้าน ดอกเบี้ยคงที่ 3 ปีแรก | LH Bank</div><div className="t-sm t-secondary">รีไฟแนนซ์บ้านกับ LH Bank ลดค่างวด ดอกเบี้ยเฉลี่ย 3 ปีแรก x.xx% คำนวณได้ทันที</div></div>}
         </section>
         <div className="col">

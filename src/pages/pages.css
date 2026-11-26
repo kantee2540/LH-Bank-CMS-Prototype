@@ -298,3 +298,9 @@
 .ver-action.update { background: #f3f4f6; color: #3a3f47; }
 .ver-action.insert { background: #dcefe4; color: #2a6a47; }
 .ver-chip { display: inline-block; background: #e8e9ec; color: #2c2f35; border-radius: 4px; padding: 2px 8px; font-size: 12px; font-weight: 500; }
+
+/* ภาพจริงแทนช่องสี */
+.media-thumb { overflow: hidden; }
+.media-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb-cell { overflow: hidden; }
+.thumb-cell > img { width: 100%; height: 100%; object-fit: cover; display: block; }

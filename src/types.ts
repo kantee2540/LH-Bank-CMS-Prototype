@@ -66,6 +66,8 @@ export interface MediaItem {
   kind: MediaKind;
   folder?: string;
   hue?: number;
+  /** ภาพจริง (URL) — ถ้าไม่ระบุจะเลือกภาพตัวอย่างตามชื่อไฟล์ */
+  src?: string;
   mine?: boolean;
   warn?: boolean;
   error?: boolean;

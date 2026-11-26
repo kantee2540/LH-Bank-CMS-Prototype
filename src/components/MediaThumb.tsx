@@ -1,13 +1,14 @@
-import { FileText, Image as ImageIcon } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import logo from '../assets/figma/logo-lh-bank.svg';
+import { photoFor } from '../data/photos';
 import type { MediaItem } from '../types';
 
 interface MediaThumbProps {
-  item: Pick<MediaItem, 'kind' | 'hue'>;
+  item: Pick<MediaItem, 'kind'> & Partial<Pick<MediaItem, 'name' | 'src' | 'alt'>>;
   height?: number;
 }
 
-/* Media items are data-driven (uploaded by users), so the prototype renders tinted placeholders instead of real photos. */
+/* รูปใน Media Library — Prototype ใช้ภาพตัวอย่างจาก lhbank.co.th ตามชื่อไฟล์ (src/data/photos.ts) */
 export default function MediaThumb({ item, height = 92 }: MediaThumbProps) {
   if (item.kind === 'pdf') {
     return <div className="media-thumb" style={{ height }}><FileText size={30} strokeWidth={1.4} /></div>;
@@ -16,11 +17,8 @@ export default function MediaThumb({ item, height = 92 }: MediaThumbProps) {
     return <div className="media-thumb" style={{ height, background: '#fff' }}><img src={logo} alt="" width="95" height="24" /></div>;
   }
   return (
-    <div
-      className="media-thumb"
-      style={{ height, background: `linear-gradient(135deg, hsl(${item.hue ?? 210} 70% 82%), hsl(${(item.hue ?? 210) + 30} 60% 58%))`, color: 'rgba(255,255,255,.9)' }}
-    >
-      <ImageIcon size={28} strokeWidth={1.4} />
+    <div className="media-thumb" style={{ height }}>
+      <img className="media-photo" src={item.src ?? photoFor(item.name)} alt={item.alt ?? ''} loading="lazy" />
     </div>
   );
 }
