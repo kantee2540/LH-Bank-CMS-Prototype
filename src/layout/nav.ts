@@ -33,7 +33,6 @@ export interface NavItem {
 /* Sidebar menu — order & icons follow Figma "CMS-00 Dashboard › Sidebar" */
 export const NAV: NavItem[] = [
   { label: 'Dashboard', icon: home, to: '/' },
-  { label: 'My Requests', icon: fileText, to: '/requests' },
   { label: 'SEO / AEO', icon: seo, to: '/seo' },
   {
     label: 'Menu', icon: menu, children: [
@@ -72,9 +71,16 @@ export const NAV: NavItem[] = [
     ],
   },
   { label: 'NPA', icon: building, to: '/npa' },
-  { label: 'Form', icon: chat, to: '/form' },
+  {
+    label: 'Form', icon: chat, children: [
+      { label: 'Form Dashboard', to: '/form/dashboard' },
+      { label: 'Submissions', to: '/form' },
+      { label: 'Form Builder', to: '/form/builder' },
+    ],
+  },
   { label: 'FAQ', icon: help, to: '/faq' },
   { label: 'File Manager', icon: folder, to: '/files' },
+  { label: 'My Requests', icon: fileText, to: '/requests' },
   { label: 'AI Assistants', icon: sparkles, to: '/ai' },
   { label: 'Recycle Bin', icon: trash, to: '/trash' },
   {

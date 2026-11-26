@@ -19,6 +19,8 @@ import { InterestRates, ExchangeRates } from './pages/Rates';
 import { AdvisoryList, AdvisoryForm, NewsList, NewsForm, NpaList, NpaForm } from './pages/Modules';
 import { FaqList, FaqForm, FileManager } from './pages/Modules2';
 import Leads from './pages/Leads';
+import FormDashboard from './pages/FormDashboard';
+import { FormBuilderList, FormBuilderEdit } from './pages/FormBuilder';
 import { UsersRoles, AuditLog, LanguageSetting, RevisionSetting } from './pages/Settings';
 import { AiList, AiWorkspace, AiSettings } from './pages/AiAssistants';
 import { ApprovalInbox, ApprovalReview, ApprovalResult } from './pages/Approval';
@@ -84,6 +86,9 @@ export default function App() {
         <Route path="npa/new" element={<NpaForm />} />
         <Route path="npa/:id" element={<NpaForm />} />
         <Route path="form" element={<Leads />} />
+        <Route path="form/dashboard" element={<FormDashboard />} />
+        <Route path="form/builder" element={<FormBuilderList />} />
+        <Route path="form/builder/:id" element={<FormBuilderEdit key="edit" />} />
         <Route path="faq" element={<FaqList />} />
         <Route path="faq/new" element={<FaqForm />} />
         <Route path="faq/:id" element={<FaqForm />} />

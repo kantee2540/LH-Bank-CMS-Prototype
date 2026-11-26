@@ -1,6 +1,8 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { CONTENTS, TRASH, REQUESTS, VERSIONS } from './data/mock';
+import { FORMS, SUBMISSIONS } from './data/forms';
+import type { FormDef, Submission } from './data/forms';
 import type { ContentItem, RequestItem, Role, SubmitContentInput, Toast, TrashItem, VersionItem } from './types';
 
 interface Store {
@@ -17,6 +19,11 @@ interface Store {
   authed: boolean;
   login: (role: Role) => void;
   logout: () => void;
+  /** Dynamic Form — นิยามฟอร์มและข้อมูลที่ส่งเข้ามา */
+  forms: FormDef[];
+  setForms: Dispatch<SetStateAction<FormDef[]>>;
+  submissions: Submission[];
+  setSubmissions: Dispatch<SetStateAction<Submission[]>>;
   toast: (title: string, desc?: string) => void;
   moveContentToTrash: (id: number) => void;
   restoreFromTrash: (ids: string[]) => void;
@@ -46,6 +53,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [site, setSite] = useState('เว็บไซต์ LH Bank (Personal)');
   const [role, setRole] = useState<Role>('Content Editor');
+  const [forms, setForms] = useState<FormDef[]>(FORMS);
+  const [submissions, setSubmissions] = useState<Submission[]>(SUBMISSIONS);
   const [authed, setAuthed] = useState<boolean>(() => {
     try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch { return false; }
   });
@@ -121,8 +130,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<Store>(
-    () => ({ contents, trash, requests, versions, toasts, site, setSite, role, setRole, authed, login, logout, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest }),
-    [contents, trash, requests, versions, toasts, site, role, authed, login, logout, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest],
+    () => ({ contents, trash, requests, versions, toasts, site, setSite, role, setRole, authed, login, logout, forms, setForms, submissions, setSubmissions, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest }),
+    [contents, trash, requests, versions, toasts, site, role, authed, login, logout, forms, submissions, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest],
   );
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }
