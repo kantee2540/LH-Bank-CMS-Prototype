@@ -2,21 +2,18 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ShieldCheck, KeyRound, Compass, User, Lock, Eye, EyeOff } from 'lucide-react';
-import { Button, Field, Input, Select } from '../components/ui';
+import { Button, Field, Input } from '../components/ui';
 import { useStore } from '../store';
-import type { Role } from '../types';
 import logo from '../assets/figma/logo-lh-bank.svg';
 import './pages.css';
 
 /* LG-00 หน้าเข้าสู่ระบบ — ต้องผ่านหน้านี้ก่อนเข้าใช้ CMS ทุกครั้ง
    เข้าด้วยชื่อผู้ใช้ / รหัสผ่าน หรือบัญชีพนักงาน (SSO) ของธนาคาร (ตาม CMS-22 "เข้าสู่ระบบผ่าน SSO")
-   Prototype: กรอกค่าใดก็ได้ที่ไม่ว่างเพื่อเข้าสู่ระบบ */
+   Prototype: กรอกค่าใดก็ได้ที่ไม่ว่างเพื่อเข้าสู่ระบบ · สลับบทบาท Auditor ได้ที่ปุ่มบทบาทบน Top bar */
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { authed, login, toast } = useStore();
-  const [role, setR] = useState<Role>('Content Editor');
-  const [site, setSite] = useState('Personal');
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
   const [show, setShow] = useState(false);
@@ -26,9 +23,9 @@ export default function Login() {
   if (authed) return <Navigate to={from && from !== '/login' ? from : '/'} replace />;
 
   const enter = (how: string) => {
-    login(role);
-    toast(`เข้าสู่ระบบในบทบาท ${role}`, `${how} · เว็บไซต์ ${site} · บันทึกใน Audit Log`);
-    navigate(role === 'Auditor' ? '/approval' : from && from !== '/login' ? from : '/', { replace: true });
+    login('Content Editor');
+    toast('เข้าสู่ระบบแล้ว', `${how} · บันทึกใน Audit Log`);
+    navigate(from && from !== '/login' ? from : '/', { replace: true });
   };
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -66,13 +63,6 @@ export default function Login() {
         </form>
         <div className="login-or"><span>หรือ</span></div>
         <Button icon={KeyRound} style={{ height: 48 }} onClick={() => enter('SSO')}>เข้าสู่ระบบด้วยบัญชีพนักงาน (SSO)</Button>
-        <div className="login-demo">
-          <b className="t-sm">โหมด Prototype — เลือกบทบาทเพื่อทดลอง</b>
-          <div className="grid-2">
-            <Field label="บทบาท"><Select value={role} onChange={(e) => setR(e.target.value as Role)} options={['Content Editor', 'Auditor']} /></Field>
-            <Field label="เว็บไซต์"><Select value={site} onChange={(e) => setSite(e.target.value)} options={['Personal', 'SME', 'Corporate']} /></Field>
-          </div>
-        </div>
         <div className="row t-sm t-secondary" style={{ gap: 8, alignItems: 'flex-start' }}><ShieldCheck size={16} style={{ flex: 'none', marginTop: 3 }} /> ใช้การยืนยันตัวตน 2 ขั้นตอน (MFA) ของธนาคาร · หมดเวลาใช้งานอัตโนมัติหลังไม่มีการใช้งาน 30 นาที · ทุกการเข้าสู่ระบบบันทึกใน Audit Log</div>
       </div>
       <p className="t-sm" style={{ color: '#b8c7d6' }}>v1.0.0 · Copyright © 2026 Clicknext Co.,Ltd.</p>

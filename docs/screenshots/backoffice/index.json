@@ -1,0 +1,230 @@
+[
+  {
+    "file": "01-login.png",
+    "height": 900
+  },
+  {
+    "file": "02-dashboard.png",
+    "height": 2639
+  },
+  {
+    "file": "03-my-requests.png",
+    "height": 1182
+  },
+  {
+    "file": "04-seo-general.png",
+    "height": 900
+  },
+  {
+    "file": "05-seo-advanced.png",
+    "height": 900
+  },
+  {
+    "file": "06-seo-aeo.png",
+    "height": 900
+  },
+  {
+    "file": "07-seo-schema.png",
+    "height": 1036
+  },
+  {
+    "file": "08-seo-social-campaign.png",
+    "height": 1487
+  },
+  {
+    "file": "09-menu-location.png",
+    "height": 1119
+  },
+  {
+    "file": "10-menu-set.png",
+    "height": 1273
+  },
+  {
+    "file": "11-menu-set-edit.png",
+    "height": 900
+  },
+  {
+    "file": "12-media.png",
+    "height": 931
+  },
+  {
+    "file": "13-banner-hero.png",
+    "height": 920
+  },
+  {
+    "file": "14-banner-hero-edit.png",
+    "height": 1158
+  },
+  {
+    "file": "15-banner-promotion.png",
+    "height": 944
+  },
+  {
+    "file": "16-page-builder-layout.png",
+    "height": 1391
+  },
+  {
+    "file": "17-page-builder-layout-edit.png",
+    "height": 1294
+  },
+  {
+    "file": "18-page-builder-content.png",
+    "height": 1427
+  },
+  {
+    "file": "19-page-builder-content-edit.png",
+    "height": 1389
+  },
+  {
+    "file": "20-page-builder-news.png",
+    "height": 1025
+  },
+  {
+    "file": "21-page-builder-news-edit.png",
+    "height": 1125
+  },
+  {
+    "file": "22-page-builder-advisory.png",
+    "height": 997
+  },
+  {
+    "file": "23-page-builder-advisory-edit.png",
+    "height": 960
+  },
+  {
+    "file": "24-path-structure.png",
+    "height": 1071
+  },
+  {
+    "file": "25-products-loan.png",
+    "height": 1001
+  },
+  {
+    "file": "26-products-loan-edit.png",
+    "height": 1472
+  },
+  {
+    "file": "27-products-deposit.png",
+    "height": 1035
+  },
+  {
+    "file": "28-life-stage.png",
+    "height": 1059
+  },
+  {
+    "file": "29-rates-interest.png",
+    "height": 930
+  },
+  {
+    "file": "30-rates-exchange.png",
+    "height": 900
+  },
+  {
+    "file": "31-rates-calculator.png",
+    "height": 1267
+  },
+  {
+    "file": "32-rates-calculator-edit.png",
+    "height": 1531
+  },
+  {
+    "file": "33-npa.png",
+    "height": 928
+  },
+  {
+    "file": "34-npa-edit.png",
+    "height": 1222
+  },
+  {
+    "file": "35-form-dashboard.png",
+    "height": 2386
+  },
+  {
+    "file": "36-form-submissions.png",
+    "height": 1469
+  },
+  {
+    "file": "37-form-builder.png",
+    "height": 900
+  },
+  {
+    "file": "38-form-builder-edit.png",
+    "height": 1818
+  },
+  {
+    "file": "39-faq.png",
+    "height": 1054
+  },
+  {
+    "file": "40-faq-edit.png",
+    "height": 1125
+  },
+  {
+    "file": "41-file-manager.png",
+    "height": 1011
+  },
+  {
+    "file": "42-ai-assistants.png",
+    "height": 1299
+  },
+  {
+    "file": "43-ai-workspace.png",
+    "height": 1141
+  },
+  {
+    "file": "44-ai-settings.png",
+    "height": 1370
+  },
+  {
+    "file": "45-recycle-bin.png",
+    "height": 1592
+  },
+  {
+    "file": "46-setting-users.png",
+    "height": 1001
+  },
+  {
+    "file": "47-setting-audit-log.png",
+    "height": 1074
+  },
+  {
+    "file": "48-setting-language.png",
+    "height": 1538
+  },
+  {
+    "file": "49-setting-revision.png",
+    "height": 900
+  },
+  {
+    "file": "50-popup-dashboard-view-all.png",
+    "height": 900
+  },
+  {
+    "file": "51-popup-version-history.png",
+    "height": 900
+  },
+  {
+    "file": "52-popup-social-campaign-create.png",
+    "height": 900
+  },
+  {
+    "file": "53-popup-form-submission-detail.png",
+    "height": 900
+  },
+  {
+    "file": "54-auditor-dashboard.png",
+    "height": 2639
+  },
+  {
+    "file": "55-auditor-approval-inbox.png",
+    "height": 1140
+  },
+  {
+    "file": "56-auditor-approval-review.png",
+    "height": 1208
+  },
+  {
+    "file": "57-auditor-approval-history.png",
+    "height": 900
+  }
+]
