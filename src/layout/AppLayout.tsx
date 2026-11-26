@@ -94,7 +94,7 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
 }
 
 function TopBar({ onToggle }: { onToggle: () => void }) {
-  const { site, setSite, role, setRole, requests } = useStore();
+  const { site, setSite, role, setRole, requests, logout } = useStore();
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false);
   const pending = requests.filter((r) => r.tab === 'pending').length;
@@ -127,7 +127,7 @@ function TopBar({ onToggle }: { onToggle: () => void }) {
             <div className="user-menu" onMouseLeave={() => setMenu(false)}>
               <b>{role === 'Auditor' ? 'Auditor – Marketing' : 'Content Editor 01'}</b>
               <span className="t-sm t-secondary">{role === 'Auditor' ? 'auditor.mkt@...lhbank.co.th' : 'editor01@...lhbank.co.th'}</span>
-              <button onClick={() => { setMenu(false); navigate('/login'); }}><LogOut size={16} /> ออกจากระบบ</button>
+              <button onClick={() => { setMenu(false); logout(); navigate('/login'); }}><LogOut size={16} /> ออกจากระบบ</button>
             </div>
           )}
         </div>
@@ -138,13 +138,15 @@ function TopBar({ onToggle }: { onToggle: () => void }) {
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
-  const { toasts, role } = useStore();
+  const { toasts, role, authed } = useStore();
   const { pathname } = useLocation();
   // Auditor เห็นเฉพาะเมนูตาม AUDITOR_NAV — ถ้าเข้า URL ของหน้าจัดการเนื้อหาตรง ๆ ให้กลับไปงานรออนุมัติ
   const blocked = role === 'Auditor' && !AUDITOR_PATHS.some((p) => isActivePath(pathname, p));
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+  // ต้องเข้าสู่ระบบก่อนใช้งาน CMS — จำหน้าที่ตั้งใจจะเข้าไว้ แล้วพากลับมาหลัง Login
+  if (!authed) return <Navigate to="/login" replace state={{ from: pathname }} />;
   return (
     <div className="app">
       <Sidebar collapsed={collapsed} />

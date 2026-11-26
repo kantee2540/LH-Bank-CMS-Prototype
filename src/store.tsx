@@ -13,6 +13,10 @@ interface Store {
   setSite: Dispatch<SetStateAction<string>>;
   role: Role;
   setRole: Dispatch<SetStateAction<Role>>;
+  /** เข้าสู่ระบบแล้วหรือยัง — ทุกหน้าของ CMS ต้องผ่านหน้า Login ก่อน */
+  authed: boolean;
+  login: (role: Role) => void;
+  logout: () => void;
   toast: (title: string, desc?: string) => void;
   moveContentToTrash: (id: number) => void;
   restoreFromTrash: (ids: string[]) => void;
@@ -22,6 +26,8 @@ interface Store {
   submitRequest: (r: { title: string; module: string; sub: string; auditor?: string; publish?: string }) => void;
   decideRequest: (id: string, decision: 'approve-now' | 'approve-schedule' | 'reject', note?: string) => void;
 }
+
+const AUTH_KEY = 'lh-cms-authed';
 
 const StoreCtx = createContext<Store | null>(null);
 
@@ -40,6 +46,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [site, setSite] = useState('เว็บไซต์ LH Bank (Personal)');
   const [role, setRole] = useState<Role>('Content Editor');
+  const [authed, setAuthed] = useState<boolean>(() => {
+    try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch { return false; }
+  });
+  const login = useCallback((r: Role) => {
+    setRole(r);
+    setAuthed(true);
+    try { sessionStorage.setItem(AUTH_KEY, '1'); } catch { /* ignore */ }
+  }, []);
+  const logout = useCallback(() => {
+    setAuthed(false);
+    try { sessionStorage.removeItem(AUTH_KEY); } catch { /* ignore */ }
+  }, []);
 
   const toast = useCallback((title: string, desc?: string) => {
     const id = Math.random().toString(36).slice(2);
@@ -103,8 +121,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<Store>(
-    () => ({ contents, trash, requests, versions, toasts, site, setSite, role, setRole, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest }),
-    [contents, trash, requests, versions, toasts, site, role, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest],
+    () => ({ contents, trash, requests, versions, toasts, site, setSite, role, setRole, authed, login, logout, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest }),
+    [contents, trash, requests, versions, toasts, site, role, authed, login, logout, toast, moveContentToTrash, restoreFromTrash, deleteForever, submitContent, restoreVersion, submitRequest, decideRequest],
   );
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
 }

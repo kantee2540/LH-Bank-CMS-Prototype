@@ -61,3 +61,9 @@
 .login { min-height: 100vh; background: linear-gradient(160deg, #12386b 0%, #1f6fa8 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 24px; }
 .login-card { background: #fff; border-radius: 16px; padding: 36px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 20px; box-shadow: var(--lh-shadow-modal); }
 .login-demo { background: var(--lh-gray-100); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.login-input { position: relative; display: flex; align-items: center; }
+.login-input > svg { position: absolute; left: 12px; color: var(--lh-text-tertiary, #8a94a3); pointer-events: none; }
+.login-input .input { width: 100%; padding-left: 40px; padding-right: 40px; }
+.login-eye { position: absolute; right: 8px; border: 0; background: none; padding: 4px; display: flex; color: var(--lh-text-tertiary, #8a94a3); cursor: pointer; }
+.login-or { display: flex; align-items: center; gap: 12px; color: var(--lh-text-tertiary, #8a94a3); font-size: 14px; }
+.login-or::before, .login-or::after { content: ''; flex: 1; height: 1px; background: var(--lh-border-default, #e2e5ea); }
