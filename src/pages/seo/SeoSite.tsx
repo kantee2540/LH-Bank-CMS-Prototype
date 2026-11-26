@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Pencil, Image as ImageIcon, Plus } from 'lucide-react';
 import { SchemaList } from './Schema';
+import SocialCampaign from './SocialCampaign';
 import { Button, Card, Field, Input, Select, Textarea, Tabs, Toggle, TagInput, KV, LangSwitch } from '../../components/ui';
 import { useStore } from '../../store';
 import { PHOTOS } from '../../data/photos';
@@ -9,7 +10,7 @@ import logo from '../../assets/figma/logo-lh-bank.svg';
 import '../pages.css';
 
 type Lang = 'th' | 'en' | 'zh';
-type SeoTab = 'general' | 'advanced' | 'aeo' | 'schema';
+type SeoTab = 'general' | 'advanced' | 'aeo' | 'schema' | 'social';
 const LANGS: { value: Lang; label: string }[] = [
   { value: 'th', label: 'TH (Main)' },
   { value: 'en', label: 'EN' },
@@ -56,7 +57,7 @@ function OgImage() {
   );
 }
 
-/* CMS-01 / SEO-01 ดูค่าปัจจุบัน · SEO-02 General · SEO-03 Advanced · SEO-04 AEO / AI Search · SEO-05 ส่งอนุมัติ */
+/* CMS-01 / SEO-01 ดูค่าปัจจุบัน · SEO-02 General · SEO-03 Advanced · SEO-04 AEO / AI Search · SEO-05 ส่งอนุมัติ · SEO-06/07 Social Campaign (NEW) */
 export default function SeoSite() {
   const { submitRequest, toast } = useStore();
   const navigate = useNavigate();
@@ -64,6 +65,7 @@ export default function SeoSite() {
   const [edit, setEdit] = useState(false);
   const [tab, setTab] = useState<SeoTab>((params.get('tab') as SeoTab) || 'general');
   const [picking, setPicking] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [lang, setLang] = useState<Lang>('th');
   const [gen, setGen] = useState(GENERAL);
   const [adv, setAdv] = useState({ canonical: 'https://www.lhbank.co.th', robots: 'index, follow', sitemap: true, hreflang: true, xDefault: 'TH', gsc: 'google-site-verification=•••••••', robotsTxt: 'User-agent: *  ·  Allow: /  ·  Disallow: /login/  ·  Sitemap: /sitemap.xml' });
@@ -93,6 +95,8 @@ export default function SeoSite() {
         </div>
       ) : tab === 'schema' ? (
         <Button variant="primary" icon={Plus} onClick={() => setPicking(true)}>สร้าง Schema</Button>
+      ) : tab === 'social' ? (
+        <Button variant="primary" icon={Plus} onClick={() => setCreating(true)}>สร้างแคมเปญ</Button>
       ) : (
         <Button icon={Pencil} onClick={() => setEdit(true)}>Edit</Button>
       )}
@@ -103,9 +107,10 @@ export default function SeoSite() {
     <>
       <section className="card">
         {head}
-        <Tabs value={tab} onChange={setTab} tabs={[{ value: 'general', label: 'General' }, { value: 'advanced', label: 'Advanced' }, { value: 'aeo', label: 'AEO / AI Search' }, ...(edit ? [] : [{ value: 'schema' as SeoTab, label: 'Schema' }])]} style={{ marginBottom: 18 }} />
+        <Tabs value={tab} onChange={setTab} tabs={[{ value: 'general', label: 'General' }, { value: 'advanced', label: 'Advanced' }, { value: 'aeo', label: 'AEO / AI Search' }, ...(edit ? [] : [{ value: 'schema' as SeoTab, label: 'Schema' }, { value: 'social' as SeoTab, label: 'Social Campaign' }])]} style={{ marginBottom: 18 }} />
         {tab === 'schema' && <SchemaList picking={picking} onClosePicker={() => setPicking(false)} />}
-        {tab !== 'advanced' && tab !== 'schema' && <LangSwitch value={lang} onChange={setLang} options={LANGS} />}
+        {tab === 'social' && <SocialCampaign creating={creating} onCloseCreate={() => setCreating(false)} />}
+        {tab !== 'advanced' && tab !== 'schema' && tab !== 'social' && <LangSwitch value={lang} onChange={setLang} options={LANGS} />}
 
         {tab === 'general' && !edit && (
           <div className="grid-2" style={{ gap: 32 }}>
