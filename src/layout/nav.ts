@@ -4,13 +4,11 @@ import seo from '../assets/figma/nav/seo-search.svg';
 import menu from '../assets/figma/nav/menu.svg';
 import image from '../assets/figma/nav/image.svg';
 import megaphone from '../assets/figma/nav/megaphone.svg';
-import layout from '../assets/figma/nav/layout.svg';
 import tree from '../assets/figma/nav/tree.svg';
 import layers from '../assets/figma/nav/layers.svg';
 import gift from '../assets/figma/nav/gift.svg';
 import users from '../assets/figma/nav/users.svg';
 import percent from '../assets/figma/nav/percent.svg';
-import trending from '../assets/figma/nav/trending-up.svg';
 import building from '../assets/figma/nav/building.svg';
 import chat from '../assets/figma/nav/chat.svg';
 import help from '../assets/figma/nav/help.svg';
@@ -50,9 +48,15 @@ export const NAV: NavItem[] = [
       { label: 'Promotion Banner', to: '/banner/promotion' },
     ],
   },
-  { label: 'Layout', icon: layout, to: '/layout' },
+  {
+    label: 'Page Builder', icon: layers, children: [
+      { label: 'Layout', to: '/layout' },
+      { label: 'Content', to: '/content' },
+      { label: 'News', to: '/news' },
+      { label: 'Advisory', to: '/advisory' },
+    ],
+  },
   { label: 'Path Structure', icon: tree, to: '/path' },
-  { label: 'Page Builder', icon: layers, to: '/content' },
   {
     label: 'Products', icon: gift, children: [
       { label: 'สินเชื่อ', to: '/products/loan' },
@@ -67,8 +71,6 @@ export const NAV: NavItem[] = [
       { label: 'เครื่องมือคำนวณ', to: '/rates/calculator' },
     ],
   },
-  { label: 'Advisory', icon: trending, to: '/advisory' },
-  { label: 'News', icon: fileText, to: '/news' },
   { label: 'NPA', icon: building, to: '/npa' },
   { label: 'Form', icon: chat, to: '/form' },
   { label: 'FAQ', icon: help, to: '/faq' },

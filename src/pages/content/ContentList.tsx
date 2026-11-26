@@ -81,7 +81,7 @@ export default function ContentList() {
 
   return (
     <>
-      <PageHeader title="Page Builder" />
+      <PageHeader title="Content" />
 
       <form
         className="filter-bar"
