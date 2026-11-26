@@ -30,7 +30,7 @@ export default function RequestStatus() {
   return (
     <>
       <PageHeader
-        title="สถานะคำขอของฉัน"
+        title="My Requests"
         sub="ติดตามเนื้อหาที่คุณส่งให้ Auditor ตรวจสอบ · ระหว่างรออนุมัติ เนื้อหาจะถูกล็อกการแก้ไข"
         actions={<Button icon={RefreshCw} onClick={() => toast('รีเฟรชสถานะแล้ว')}>รีเฟรชสถานะ</Button>}
       />

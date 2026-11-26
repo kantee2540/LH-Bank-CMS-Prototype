@@ -33,7 +33,7 @@ export interface NavItem {
 /* Sidebar menu — order & icons follow Figma "CMS-00 Dashboard › Sidebar" */
 export const NAV: NavItem[] = [
   { label: 'Dashboard', icon: home, to: '/' },
-  { label: 'สถานะคำขอของฉัน', icon: fileText, to: '/requests' },
+  { label: 'My Requests', icon: fileText, to: '/requests' },
   { label: 'SEO / AEO', icon: seo, to: '/seo' },
   {
     label: 'Menu', icon: menu, children: [

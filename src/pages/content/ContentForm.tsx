@@ -419,7 +419,7 @@ export default function ContentForm() {
             <Button onClick={() => setSubmitOpen(false)}>ยกเลิก</Button>
             <Button variant="primary" icon={Send} disabled={!allComplete} onClick={() => {
               submitContent({ title: data.th.title, type: meta.type, path: `/th${meta.path}`, auditor: auditor.replace(/ \(.*\)/, ''), publish: publishAt.replace('T', ' ') });
-              toast('ส่งอนุมัติแล้ว — สถานะรออนุมัติ', 'ติดตามได้ที่เมนู “สถานะคำขอของฉัน”');
+              toast('ส่งอนุมัติแล้ว — สถานะรออนุมัติ', 'ติดตามได้ที่เมนู “My Requests”');
               navigate('/requests');
             }}>ส่งอนุมัติ</Button>
           </>
