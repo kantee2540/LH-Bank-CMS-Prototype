@@ -170,27 +170,47 @@ function TopListModal({ list, period, onClose }: { list: TopList | null; period:
 export default function Dashboard() {
   const [mode, setMode] = useState('ข้อมูลปี');
   const [year, setYear] = useState('2569');
+  /* NEW — กำหนดช่วงเวลาเอง (วันที่เริ่มต้น – สิ้นสุด) */
+  const [start, setStart] = useState('2026-11-01');
+  const [end, setEnd] = useState('2026-11-26');
   const [openList, setOpenList] = useState<TopList | null>(null);
   const { toast } = useStore();
+  const isRange = mode === 'กำหนดช่วงเวลา';
+  const fmt = (iso: string) => iso.split('-').reverse().join('/');
+  const rangeError = isRange && (!start || !end) ? 'กรุณาเลือกวันที่ให้ครบ' : isRange && start > end ? 'วันที่สิ้นสุดต้องไม่ก่อนวันที่เริ่มต้น' : '';
+  const period = isRange ? `${fmt(start)} – ${fmt(end)}` : `${mode} ${year}`;
+  const visitorLabel = isRange ? `${fmt(start)} – ${fmt(end)}` : `ปี ${year}`;
   return (
     <>
       <div className="row-between dash-head">
         <h1 className="t-h1">Dashboard</h1>
         <div className="row" style={{ alignItems: 'flex-end', gap: 10 }}>
           <Field label="ช่วงข้อมูล" style={{ width: 170 }}>
-            <Select value={mode} onChange={(e) => setMode(e.target.value)} options={['ข้อมูลปี', 'ข้อมูลเดือน', 'ข้อมูลสัปดาห์']} />
+            <Select value={mode} onChange={(e) => setMode(e.target.value)} options={['ข้อมูลปี', 'ข้อมูลเดือน', 'ข้อมูลสัปดาห์', 'กำหนดช่วงเวลา']} />
           </Field>
-          <Field label="ปี" style={{ width: 120 }}>
-            <Select value={year} onChange={(e) => setYear(e.target.value)} options={['2569', '2568', '2567']} />
-          </Field>
-          <button className="btn btn-primary" onClick={() => toast('เรียกดูข้อมูลแล้ว', `${mode} · ปี ${year}`)}>
+          {isRange ? (
+            <>
+              <Field label="วันที่เริ่มต้น" style={{ width: 170 }}>
+                <Input type="date" value={start} max={end || undefined} onChange={(e) => setStart(e.target.value)} />
+              </Field>
+              <Field label="วันที่สิ้นสุด" style={{ width: 170 }}>
+                <Input type="date" value={end} min={start || undefined} onChange={(e) => setEnd(e.target.value)} />
+              </Field>
+            </>
+          ) : (
+            <Field label="ปี" style={{ width: 120 }}>
+              <Select value={year} onChange={(e) => setYear(e.target.value)} options={['2569', '2568', '2567']} />
+            </Field>
+          )}
+          <button className="btn btn-primary" disabled={!!rangeError} title={rangeError || undefined} onClick={() => toast('เรียกดูข้อมูลแล้ว', isRange ? `ช่วงเวลา ${period}` : `${mode} · ปี ${year}`)}>
             <img src={icSearchBtn} alt="" width="18" height="18" /> เรียกดูข้อมูล
           </button>
-          <button className="btn btn-secondary" style={{ height: 44 }} onClick={() => toast('ส่งออกข้อมูลแล้ว', `dashboard-${year}.xlsx`)}>
+          <button className="btn btn-secondary" style={{ height: 44 }} onClick={() => toast('ส่งออกข้อมูลแล้ว', isRange ? `dashboard-${start}_${end}.xlsx` : `dashboard-${year}.xlsx`)}>
             <img src={icExportBtn} alt="" width="18" height="18" /> ส่งออกข้อมูล
           </button>
         </div>
       </div>
+      {rangeError && <p className="field-error" style={{ marginTop: -12, textAlign: 'right' }}>⚠️ {rangeError}</p>}
 
       <div className="dash-summary">
         <section className="card visitors">
@@ -199,13 +219,13 @@ export default function Dashboard() {
               <img src={icUsers} alt="" width="32" height="32" />
             </div>
             <div>
-              <p className="t-body-l t-secondary">ผู้เข้าเยี่ยมชมเว็บไซต์ (ปี {year})</p>
+              <p className="t-body-l t-secondary">ผู้เข้าเยี่ยมชมเว็บไซต์ ({visitorLabel})</p>
               <p className="big-num">10,117</p>
             </div>
           </div>
           <div className="row" style={{ gap: 8 }}>
             <span className="trend-up">▲ 20.1%</span>
-            <span className="t-tertiary">เทียบเดือนก่อน (ต.ค. 1,297 ราย)</span>
+            <span className="t-tertiary">{isRange ? 'เทียบกับช่วงเวลาก่อนหน้าที่ยาวเท่ากัน' : 'เทียบเดือนก่อน (ต.ค. 1,297 ราย)'}</span>
           </div>
           <div className="mini-bars">
             {MINI_BARS.map((h, i) => <span key={i} style={{ height: h }} />)}
@@ -247,7 +267,7 @@ export default function Dashboard() {
           </section>
         ))}
       </div>
-      <TopListModal list={openList} period={`${mode} ${year}`} onClose={() => setOpenList(null)} />
+      <TopListModal list={openList} period={period} onClose={() => setOpenList(null)} />
     </>
   );
 }
